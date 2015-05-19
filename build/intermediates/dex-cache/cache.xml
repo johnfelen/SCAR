@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\classes-8cdaa6d8ad732a204d2de509c46145bb1fa8f028.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-cd2f32faac50f081df1f1b1a48115e02ecb532fb.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\libs\mysql-connector-java-3.0.17-ga-bin.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3d8b493d12562fc904a947ea7b84394fe67e8a55">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\mysql-connector-java-3.0.17-ga-bin-ad9250b5ad95a7067c79bfbe37904eb1e3ad643c.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\libs\jedis-2.1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd408109671d433d22dbcad2bd107cf0259812a0">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\jedis-2.1.0-758b612f14e4094eee63f4b738d58175eb10f2b0.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\libs\jlinalg-api_0.6.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a1e6dfd4517c6bb7caa4a12b0ce222e68b1ebe9b">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\jlinalg-api_0.6-9275650f71078bd1ffa12023277cd1fd21414b27.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\libs\mongo-java-driver-2.9.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="47db74fd03636102efea01899cd769181a1cbb6f">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\mongo-java-driver-2.9.3-21f0f6b5c789a8bb0c04d221334aebbd73511beb.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-c4a45c67b495759a91249e50fba1a09a6d9c0b4a.jar" />
+    </item>
+    <item
+        jar="C:\Users\John\.AndroidStudio\CryptoResearch\app\libs\apache-commons-codec-1.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dfad8dd820585eba0cd60ff262005deb7adee07a">
+        <dex dex="C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\apache-commons-codec-1.4-9cd7081595f3209ef8e92f2e89498d78a2ba0cb7.jar" />
+    </item>
+
+</items>

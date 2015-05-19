@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SCAR</string>
+    <string name="store_app">STORE</string>
+    <string name="retrieve_app">RETRIEVE</string>    
+    <string name="new_server_app">SERVERS</string> 
+    <string name="home_app">HOME</string>    
+    
+ 
+    <string name="action_settings">Settings</string>
+    <string name="hello_world"><u>Welcome to SCAR!</u></string>
+    <string name = "store_btn">STORE</string>
+    <string name = "retrieve_btn">RETRIEVE</string>
+    <string name= "getImage">Select Image</string>
+    <string name = "getDoc">Retrieve Document</string>
+    <string name = "new_server"> Add A New Server!</string>
+    <string name = "Pass"> Enter A Password:</string>
+    <string name = "fname">Enter A File Name:</string>
+    <string name = "store">Store</string>
+            
+    <string name = "kind">Store</string>
+                
+    <string name = "search_by">Search File Name:</string>
+    
+    <string name = "submit_new_server">ADD NEW SERVER</string>
+    <string name = "submit_load_server">LOAD SERVERS</string>
+    
+ 	<string name = "server_type">Server:</string>
+    
+ 	<string name = "server_password">Password:</string>
+ 	<string name = "server_username">Username:</string>
+ 	<string name = "server_hostname">Host Name:</string>
+ 	<string name = "server_port">Port:</string>
+ 	<string name = "server_name">Unique Server Name:</string>
+ 	
+ 	<string name = "retrieve_pass">Enter Document Retrieval Password:</string>
+ 	
+     <string-array name="servers_array">
+        <item>Mongo DB</item>
+        <item>Redis</item>
+    </string-array>
+    
+</resources>

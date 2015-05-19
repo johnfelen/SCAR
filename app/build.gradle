@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.example.scar2"
+        minSdkVersion 14
+        targetSdkVersion 18
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:20.0.0'
+    compile files('libs/apache-commons-codec-1.4.jar')
+    compile files('libs/jedis-2.1.0.jar')
+    compile files('libs/jlinalg-api_0.6.jar')
+    compile files('libs/mongo-java-driver-2.9.3.jar')
+    compile files('libs/mysql-connector-java-3.0.17-ga-bin.jar')
+}
