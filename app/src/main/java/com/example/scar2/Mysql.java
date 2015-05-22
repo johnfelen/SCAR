@@ -21,6 +21,7 @@ public class Mysql {
 	public String dbConnect;
 	public Connection conn = null;
 	public Statement stmt = null;
+    public boolean isConnected = false;
 
 	public Mysql(String dbserver, String userName, String pwd)
 	{
@@ -33,11 +34,18 @@ public class Mysql {
 			conn = DriverManager.getConnection(dbConnect, userName, pwd);
 			Log.v(Constant.LOGTAG, " " + Mysql.CLASSTAG + " Database connected");
 			stmt = conn.createStatement();
+            this.isConnected = true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			Log.v(Constant.LOGTAG, " " + Mysql.CLASSTAG + ex.getMessage());
 		}
 	}
+
+    public boolean isConnected()    //checks if the server successfully connected
+    {
+        return isConnected;
+    }
+
 	
 	public ResultSet executeQuery(String sql) throws SQLException {
 		ResultSet rs = null;

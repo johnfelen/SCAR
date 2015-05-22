@@ -37,6 +37,11 @@ public class RetrieveData
 		this.f = f;
 		this.k = k;
 		header_db = new Mysql("10.0.3.2:3306","root","poney373");
+        if (!header_db.isConnected())   //check if the Mysql objects are connected with the server
+        {
+            Log.v(Constant.LOGTAG, "Failed to connect");
+            return;
+        }
 		nServers = MainActivity.serverList.size();
 		for(int i = 0; i < nServers; i++)
 		{
@@ -93,8 +98,10 @@ public class RetrieveData
 				Log.v(Constant.LOGTAG, " " + RetrieveData.CLASSTAG + " Retrieving key:"+tempKeys.get(i)+" ");
 				//arr[i] = get header row index
 			try{
-				_VECTORS[i] = toVector(_DATABACK);
-			}catch(Exception e)
+
+                _VECTORS[i] = toVector(_DATABACK);
+
+            }catch(Exception e)
 			{
 				e.printStackTrace();
 				Log.v(Constant.LOGTAG, " " + RetrieveData.CLASSTAG + e.getMessage());

@@ -166,9 +166,9 @@ public class Retrieve extends Activity  {
 
 					try {
 						ArrayList<Server> activeServers = LoadServer();	
-						Server currentServer = activeServers.get(0); // For testing purposes, I'm getting the most recent that's ON.
-						System.out.println("currentServer is: " +					
-								currentServer.getHostname() +", " +currentServer.getPort());
+						//Server currentServer = activeServers.get(0); // For testing purposes, I'm getting the most recent that's ON.
+						//System.out.println("currentServer is: " +
+								//currentServer.getHostname() +", " +currentServer.getPort());
 						RetrieveData retrieve = new RetrieveData(10, 7);
 						retrieve.setHandler(handler);
 						Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + "Retrieving file: "+doc_name.getText().toString()+" pass: "+retrieve_pass.getText().toString());
@@ -261,8 +261,6 @@ public class Retrieve extends Activity  {
 		ArrayList<Server> OnServers=  new ArrayList<Server>(); // Our result
 		DatabaseHandler db = new DatabaseHandler(getBaseContext()); // Connect to DB
 		List<Server> serverList = db.getAllServers();// Gets the server list
-
-        System.out.println(db.getAllServers());
 
 			 //Dynamically add a new server to the list
 			for (Server server : serverList) {

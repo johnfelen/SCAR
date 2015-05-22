@@ -222,20 +222,28 @@ public class Store extends Activity  {
             @Override
             public void run() {
         		try {
-	            	//for testing purpose
-        			File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        			File dir = new File(sdCard.getAbsolutePath() + "/files");
-        			if(!dir.exists())
-        				dir.mkdir();
-        			File file = new File(dir,"info.txt");
-        			FileOutputStream fo = new FileOutputStream(file,true);
-        			pw = new PrintWriter(fo);
-        			for(int k = 5; k < 10; k++)
-        			{
-					for(int i = 0; i < 10; i++)
-					{
-		        		Mysql headerdb=new Mysql("10.0.3.2:3306","root","poney373");    //10.0.3.2 is for genymotion and 10.0.2.2 is for the normal android emulator
-		        		Mysql pittdb = new Mysql("mysql.cs.pitt.edu:3306","diablo0897","ChangeMe");
+                    //for testing purpose
+                    File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    File dir = new File(sdCard.getAbsolutePath() + "/files");
+                    if (!dir.exists())
+                        dir.mkdir();
+                    File file = new File(dir, "info.txt");
+                    FileOutputStream fo = new FileOutputStream(file, true);
+                    pw = new PrintWriter(fo);
+                    int k = 1;
+                    //for(int k = 5; k < 10; k++)
+                    //{
+                    //for(int i = 0; i < 10; i++)
+                    //{
+                    Mysql headerdb = new Mysql("10.0.3.2:3306", "root", "poney373");    //10.0.3.2 is for genymotion and 10.0.2.2 is for the normal android emulator
+                    Mysql pittdb = new Mysql("mysql.cs.pitt.edu:3306", "diablo0897", "ChangeMe");
+
+                    if (!headerdb.isConnected() || !pittdb.isConnected())   //check if the Mysql objects are connected with the server
+                    {
+                        Log.v(Constant.LOGTAG, "Failed to connect");
+                        return;
+                    }
+
 		        		String sql = "truncate headers;";
 		        		String sql2 = "truncate files";
 	        			headerdb.executeUpdate(sql);
@@ -278,7 +286,7 @@ public class Store extends Activity  {
 		        		Matrix final_Matrix = null;
 		        		final_Matrix = splitter.fileToByteArray();
 		        		long file_size = splitter.getFileSize();
-	        			pw.println("File name:"+ filename+" file_size: " +file_size+" k value is: "+k+" run: "+(i+1)+"\r\n");
+	        			pw.println("File name:"+ filename+" file_size: " +file_size+" k value is: "+k+" run: "+(0+1)+"\r\n");//0 = i HERE
 		        		System.out.println("file_size: " +file_size);
 		        		handler.sendEmptyMessage(20);
 		        		long endTime = System.currentTimeMillis();
@@ -290,8 +298,8 @@ public class Store extends Activity  {
 	        			store.storeHash(filename, pass);
 	        			endTime = System.currentTimeMillis();
 		        		pw.print("Store file time: "+(endTime-startTime)+"\r\n");
-					}
-        			}
+					//}
+        			//}
 	        		pw.flush();
 	        		pw.close();
 	        		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

@@ -59,12 +59,18 @@ public class StoreData {
 	{
 		return this.handler;
 	}
-	void storeHeader(String filename,String pass,long f_size) throws SQLException
+	boolean storeHeader(String filename,String pass,long f_size) throws SQLException
 	{
-		
+        if (!header_db.isConnected())   //check if the Mysql objects are connected with the server
+        {
+            Log.v(Constant.LOGTAG, "Failed to connect");
+            return false;
+        }
+
 		String sql = "insert into scar_db.headers (file_name,pass_word,file_size) values (\""+filename+"\",\""+pass+"\","+f_size+");";
 		header_db.executeUpdate(sql);
-	}
+	    return true;
+    }
 	/**
 	 * @description algo is: input(filename, password) 1st key: hash(filename + password). 2nd key: hash(f1 + filename+password),..
 	 * @param filename
@@ -74,7 +80,12 @@ public class StoreData {
 	public void storeHash(String filename, String password) throws SQLException{
 		
 		Matrix final_Matrix = this.matrix;
-		storeHeader(filename,password,this.file_size);
+
+		if( storeHeader(filename,password,this.file_size) ) //failure in storing so jump out
+        {
+            Log.v(Constant.LOGTAG, "Failed to connect");
+            return;
+        }
 		byte[] buffer;
 		Hash hash = new Hash(); // Creating a Hashing object
 		hash.setArr(); // Call this to initialize the array keys		
