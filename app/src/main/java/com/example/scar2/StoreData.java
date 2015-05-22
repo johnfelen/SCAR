@@ -30,7 +30,7 @@ public class StoreData {
 	private ObjectOutputStream oos;
 	private Handler handler;
 	private int nServers;
-	private Mysql header_db = new Mysql("10.228.27.2:3306","root","poney373");
+	private Mysql header_db = new Mysql("10.0.3.2:3306","root","poney373");
 	private ArrayList<Mysql> serverList = new ArrayList<Mysql>();
 	
 	StoreData(Matrix M, int f, int k, String filename, long file_size) throws IOException

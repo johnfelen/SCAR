@@ -36,7 +36,7 @@ public class RetrieveData
 	{
 		this.f = f;
 		this.k = k;
-		header_db = new Mysql("10.228.27.109:3306","root","poney373");
+		header_db = new Mysql("10.0.3.2:3306","root","poney373");
 		nServers = MainActivity.serverList.size();
 		for(int i = 0; i < nServers; i++)
 		{

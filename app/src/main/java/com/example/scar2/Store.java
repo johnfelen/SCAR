@@ -234,8 +234,8 @@ public class Store extends Activity  {
         			{
 					for(int i = 0; i < 10; i++)
 					{
-		        		Mysql headerdb=new Mysql("10.0.2.2:3306","root","poney373");
-		        		Mysql pittdb = new Mysql("mysql.cs.pitt.edu:3306","jtf28","$mnemosyne33");
+		        		Mysql headerdb=new Mysql("10.0.3.2:3306","root","poney373");    //10.0.3.2 is for genymotion and 10.0.2.2 is for the normal android emulator
+		        		Mysql pittdb = new Mysql("mysql.cs.pitt.edu:3306","diablo0897","ChangeMe");
 		        		String sql = "truncate headers;";
 		        		String sql2 = "truncate files";
 	        			headerdb.executeUpdate(sql);

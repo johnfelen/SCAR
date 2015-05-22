@@ -78,7 +78,7 @@ public class Mysql {
 	
 /*	public static void main(String[] args)
 	{
-		Mysql mysql = new Mysql("192.168.1.3:3060","root","poney373");
+		Mysql mysql = new Mysql("192.168.1.3:3060","root","poney373");  //MAYBE CHANGE HERE
 		String sql1 = "select * from scar_db.files;";
 		try {
 			ResultSet rs = mysql.executeQuery(sql1);

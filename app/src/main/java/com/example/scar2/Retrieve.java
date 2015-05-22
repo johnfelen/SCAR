@@ -261,13 +261,15 @@ public class Retrieve extends Activity  {
 		ArrayList<Server> OnServers=  new ArrayList<Server>(); // Our result
 		DatabaseHandler db = new DatabaseHandler(getBaseContext()); // Connect to DB
 		List<Server> serverList = db.getAllServers();// Gets the server list
-		
+
+        System.out.println(db.getAllServers());
+
 			 //Dynamically add a new server to the list
 			for (Server server : serverList) {
 				
 				if(server.getStatus()==1){ // If it is ON
 					OnServers.add(server);
-				}
+                }
 				else{
 					//If it is OFF
 				}
