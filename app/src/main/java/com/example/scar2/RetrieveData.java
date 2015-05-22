@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -92,9 +93,9 @@ public class RetrieveData
 		for(int i = 0; i < k; i++)
 		{
 			_DATABACK = null;
-			int serverID = Integer.decode("0x"+tempKeys.get(i).substring(0,4));
-			int s = serverID%nServers;
-			_DATABACK = getRow(tempKeys.get(i),serverList.get(s));
+            BigInteger serverID = new BigInteger( tempKeys.get(i), 16 );   //create a new big integer from the hexadecimal key
+            int serverIndex = serverID.mod( BigInteger.valueOf(nServers) ).intValue();   //this long line of code takes the serverID, mods it by the nServers(number of servers) and transforms it into an int to get the serverIndex
+            _DATABACK = getRow(tempKeys.get(i),serverList.get( serverIndex ));
 				Log.v(Constant.LOGTAG, " " + RetrieveData.CLASSTAG + " Retrieving key:"+tempKeys.get(i)+" ");
 				//arr[i] = get header row index
 			try{

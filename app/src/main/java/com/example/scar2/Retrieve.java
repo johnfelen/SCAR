@@ -169,7 +169,7 @@ public class Retrieve extends Activity  {
 						//Server currentServer = activeServers.get(0); // For testing purposes, I'm getting the most recent that's ON.
 						//System.out.println("currentServer is: " +
 								//currentServer.getHostname() +", " +currentServer.getPort());
-						RetrieveData retrieve = new RetrieveData(10, 7);
+						RetrieveData retrieve = new RetrieveData(10, 5);
 						retrieve.setHandler(handler);
 						Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + "Retrieving file: "+doc_name.getText().toString()+" pass: "+retrieve_pass.getText().toString());
 						long start = System.currentTimeMillis();

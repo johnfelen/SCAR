@@ -2,6 +2,7 @@ package com.example.scar2;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -106,9 +107,9 @@ public class StoreData {
 			long end = System.currentTimeMillis();
 			Log.v(Constant.LOGTAG, " " + StoreData.CLASSTAG + "  Read value from matrix took :"+(end-start));
 			System.out.println("serialize took "+(end-start));
-			int serverID = Integer.decode("0x"+tempKeys.get(i).substring(0,4));
-			int s = serverID%nServers;
-			storeRow(tempKeys.get(i), _DATA  , serverList.get(s) );			
+			BigInteger serverID = new BigInteger( tempKeys.get(i), 16 );   //create a new big integer from the hexadecimal key
+            int serverIndex = serverID.mod( BigInteger.valueOf(nServers) ).intValue();   //this long line of code takes the serverID, mods it by the nServers(number of servers) and transforms it into an int to get the serverIndex
+            storeRow(tempKeys.get(i), _DATA  , serverList.get( serverIndex ) );
 		}
 
 	}
