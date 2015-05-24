@@ -44,14 +44,14 @@ public class MainActivity extends TabActivity {
 
        // Set the Tab name and Activity
        // that will be opened when particular Tab will be selected
-        tab1.setIndicator("HOME"); //, getResources().getDrawable(R.drawable.home_tab));
-        tab1.setContent(new Intent(this,Home.class));
-        
-        tab2.setIndicator("STORE"); //, getResources().getDrawable(R.drawable.send_tab) );
-        tab2.setContent(new Intent(this,Store.class));
+        tab1.setIndicator("STORE"); //, getResources().getDrawable(R.drawable.send_tab) );
+        tab1.setContent(new Intent(this,Store.class));
 
-        tab3.setIndicator("RETRIEVE"); //, getResources().getDrawable(R.drawable.download_tab));
-        tab3.setContent(new Intent(this,Retrieve.class));
+        tab2.setIndicator("RETRIEVE"); //, getResources().getDrawable(R.drawable.download_tab));
+        tab2.setContent(new Intent(this,Retrieve.class));
+
+        tab3.setIndicator("ADD"); //, getResources().getDrawable(R.drawable.home_tab));
+        tab3.setContent(new Intent(this,New_Server.class));
         
         /** Add the tabs  to the TabHost to display. */
         tabHost.addTab(tab1);
@@ -84,9 +84,9 @@ public class MainActivity extends TabActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
-		if (item.getItemId() ==  R.id.action_settings) 
+		if (item.getItemId() ==  R.id.action_about)
 		{
-			Intent intent = new Intent(this, New_Server.class);
+			Intent intent = new Intent(this, About.class);
 			startActivity(intent);
 			
 			return true;

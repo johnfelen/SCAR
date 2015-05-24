@@ -29,7 +29,7 @@
         <activity android:name="Store" android:label="@string/store_app" ></activity>
         <activity android:name="Retrieve" android:label="@string/retrieve_app" ></activity>
         <activity android:name="New_Server" android:label="@string/new_server_app" ></activity>
-        <activity android:name="Home" android:label="@string/home_app" ></activity>
+        <activity android:name="About" android:label="@string/about_app" ></activity>
         
     </application>
 

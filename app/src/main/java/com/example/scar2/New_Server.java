@@ -58,7 +58,7 @@ public class New_Server  extends Activity
 		
 		
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);	
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 	
 
 		new_server = (Button)findViewById(R.id.submit_new_server);

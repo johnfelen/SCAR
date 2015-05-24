@@ -39,33 +39,33 @@ public final class R {
         public static final int Enter_Pass=0x7f090016;
         public static final int Enter_fname=0x7f090014;
         public static final int Pass=0x7f090015;
-        public static final int action_settings=0x7f090018;
+        public static final int action_about=0x7f090018;
         public static final int fname=0x7f090013;
         public static final int getDoc=0x7f090010;
         public static final int getImage=0x7f090012;
-        public static final int host_name=0x7f090004;
+        public static final int host_name=0x7f090005;
         public static final int kind=0x7f09000e;
         public static final int layout_server=0x7f09000b;
-        public static final int port_number=0x7f090002;
+        public static final int port_number=0x7f090003;
         public static final int responseImage=0x7f090011;
         public static final int retrieve_pass=0x7f09000f;
         public static final int retrieved_image=0x7f090009;
-        public static final int scar_img=0x7f090008;
+        public static final int scar_img=0x7f090000;
         public static final int scrollView1=0x7f09000a;
-        public static final int server_hostname=0x7f090003;
-        public static final int server_pass=0x7f090007;
-        public static final int server_port=0x7f090001;
-        public static final int server_username=0x7f090005;
-        public static final int servers_array=0x7f090000;
+        public static final int server_hostname=0x7f090004;
+        public static final int server_pass=0x7f090008;
+        public static final int server_port=0x7f090002;
+        public static final int server_username=0x7f090006;
+        public static final int servers_array=0x7f090001;
         public static final int store_button=0x7f090017;
         public static final int submit_load_server=0x7f09000d;
         public static final int submit_new_server=0x7f09000c;
-        public static final int username=0x7f090006;
+        public static final int username=0x7f090007;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int add_server_dialog_box=0x7f030001;
-        public static final int home_layout=0x7f030002;
+        public static final int about_layout=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int add_server_dialog_box=0x7f030002;
         public static final int image_dialog_box=0x7f030003;
         public static final int newserver_layout=0x7f030004;
         public static final int retrieve_layout=0x7f030005;
@@ -76,13 +76,13 @@ public final class R {
     }
     public static final class string {
         public static final int Pass=0x7f060000;
-        public static final int action_settings=0x7f060001;
-        public static final int app_name=0x7f060002;
-        public static final int fname=0x7f060003;
-        public static final int getDoc=0x7f060004;
-        public static final int getImage=0x7f060005;
-        public static final int hello_world=0x7f060006;
-        public static final int home_app=0x7f060007;
+        public static final int about_app=0x7f060001;
+        public static final int action_about=0x7f060002;
+        public static final int app_name=0x7f060003;
+        public static final int fname=0x7f060004;
+        public static final int getDoc=0x7f060005;
+        public static final int getImage=0x7f060006;
+        public static final int hello_world=0x7f060007;
         public static final int kind=0x7f060008;
         public static final int new_server=0x7f060009;
         public static final int new_server_app=0x7f06000a;

@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.TextView;
 
-public class Home extends Activity {
+//This Activity will talk about the project
+public class About extends Activity {
 
 	@Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-		setContentView(R.layout.home_layout);
+		setContentView(R.layout.about_layout);
+        setTitle("About");  //set the title of the activity bar
 
     }
 }
