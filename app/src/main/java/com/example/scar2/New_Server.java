@@ -57,7 +57,7 @@ public class New_Server  extends Activity
 		LoadAllServers(); // Calls to create the servers
 		
 		
-		ActionBar actionBar = getActionBar();
+		//ActionBar actionBar = getActionBar();
 		//actionBar.setDisplayHomeAsUpEnabled(true);
 	
 

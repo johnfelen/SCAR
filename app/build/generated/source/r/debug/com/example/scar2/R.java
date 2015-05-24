@@ -103,17 +103,12 @@ public final class R {
         public static final int submit_new_server=0x7f060019;
     }
     public static final class style {
-        /** 
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
- API 11 theme customizations can go here. 
+        public static final int ActionBarTheme=0x7f070000;
+        /**  API 11 theme customizations can go here. 
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
-        /**  All customizations that are NOT specific to a particular API-level can go here. 
-         */
+        public static final int AppBaseTheme=0x7f070003;
         public static final int AppTheme=0x7f070001;
+        public static final int MyActionBarTabTextStyle=0x7f070002;
     }
 }
