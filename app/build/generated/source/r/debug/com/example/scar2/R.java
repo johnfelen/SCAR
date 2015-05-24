@@ -22,16 +22,18 @@ public final class R {
         public static final int download=0x7f020001;
         public static final int download_off=0x7f020002;
         public static final int download_tab=0x7f020003;
-        public static final int home_off=0x7f020004;
-        public static final int home_on=0x7f020005;
-        public static final int home_tab=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
-        public static final int ombre=0x7f020008;
-        public static final int plus=0x7f020009;
-        public static final int scar_img=0x7f02000a;
-        public static final int send_off=0x7f02000b;
-        public static final int send_on=0x7f02000c;
-        public static final int send_tab=0x7f02000d;
+        public static final int gplaypattern=0x7f020004;
+        public static final int home_off=0x7f020005;
+        public static final int home_on=0x7f020006;
+        public static final int home_tab=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int ombre=0x7f020009;
+        public static final int plus=0x7f02000a;
+        public static final int scar_img=0x7f02000b;
+        public static final int send_off=0x7f02000c;
+        public static final int send_on=0x7f02000d;
+        public static final int send_tab=0x7f02000e;
+        public static final int subtle_pattern=0x7f02000f;
     }
     public static final class id {
         public static final int Enter_Pass=0x7f090016;
