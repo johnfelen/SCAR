@@ -4,7 +4,7 @@
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background = "#D3D3D3"
+        android:background = "@drawable/subtle_pattern"
         android:layout_marginBottom = "50dp"
     >
 

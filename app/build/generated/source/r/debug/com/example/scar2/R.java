@@ -35,6 +35,7 @@ public final class R {
         public static final int send_on=0x7f02000e;
         public static final int send_tab=0x7f02000f;
         public static final int subtle_pattern=0x7f020010;
+        public static final int tab_divider=0x7f020011;
     }
     public static final class id {
         public static final int Enter_Pass=0x7f090016;

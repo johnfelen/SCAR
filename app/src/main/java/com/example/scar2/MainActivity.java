@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.TabHost;
 import android.view.*;
 import android.widget.TabHost.TabSpec;
+import android.widget.TabWidget;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
@@ -41,6 +42,8 @@ public class MainActivity extends TabActivity {
 
         // create the TabHost that will contain the Tabs
        tabHost = (TabHost)findViewById(android.R.id.tabhost);
+        //tabHost.getTabWidget().setShowDividers(TabWidget.SHOW_DIVIDER_MIDDLE);
+        //tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
         TabSpec tab1 = tabHost.newTabSpec("First Tab");
         TabSpec tab2 = tabHost.newTabSpec("Second Tab");

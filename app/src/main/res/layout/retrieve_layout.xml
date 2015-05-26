@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginBottom="50dp"
-    android:background="#D3D3D3"
+    android:background = "@drawable/subtle_pattern"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >

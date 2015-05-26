@@ -6,7 +6,7 @@
     android:paddingRight="16dp"
     android:orientation="vertical"
     android:layout_marginBottom = "50dp"
-    android:background = "#D3D3D3"
+    android:background = "@drawable/subtle_pattern"
      >
    
      <Button 

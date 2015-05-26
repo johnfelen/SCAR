@@ -5,7 +5,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:orientation="vertical"
-    android:background = "#D3D3D3"
+    android:background = "@drawable/subtle_pattern"
      >
     
     <ImageView 
