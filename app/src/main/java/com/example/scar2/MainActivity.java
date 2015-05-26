@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.TabHost;
 import android.view.*;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity {
@@ -30,14 +31,16 @@ public class MainActivity extends TabActivity {
 	static final String DATABASE_NAME = "serversDB"; // DB name
 	static final String DB_PATH ="/data/data/com.example.scar2/databases/" ;
 	public static ArrayList<Server> serverList = new ArrayList<Server>();
+    TabHost tabHost;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
         serverList.add((new Server(1,"MysqlPitt","mysql.cs.pitt.edu",3306,"diablo0897","ChangeMe",1)));
         serverList.add((new Server(2,"MysqlLocal","10.0.3.2",3306,"root","poney373",1)));
+
         // create the TabHost that will contain the Tabs
-        TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
+       tabHost = (TabHost)findViewById(android.R.id.tabhost);
 
         TabSpec tab1 = tabHost.newTabSpec("First Tab");
         TabSpec tab2 = tabHost.newTabSpec("Second Tab");
@@ -51,14 +54,46 @@ public class MainActivity extends TabActivity {
         tab2.setIndicator("RETRIEVE"); //, getResources().getDrawable(R.drawable.download_tab));
         tab2.setContent(new Intent(this,Retrieve.class));
 
-        tab3.setIndicator("ADD"); //, getResources().getDrawable(R.drawable.home_tab));
+        tab3.setIndicator("SERVERS"); //, getResources().getDrawable(R.drawable.home_tab));
         tab3.setContent(new Intent(this,New_Server.class));
         
-        /** Add the tabs  to the TabHost to display. */
+        /** Add the tabs  to the TabHost to display. **/
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
         tabHost.addTab(tab3);
-        
+
+        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
+        {
+            if (i == 0) //since the first tab is always selected first
+            {
+                tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#98EF8E"));
+                getTabTV(i).setTextColor(Color.parseColor("#2B468B"));
+            }
+
+            else    //the rest of the tabs are in the unselected color
+            {
+                tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2B468B"));
+                getTabTV(i).setTextColor(Color.parseColor("#98EF8E"));
+            }
+        }
+
+
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener(){
+            @Override
+            public void onTabChanged(String tabId) {
+
+                for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)   //make all the tabs looked unselected first
+                {
+                    tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#2B468B"));
+                    getTabTV(i).setTextColor(Color.parseColor("#98EF8E"));
+                }
+
+                //then make the tab that actually was selected in the selected scheme
+                tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundColor(Color.parseColor("#98EF8E"));
+                getTabTV( tabHost.getCurrentTab() ).setTextColor(Color.parseColor("#2B468B"));
+            }
+        });
+
         /*
          * Below is for database
          */
@@ -70,6 +105,12 @@ public class MainActivity extends TabActivity {
          */
         
 	}
+
+    public TextView getTabTV(int childIndex)
+    {
+        ViewGroup tabVG = (ViewGroup) getTabHost().getTabWidget().getChildAt( childIndex );
+        return (TextView) tabVG.getChildAt(1);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
