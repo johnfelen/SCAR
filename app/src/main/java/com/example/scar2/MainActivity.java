@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.LocalActivityManager;
@@ -44,6 +46,9 @@ public class MainActivity extends TabActivity {
        tabHost = (TabHost)findViewById(android.R.id.tabhost);
         //tabHost.getTabWidget().setShowDividers(TabWidget.SHOW_DIVIDER_MIDDLE);
         //tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
+
+        //final ActionBar actionBar = getSupportActionBar();
+        //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#45B859")));
 
         TabSpec tab1 = tabHost.newTabSpec("First Tab");
         TabSpec tab2 = tabHost.newTabSpec("Second Tab");
