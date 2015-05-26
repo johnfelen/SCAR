@@ -15,8 +15,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/getImage"
-        android:gravity = "center"         
-        android:background = "#ff33b5e5"
+        android:gravity = "center"
+        android:background="@drawable/button_rounded_corners"
+        android:textColor="#98EF8E"
         />
        
      <TextView
@@ -53,8 +54,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/store"
-        android:gravity = "center" 
-        android:background = "#ff33b5e5"
+        android:gravity = "center"
+        android:background="@drawable/button_rounded_corners"
+        android:textColor="#98EF8E"
         />
     
 </LinearLayout>

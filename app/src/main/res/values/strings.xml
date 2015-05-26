@@ -12,12 +12,12 @@
     <string name="hello_world"><u>Welcome to SCAR!</u></string>
     <string name = "store_btn">STORE</string>
     <string name = "retrieve_btn">RETRIEVE</string>
-    <string name= "getImage">Select Image</string>
-    <string name = "getDoc">Retrieve Document</string>
+    <string name= "getImage">SELECT DOCUMENT</string>
+    <string name = "getDoc">RETRIEVE DOCUMENT</string>
     <string name = "new_server"> Add A New Server!</string>
     <string name = "Pass"> Enter A Password:</string>
     <string name = "fname">Enter A File Name:</string>
-    <string name = "store">Store</string>
+    <string name = "store">STORE</string>
             
     <string name = "kind">Store</string>
                 
