@@ -42,7 +42,7 @@ import android.widget.TextView;
 //this activity lets the user select a file and stores it on the server
 //this activity uses the store_layout.xml file 
 
-public class Store extends Activity  {	
+public class Store extends Activity {
 
 	public static final String CLASSTAG = Store.class.getSimpleName();
 	private PrintWriter pw;

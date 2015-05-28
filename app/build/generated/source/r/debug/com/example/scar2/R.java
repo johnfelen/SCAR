@@ -90,21 +90,21 @@ public final class R {
     }
     public static final class id {
         public static final int Enter_Pass=0x7f0a0016;
-        public static final int Enter_fname=0x7f0a0014;
-        public static final int Pass=0x7f0a0015;
+        public static final int Enter_fname=0x7f0a0015;
         public static final int action_about=0x7f0a0018;
-        public static final int fname=0x7f0a0013;
-        public static final int getDoc=0x7f0a0010;
-        public static final int getImage=0x7f0a0012;
+        public static final int getDoc=0x7f0a0011;
+        public static final int getImage=0x7f0a0014;
         public static final int host_name=0x7f0a0005;
-        public static final int kind=0x7f0a000e;
+        public static final int kind=0x7f0a000f;
         public static final int layout_server=0x7f0a000b;
         public static final int port_number=0x7f0a0003;
-        public static final int responseImage=0x7f0a0011;
-        public static final int retrieve_pass=0x7f0a000f;
+        public static final int responseImage=0x7f0a0012;
+        public static final int retrieve_pass=0x7f0a0010;
         public static final int retrieved_image=0x7f0a0009;
         public static final int scar_img=0x7f0a0000;
-        public static final int scrollView1=0x7f0a000a;
+        public static final int scrollViewNewServer=0x7f0a000a;
+        public static final int scrollViewRetrieve=0x7f0a000e;
+        public static final int scrollViewStore=0x7f0a0013;
         public static final int server_hostname=0x7f0a0004;
         public static final int server_pass=0x7f0a0008;
         public static final int server_port=0x7f0a0002;

@@ -1,54 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewRetrieve"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background = "@drawable/subtle_pattern"
+    android:layout_marginBottom = "48dp"
+    >
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginBottom="50dp"
-    android:background = "@drawable/subtle_pattern"
     android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
-
-    <TextView
-        android:layout_width="127dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="60dp"
-        android:text="@string/search_by" />
 
     <EditText
         android:id="@+id/kind"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:ems="10"
-        android:inputType="text" />
-
-    <TextView
-        android:layout_width="279dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/retrieve_pass" />
+        android:inputType="textMultiLine"
+        android:hint="Search File Name"/>
 
     <EditText
         android:id="@+id/retrieve_pass"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="35dp"
         android:ems="10"
-        android:inputType="text" />
+        android:inputType="textMultiLine"
+        android:hint="Enter Document Retrieval Password"/>
 
     <Button
         android:id="@+id/getDoc"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/button_rounded_corners"
-        android:gravity="center"
+        android:gravity="center_vertical|center_horizontal"
         android:text="@string/getDoc"
-        android:textColor="#98EF8E"/>
+        android:textColor="#98EF8E"
+        android:layout_marginBottom = "2dp"/>
 
     <ImageView
         android:id="@+id/responseImage"
@@ -56,3 +51,5 @@
         android:layout_height="wrap_content" />
 
 </LinearLayout>
+
+</ScrollView>

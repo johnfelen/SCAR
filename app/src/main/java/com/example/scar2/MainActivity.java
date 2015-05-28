@@ -47,8 +47,9 @@ public class MainActivity extends TabActivity {
         //tabHost.getTabWidget().setShowDividers(TabWidget.SHOW_DIVIDER_MIDDLE);
         //tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
-        //final ActionBar actionBar = getSupportActionBar();
-        //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#45B859")));
+        //change the color of the actionbar
+        final ActionBar actionBar = getActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
 
         TabSpec tab1 = tabHost.newTabSpec("First Tab");
         TabSpec tab2 = tabHost.newTabSpec("Second Tab");
