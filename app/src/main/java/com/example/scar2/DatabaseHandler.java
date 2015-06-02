@@ -88,18 +88,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 						KEY_PASSWORD, KEY_STATUS }, KEY_ID + "=?",
 				new String[] { String.valueOf(id) }, null, null, null, null);
 
-		if (cursor != null)
-			cursor.moveToFirst();
+		if (cursor != null) {
+            cursor.moveToFirst();
 
-		// Finds the server result
-		Server server = new Server(Integer.parseInt(cursor.getString(0)),cursor.getString(1),
-				cursor.getString(2), Integer.parseInt(cursor.getString(3)),
-				cursor.getString(4), cursor.getString(5),
-				Integer.parseInt(cursor.getString(6)));
+            // Finds the server result
+            Server server = new Server(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
+                    cursor.getString(2), Integer.parseInt(cursor.getString(3)),
+                    cursor.getString(4), cursor.getString(5),
+                    Integer.parseInt(cursor.getString(6)));
 
-		// Now return it
-		return server;
+            // Now return it
+            return server;
+        }
 
+        return null;
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		String selectQuery = "SELECT  * FROM " + TABLE_SERVERS;
 
-		SQLiteDatabase db = this.getWritableDatabase();
+		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		// looping through all rows and adding to list
