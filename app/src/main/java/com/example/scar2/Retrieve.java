@@ -56,12 +56,28 @@ public class Retrieve extends Activity  {
     private final  Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg) {
-            AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this);					
-			if(msg.what<100)
-			{
-				progressDialog.setProgress(msg.what);
-			}
-			else
+            AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this);
+            Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + " handleMessage : " + msg);
+			if(msg.what == -1) {
+                Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + " Display fail");
+                progressDialog.setProgress(0);
+                progressDialog.dismiss();
+                newDialog.setTitle("Failed to retrieve file");
+                newDialog.setMessage("The file has failed to be retrieved");
+                newDialog.setNegativeButton("Close",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                newDialog.show();
+            } else if(msg.what<100)
+            {
+                progressDialog.setProgress(msg.what);
+            }
+            else
 			{
 				progressDialog.setProgress(100);
 				progressDialog.dismiss();
@@ -174,14 +190,19 @@ public class Retrieve extends Activity  {
 						Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + "Retrieving file: "+doc_name.getText().toString()+" pass: "+retrieve_pass.getText().toString());
 						long start = System.currentTimeMillis();
 						Matrix serverMatrix = retrieve.getMatrixFromServerHashed(doc_name.getText().toString(), retrieve_pass.getText().toString());
-						handler.sendEmptyMessage(20);
-						long end = System.currentTimeMillis();
-						Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + "Compute matrix took :"+(end-start));
-						start = System.currentTimeMillis();
-						byteArray = retrieve.matrixToByteArr(serverMatrix);
-						end = System.currentTimeMillis();
-						Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + " Matrix to Byte took :"+(end-start));
-						handler.sendEmptyMessage(100);
+                        if(serverMatrix != null) {
+                            handler.sendEmptyMessage(20);
+                            long end = System.currentTimeMillis();
+                            Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + "Compute matrix took :" + (end - start));
+                            start = System.currentTimeMillis();
+                            byteArray = retrieve.matrixToByteArr(serverMatrix);
+                            end = System.currentTimeMillis();
+                            Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + " Matrix to Byte took :" + (end - start));
+                            handler.sendEmptyMessage(100);
+                        } else {
+                            Log.v(Constant.LOGTAG, " " + Retrieve.CLASSTAG + " Failed to retrieve file");
+                            handler.sendEmptyMessage(-1);
+                        }
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						Log.v(Constant.LOGTAG,Retrieve.CLASSTAG+" "+e.getMessage());

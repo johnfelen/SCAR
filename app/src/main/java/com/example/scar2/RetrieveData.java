@@ -65,9 +65,11 @@ public class RetrieveData
 	{
 		String sql = "select file_size from scar_db.headers where file_name='"+filename+"' and pass_word='"+pass+"';";
 		ResultSet rs = header_db.executeQuery(sql);
-		rs.next();
-		long f_size = rs.getLong(1);
-		return f_size;
+		if(rs.next()) {
+            long f_size = rs.getLong(1);
+            return f_size;
+        }
+        return -1;
 	}
 
 	/**
@@ -83,6 +85,8 @@ public class RetrieveData
 		Vector[] _VECTORS = new Vector[k];
 		System.out.println("\n=============== Retrieval ===============");
 		this.f_size=getFileSize( filename, password);
+        if(this.f_size == -1)
+            return null;
 		Hash hash = new Hash(); // Creating a Hashing object
 		hash.setArr(); // Call this to initialize the array keys		
 		hash.recursiveKey(f, filename, password); // Call this to create the keys
