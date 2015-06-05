@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollViewNewServer"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background = "@drawable/subtle_pattern"
+        android:layout_marginBottom = "48dp"
+    >
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+	android:id="@+id/layout_server"
+    >
+
+    
+ <Button 
+        android:id="@+id/submit_new_server"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_new_server"
+        android:gravity="center_vertical|center_horizontal"
+        android:textColor="#98EF8E"
+        android:background="@drawable/button_rounded_corners"
+        />
+    
+     <Button 
+        android:id="@+id/submit_load_server"
+        android:layout_marginTop="50dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_load_server"
+         android:gravity="center_vertical|center_horizontal"
+        android:background="@drawable/button_rounded_corners"
+        android:textColor="#98EF8E"
+        />
+    
+   
+     </LinearLayout>
+</ScrollView>
