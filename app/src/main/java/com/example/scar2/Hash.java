@@ -42,9 +42,10 @@ public class Hash {
 
 	public void recursiveKey(int n, String key, String password)	//none recursive version, return value is now void
 	{
-		while( n > 0 )
+		String newKey = getHashKey( key + password );	//gets the first hash
+		while( n > 0 )	//TODO Check if 0 is the right number to stop at
 		{
-			String newKey = getHashKey( key + password );	//get the hash of the current key and password, note that this is a little different than the old method so it may act differently/not work correctly, easy fix
+			newKey = getHashKey( newKey + key + password );	//get the hash of the current key and password with the previous hash
 			this.keys.add( newKey );	//addas to the arraylist keys
 			n--;	//decrement n
 		}
