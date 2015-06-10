@@ -39,8 +39,22 @@ public class Hash {
 	 * @param password - password
 	 * @return
 	 */
-	public String recursiveKey(int n, String key, String password){
-		
+
+	public void recursiveKey(int n, String key, String password)	//none recursive version, return value is now void
+	{
+		String newKey = getHashKey( key + password );	//gets the first hash
+		while( n > 0 )	//TODO Check if 0 is the right number to stop at
+		{
+			newKey = getHashKey( newKey + key + password );	//get the hash of the current key and password with the previous hash
+			this.keys.add( newKey );	//addas to the arraylist keys
+			n--;	//decrement n
+		}
+
+		return;
+	}
+
+	/*public String recursiveKey(int n, String key, String password){
+
 		if ( n== 0) return "";
 		else if( n== 1) {
 			String newKey = getHashKey(key+password);
@@ -53,7 +67,7 @@ public class Hash {
 			this.keys.add(newKey);
 			return newKey;
 		}
-	}
+	}*/
 	
 	/**
 	 * initliaze the arraylist

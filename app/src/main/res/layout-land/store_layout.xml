@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewStore"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginBottom = "40dp"
+    android:background = "@drawable/subtle_pattern"
+    ><!--the layout_marginBottom in scroll view will make the top blue of the tabhost to disappear-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+     >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+     <EditText
+        android:id="@+id/Enter_fname"
+         android:inputType="textMultiLine"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+         android:hint="Enter A File Name"
+         android:layout_weight="1"
+         android:layout_marginRight="25dp"/>
+
+     <EditText
+        android:id="@+id/Enter_Pass"
+         android:inputType="textMultiLine"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+         android:hint="Enter A Password"
+         android:layout_weight="1"
+         android:layout_marginLeft="25dp"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="35dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom = "2dp">
+
+        <Button
+            android:id="@+id/getImage"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/getImage"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:textColor="#98EF8E"
+            android:layout_marginRight="25dp"
+            />
+
+     <Button
+        android:id="@+id/store_button"
+         android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/store"
+         android:gravity="center_vertical|center_horizontal"
+        android:background="@drawable/button_rounded_corners"
+        android:textColor="#98EF8E"
+         android:layout_marginLeft="25dp"
+
+        />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+</ScrollView>

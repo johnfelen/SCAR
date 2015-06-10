@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:layout_marginBottom = "48dp"
     android:background = "@drawable/subtle_pattern"
-    >
+    ><!--the layout_marginBottom in scroll view will make the top blue of the tabhost to disappear-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
