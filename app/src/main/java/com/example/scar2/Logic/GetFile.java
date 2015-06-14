@@ -22,6 +22,12 @@ public class GetFile {
 
     //Get as many blocks from servers, decrypt, apply rs, remove padding
     public void get() {
+        Hash hash=new Hash();
+        hash.recursiveKey(n, fn, password);
+        ArrayList<String> hashArr=hash.getArr();
 
+        int numOfServ=2;
+        int x=hashArr.size();
+        String[][] matrix=new String[x][x];
     }
 }
