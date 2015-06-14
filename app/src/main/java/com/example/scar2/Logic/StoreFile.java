@@ -101,6 +101,12 @@ public class StoreFile {
     //See: Hash.class
     //Initial hash: fn, password
 
+    Hash hash = new Hash();
+    hash.recursiveKey(n, fn, password);
+    ArrayList<String> hashArr = hash.getArr();
+
+    //Still working!
+
     //7. Store each chunk to it's correct server with filename 
     // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
     //See: IServer.class for server functions, servers Variable @ top
