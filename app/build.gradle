@@ -21,9 +21,12 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile files('libs/apache-commons-codec-1.4.jar')
+    compile files('libs/core-1.52.0.0.jar') //spongy castle
     compile files('libs/jedis-2.1.0.jar')
-    compile files('libs/bcprov-jdk15on-152.jar')
     compile files('libs/jlinalg-api_0.6.jar')
     compile files('libs/mongo-java-driver-2.9.3.jar')
     compile files('libs/mysql-connector-java-3.0.17-ga-bin.jar')
+    compile files('libs/pg-1.51.0.0.jar')   //spongy castle
+    compile files('libs/pkix-1.51.0.0.jar') //spongy castle
+    compile files('libs/prov-1.52.0.0.jar')
 }
