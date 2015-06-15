@@ -6,6 +6,7 @@ import javax.crypto.*;
 //import org.bouncycastle.util.encoders.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
 
 public class Encryption {
 
@@ -13,16 +14,26 @@ public class Encryption {
     Cipher cipher;	//cipher to encryp/decrypt
     MessageDigest sha256 = MessageDigest.getInstance("SHA-256");   //used to hash the key to get 256-bit sha
 
-    public byte[] encrypt(byte[] data, String stringOfKey)
+    public byte[] encrypt(byte[] data, String stringOfKey)  throws Exception    //takes the original data and transforms it into cipher text*/
     {
-        SecretKey AESkey = getAESKey(stringOfKey);
-        return data;
+        //set up
+        SecretKey AESkey = getAESKey( stringOfKey );
+        cipher = Cipher.getInstance("AES", "BC");   //set up cipher for AES
+        cipher.init( Cipher.ENCRYPT_MODE, AESkey );	//set the cipher as encrypt mode with the key
+
+        byte[] cipherText = cipher.doFinal(data);         //the actual encryption
+        return Base64.encodeBase64( cipherText );   //return the Base64 encrypted version of the cipher text, Base64 is for padding errors
     }
 
-    public byte[] decrypt(byte[] data, String stringOfKey)
+    public byte[] decrypt(byte[] cipherText, String stringOfKey)    throws Exception    //takes the cipherText and returns the original data*/
     {
+        //set up
         SecretKey AESkey = getAESKey( stringOfKey );
-        return data;
+        cipher = Cipher.getInstance("AES", "BC");   //set up cipher for AES
+        cipher.init( Cipher.DECRYPT_MODE, AESkey );	//set the cipher as encrypt mode with the key
+
+        cipherText = Base64.decodeBase64( cipherText ); //remove the Base64 buffer
+        return cipher.doFinal( cipherText );    //returns the original data
     }
 
     private SecretKey getAESKey( String stringOfKey )  //takes the stringOfKey and transforms it into a usuable 256-bit AES key

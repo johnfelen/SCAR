@@ -89,6 +89,7 @@
     <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="jedis-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="apache-commons-codec-1.4" level="project" />
+    <orderEntry type="library" exported="" name="bcprov-jdk15on-152" level="project" />
     <orderEntry type="library" exported="" name="mysql-connector-java-3.0.17-ga-bin" level="project" />
     <orderEntry type="library" exported="" name="jlinalg-api_0.6" level="project" />
     <orderEntry type="library" exported="" name="mongo-java-driver-2.9.3" level="project" />
