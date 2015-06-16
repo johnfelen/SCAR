@@ -45,4 +45,18 @@ public class Wordfile {
       throw InvalidInputException("You must have atleast N distinct words in the wordfile");
     return word;
   }
+
+
+
+  //Creates a random list of 'n' words
+  public static String[] makeRandomWordfile(int n) {
+    //Make a HashSet<String>
+
+    //Load your dictionary
+
+    //randomly pick words from your dictionary until we get 'n' 
+    //words into our HashSet<String>
+
+    //return the HashSet<String> as toArray(..);
+  }
 }

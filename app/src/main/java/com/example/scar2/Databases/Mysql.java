@@ -10,7 +10,7 @@ import java.util.Iterator;
 import android.util.Log;
 
 
-public class Mysql {
+public class Mysql implements IServer {
 	public static final String CLASSTAG = Mysql.class.getSimpleName();
 	public String dbserver;
 	public String database = "scar_db" ;
@@ -84,17 +84,25 @@ public class Mysql {
 		}
 	}
 	
-/*	public static void main(String[] args)
-	{
-		Mysql mysql = new Mysql("192.168.1.3:3060","root","poney373");  //MAYBE CHANGE HERE
-		String sql1 = "select * from scar_db.files;";
-		try {
-			ResultSet rs = mysql.executeQuery(sql1);
-			rs.next();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			Log.v(Constant.LOGTAG, " " + Mysql.CLASSTAG  +e.getMessage());
-		}
-	}*/
 
+  //Stores our data bytes with key fn
+  public void storeData(String fn, byte[] data) {
+    PreparedStatement stmt = conn.prepareStatement("insert into scar_db.files values (?, ?)");
+    stmt.setString(1, fn);
+    stmt.setBytes(2, data);
+    stmt.executeUpdate();
+  }
+
+  //Gets our data bytes from key fn
+  public byte[] getData(String fn) {
+    if(isConnected()) {
+      PreparedStatement stmt = conn.prepareStatement("select value from scar_db.files f where f.key = ?");
+      stmt.setString(1, fn);
+      ResultSet rs = stmt.executeQuery();
+      if(rs.next()) {
+        return rs.getBytes(1);
+      }
+    }
+    return null;
+  }
 }
