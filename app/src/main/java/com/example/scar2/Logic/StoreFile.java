@@ -101,9 +101,9 @@ public class StoreFile {
     //See: Hash.class
     //Initial hash: fn, password
 
-    Hash hash = new Hash();
-    hash.recursiveKey(n, fn, password);
-    ArrayList<String> hashArr = hash.getArr();
+    Hash hashChain = new Hash();
+    hashChain.recursiveKey(n, fn, password);
+    ArrayList<String> hashArr = hashChain.getArr();
 
     //Still working!
 
@@ -112,5 +112,16 @@ public class StoreFile {
     //See: IServer.class for server functions, servers Variable @ top
     //filename = hash.getHashKey(fn + Wordfile.get(HashChain_i))
     //See: Hash.class
+
+    int x = 0;
+    int numOfServ = servers.length;
+    while (x <= chunk.length){
+      BigInteger num = new BigInteger(hashArr.get(x), 16);
+      int i = num.mod(numOfServ).intValue());
+
+      servers[i].store(hashChain.getHashKey(fn + Wordfile.get(hashArr.get(x))), chunk[x]);
+
+      ++x;
+    }
   }
 }
