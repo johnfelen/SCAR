@@ -1,6 +1,13 @@
 package com.example.scar2.Logic;
 
+import android.content.res.AssetManager;
+
+import java.io.FileInputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Wordfile {
   private String[] words;
@@ -49,14 +56,31 @@ public class Wordfile {
 
 
   //Creates a random list of 'n' words
-  public static String[] makeRandomWordfile(int n) {
-    //Make a HashSet<String>
+  public static String[] makeRandomWordfile(int n)
+  {
+      HashSet<String> wordList = new HashSet<String>(n);  //create a HashSet of size n
 
-    //Load your dictionary
+      //AssetManager manager = context.getAssests(); //Next two lines are for opening a file on android instead of the line right below it
+      //Scanner file = new Scanner( new FileInputStream( manager.open("dictionary.txt") ) );
 
-    //randomly pick words from your dictionary until we get 'n' 
-    //words into our HashSet<String>
+      Scanner file = new Scanner( new FileInputStream("dictionary.txt") );  //for opening a file on PC
+      ArrayList<String> dictionary = new ArrayList<String>();
+      while( file.hasNext() ) //read in every word of the dictionary into dictionary ArrayList
+      {
+         dictionary.add( file.nextLine() );
+      }
 
-    //return the HashSet<String> as toArray(..);
+      Random PRNG = new Random();
+      int currentIndex;
+      while( wordList.size() < n )  //keep going through words of the dictionary until wordList is at least n large
+      {
+          currentIndex = PRNG.nextInt( n );  //get the next int from PRNG between 0 and n
+          if( !wordList.contains( dictionary.get( currentIndex ) ) )  //if wordList does not already include the randomly selected word, add it
+          {
+              wordList.add( dictionary.get( currentIndex ) );
+          }
+      }
+
+      return wordList.toArray( new String[ wordList.size() ] ); //return wordList as an a String array
   }
 }
