@@ -2,10 +2,10 @@ package com.example.scar2.Logic;
 
 import java.security.*;
 import javax.crypto.*;
-import org.spongycastle.*;
-import org.spongycastle.util.encoders.Base64;
-import javax.crypto.Cipher;
+import org.spongycastle.*;  //remove for PC
+import javax.crypto.Cipher; //remove for PC
 import javax.crypto.spec.SecretKeySpec;
+//import org.bouncycastle.jce.provider.BouncyCastleProvider; add this for the PC, also if the bouncy castle jar is in the same directory to compile javac -cp *;(for all jars) *.java
 
 public class Encryption {
 
@@ -15,19 +15,22 @@ public class Encryption {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
 
+    //Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());   Remove the static portion above this and add something(possibly a constructor) that has this line of code for PC
+
     Cipher cipher;	//cipher to encryp/decrypt
 
-    public byte[] encrypt(byte[] data, String stringOfKey)  //takes the original data and transforms it into cipher text, NOTE: There are a lot of exceptions bu I think it is android, I have not run this code in android yet
+    public byte[] encrypt(byte[] data, String stringOfKey)  //takes the original data and transforms it into cipher text
     {
         try
         {
             //set up
             SecretKey AESkey = getAESKey(stringOfKey);
             cipher = Cipher.getInstance("AES", "SC");   //set up cipher for AES
+            //cipher = Cipher.getInstance("AES", "BC"); remove above line and replace with this line for PC
             cipher.init(Cipher.ENCRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
 
-            byte[] cipherText = cipher.doFinal(data);         //the actual encryption
-            return Base64.encode(cipherText);   //return the Base64 encrypted version of the cipher text, Base64 is for padding errors
+            byte[] cipherText = cipher.doFinal(data);   //perform encryption
+            return cipherText;
         }
         catch(Exception e)
         {
@@ -43,10 +46,11 @@ public class Encryption {
             //set up
             SecretKey AESkey = getAESKey(stringOfKey);
             cipher = Cipher.getInstance("AES", "SC");   //set up cipher for AES
+            //cipher = Cipher.getInstance("AES", "BC"); remove above line and replace with this line for PC
             cipher.init(Cipher.DECRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
 
-            cipherText = Base64.decode(cipherText); //remove the Base64 buffer
-            return cipher.doFinal(cipherText);    //returns the original data
+            byte[] plainText = cipher.doFinal(cipherText);  //perform decryption
+            return plainText;
         }
         catch(Exception e)
         {
