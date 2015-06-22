@@ -17,29 +17,13 @@
     android:layout_gravity="center"
      >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
      <EditText
         android:id="@+id/Enter_fname"
          android:inputType="textMultiLine"
-        android:layout_width="175dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-         android:hint="Enter A File Name"
-         android:layout_weight="1"
-         android:layout_marginRight="25dp"/>
+         android:hint="Enter A File Name"/>
 
-     <EditText
-        android:id="@+id/Enter_Pass"
-         android:inputType="textMultiLine"
-        android:layout_width="175dp"
-        android:layout_height="wrap_content"
-         android:hint="Enter A Password"
-         android:layout_weight="1"
-         android:layout_marginLeft="25dp"/>
-
-        </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
