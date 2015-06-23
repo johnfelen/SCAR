@@ -3,7 +3,6 @@ package scar;
 public class StoreFile {
   private IServer servers[];
   private byte[] data;
-  private Wordfile wordfile;
   private String
     fn,
     password;
@@ -12,43 +11,15 @@ public class StoreFile {
     k,
     n;
 
-  public StoreFile(byte[] data, byte[] wordFile, String fn, String password, 
+  public StoreFile(byte[] data, String fn, String password, 
                    int buffer, int k, int n, IServer srvs[]) {
     this.data = data;
-    this.wordfile = convertWordFile(wordFile);
     this.fn = fn;
     this.password = password;
     this.buffer = buffer;
     this.k = k;
     this.n = n;
     servers = srvs;
-  }
-  
-
-  //Converts the wordfile into a String array
-  public Wordfile convertWordFile(byte[] wf) {
-    HashSet<String> data = new HashSet<String>();
-    StringBuffer sb;
-    int i;
-
-    i = 0;
-    while(i < wf.length) {
-      //Scan in a string [32+]
-      sb = new StringBuffer();
-      while(wf[i] >= 32 && i < wf.length) {
-        sb.append(wf[i]);
-        ++i;
-      }
-      if(sb.length() > 0)
-        data.add(sb.toString());
-
-      //Scan past values [0-31]
-      while(wf[i] < 32 && i < wf.length) {
-        ++i;
-      }
-    }
-    
-    return new Wordfile(data.toArray(new String[0]));
   }
 
   //Encode 'val' into 'arr' starting at location 'n'
@@ -117,9 +88,9 @@ public class StoreFile {
     int numOfServ = servers.length;
     while (x <= chunk.length){
       BigInteger num = new BigInteger(hashArr.get(x), 16);
-      int i = num.mod(numOfServ).intValue());
+      int i = num.mod(numOfServ).intValue();
 
-      servers[i].store(hashChain.getHashKey(fn + Wordfile.get(hashArr.get(x))), chunk[x]);
+      servers[i].store(hashChain.getHashKey(fn + hashArr.get(x)), chunk[x]);
 
       ++x;
     }

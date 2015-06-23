@@ -1,7 +1,6 @@
 package scar;
 
 public class GetFile {
-    private byte[] wordFile;
     private String
         fn,
         password;
@@ -10,8 +9,7 @@ public class GetFile {
         k,
         n;
 
-    public GetFile(byte[] wordFile, String fn, String password, int buffer, int k, int n) {
-        this.wordFile = wordFile;
+    public GetFile(String fn, String password, int buffer, int k, int n) {
         this.fn = fn;
         this.password = password;
         this.buffer = buffer;
