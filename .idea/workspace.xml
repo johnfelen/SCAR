@@ -7,19 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84d576b3-a26d-4039-b417-7e3b3f624bd4" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\apache_commons_codec_1_4.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\core_1_52_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\jedis_2_1_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\jlinalg_api_0_6.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\mongo_java_driver_2_9_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\mysql_connector_java_3_0_17_ga_bin.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\pg_1_51_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\pkix_1_51_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\prov_1_52_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\support_annotations_20_0_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Aytros\Desktop\Classes\CS1950\SCAR\.idea\libraries\support_v4_20_0_0.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PC-Impl/src/scar/SimpleDemo.java" afterPath="$PROJECT_DIR$/PC-Impl/src/scar/SimpleDemo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java" afterPath="$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="scar - android.iws" />
@@ -71,11 +59,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SimpleDemo.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SimpleDemo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PC-Impl/src/scar/SimpleDemo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4021025">
+            <state vertical-scroll-proportion="-6.12">
               <caret line="18" column="15" selection-start-line="18" selection-start-column="15" selection-end-line="18" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Matrix.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.95532197">
+              <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -117,6 +115,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scar2/Logic/GetFile.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/scar2/Logic/StoreFile.java" />
         <option value="$PROJECT_DIR$/PC-Impl/src/scar/SimpleDemo.java" />
+        <option value="$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java" />
       </list>
     </option>
   </component>
@@ -480,7 +479,13 @@
       <option name="project" value="LOCAL" />
       <updated>1434489920948</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="filling out SimpleDemo.java">
+      <created>1435504933835</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1435504933835</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -533,7 +538,8 @@
     <MESSAGE value="working on storing chunks" />
     <MESSAGE value="changed Hash name from &quot;hash&quot; to &quot;hashChain&quot; to be more clear" />
     <MESSAGE value="changes to GetFile and StoreFile" />
-    <option name="LAST_COMMIT_MESSAGE" value="changes to GetFile and StoreFile" />
+    <MESSAGE value="filling out SimpleDemo.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="filling out SimpleDemo.java" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -680,8 +686,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PC-Impl/src/scar/SimpleDemo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4021025">
+        <state vertical-scroll-proportion="-6.12">
           <caret line="18" column="15" selection-start-line="18" selection-start-column="15" selection-end-line="18" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.95532197">
+          <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
           <folding />
         </state>
       </provider>

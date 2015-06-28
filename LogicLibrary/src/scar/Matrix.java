@@ -6,10 +6,12 @@ public class Matrix {
   
   public Matrix(int rows, int cols) {
     //Create matrix into a [rows][cols] all to 0
+    matrix = new byte[rows][cols];
   }
 
   public Matrix(byte[][] data) {
     //Initialize matrix based on data given [data.length][data[0].length]
+    matrix = new byte[data.length][data[0].length];
   }
 
   public static Matrix identity(int n) {
@@ -20,26 +22,53 @@ public class Matrix {
     //            . . . ... ...
     //            0 0 0 ... 1_n)
     //Basically 1's down the diagonal of the matrix, 0 elsewhere
+    Matrix newMat = new Matrix(n, n);
+
+    for (int i = 0; i < n; ++i){
+      for (int j = 0; j < n; ++j){
+        if (i != j){
+          newMat.setCell(i, j, 0);
+        }
+        else{
+          newMat.setCell(i, j, 1);
+        }
+      }
+    }
+    return newMat;
   }
 
   public Matrix clone() {
     //Returns a _copy_ Matrix of this matrix
+    Matrix temp = new Matrix(this.matrix);
+    return temp;
   }
 
   public byte[][] getData() {
     //Return a copy of the matrix data
+    byte[][] temp = new byte [][];
+    for (int i = 0; i < this.matrix.length; ++i){
+      for (int j = 0; j < this.matrix.length; ++j){
+        temp[i][j] = this.cell(i, j);
+      }
+    }
+    return temp;
   }
 
   public void setCell(int row, int col, int val) {
     //Sets the cell at [row][col] to val
+    this.matrix[row][col] = val;
   }
 
   public int cell(int row, int col) {
     //returns val at [row][col]
+    return this.matrix[row][col];
   }
 
   public void swapRows(int r1, int r2) {
     //Swap row r1 into r2 and r2 into r1
+    byte[] temp = this.matrix[r1];
+    this.matrix[r1] = this.matrix[r2];
+    this.matrix[r2] = temp;
   }
 
   //Matrix Operations
