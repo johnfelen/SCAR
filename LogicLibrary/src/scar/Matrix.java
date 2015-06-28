@@ -39,7 +39,7 @@ public class Matrix {
 
   public Matrix clone() {
     //Returns a _copy_ Matrix of this matrix
-    Matrix temp = new Matrix(this.matrix);
+    Matrix temp = new Matrix(this.getData());
     return temp;
   }
 
@@ -82,7 +82,21 @@ public class Matrix {
     //                            one for j = 0 ... z-1,
     //                            one for k = 0 ... y-1)
     //  The multiplication of the A, B cells need to be done with
-    //  field.multiply( int, int )  
+    //  field.multiply( int, int )
+    byte[][] c = new byte[][];
+    byte[][] a = this.getData();
+    byte[][] b = other.getData();
+
+    //Matrix A (l x m), B (m x n), and C (l x n)
+    for (int i = 0; i < a.length; ++i){
+      for (int j = 0; j < b[0].length; ++j){
+        for (int k = 0; k < b.length; +k){
+          //c[i][k] += a[i][k] * b[k][j];
+          c[i][k] += field.multiply(a[i][k], b[k][j]);
+        }
+      }
+    }
+    Matrix retMat = new Matrix(c);
   }
 
   public Matrix inverse() {

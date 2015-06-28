@@ -6,7 +6,7 @@
     </shared>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d576b3-a26d-4039-b417-7e3b3f624bd4" name="Default" comment="">
+    <list default="true" id="84d576b3-a26d-4039-b417-7e3b3f624bd4" name="Default" comment="filling out Matrix.java">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java" afterPath="$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -72,8 +72,8 @@
       <file leaf-file-name="Matrix.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.95532197">
-              <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
+            <state vertical-scroll-proportion="2.0998685">
+              <caret line="94" column="54" selection-start-line="94" selection-start-column="54" selection-end-line="94" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -485,7 +485,13 @@
       <option name="project" value="LOCAL" />
       <updated>1435504933835</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="filling out Matrix.java">
+      <created>1435514353949</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1435514353949</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -539,7 +545,8 @@
     <MESSAGE value="changed Hash name from &quot;hash&quot; to &quot;hashChain&quot; to be more clear" />
     <MESSAGE value="changes to GetFile and StoreFile" />
     <MESSAGE value="filling out SimpleDemo.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="filling out SimpleDemo.java" />
+    <MESSAGE value="filling out Matrix.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="filling out Matrix.java" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -692,10 +699,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/GaloisField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.956743">
+          <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#9533#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Matrix.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.95532197">
-          <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
+        <state vertical-scroll-proportion="2.0998685">
+          <caret line="94" column="54" selection-start-line="94" selection-start-column="54" selection-end-line="94" selection-end-column="54" />
           <folding />
         </state>
       </provider>
