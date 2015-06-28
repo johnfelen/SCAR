@@ -1,11 +1,11 @@
-package com.example.scar2.Logic;
+package scar.pc;
 
 import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;  //import bouncy castle providor
 
-public class Encryption {
+public class Encryption extends scar.Encryption{
 
     public Encryption   //constructor
     {
