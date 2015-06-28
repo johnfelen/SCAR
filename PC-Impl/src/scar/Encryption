@@ -13,7 +13,7 @@ public class Encryption extends scar.Encryption{
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());  //set bouncy castle as provider
     }
 
-    Cipher cipher;	//cipher to encryp/decrypt
+    Cipher cipher;	//cipher to encrypt/decrypt
 
     public byte[] encrypt(byte[] data, String stringOfKey)  //takes the original data and transforms it into cipher text
     {
