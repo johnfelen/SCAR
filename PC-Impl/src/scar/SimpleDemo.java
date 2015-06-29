@@ -2,20 +2,19 @@ package scar.pc;
 
 public class SimpleDemo {
   public static void get(String fn, String password, int k, int n) {
-
-    //like StoreFile, GetFile takes a int buffer.  where is this coming from?
-
+    //not sure of the interplay here....
     GetFile gf = new GetFile(fn, password, k, n);
     gf.get();
 
   }
 
   public static void store(String path, String fn, String password, int k, int n) {
+    
+    FileInputStream fin = new FileInputStream(new File(fn));
+    byte[] bArr = new byte[n];  //assuming byte[] is length n
+    fin.read();  //not sure which implementation would be better
 
-    //SToreFile.java's constructor takes more parameters than this function takes it
-    //like the byte[], int buffer, and the IServers[]??  Create them here?
-
-    StoreFile sf = new StoreFile(fn, password, k, n);
+    StoreFile sf = new StoreFile(bArr, fn, password, k, n);
     sf.store();
 
   }
@@ -26,13 +25,13 @@ public class SimpleDemo {
 
     ///using place holders right now for the demo
     String path;
-    String fn = "testFile";
-    String password = "securePass";
+    String fn;
+    String password;
     int k;
     int n;
 
     store(path, fn, password, k, n);
-    get(fn, passowrd, k, n);
+    get(fn, password, k, n);
 
     //are we displaying the output for the demo?
   }
