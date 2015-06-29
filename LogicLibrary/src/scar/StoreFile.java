@@ -5,29 +5,32 @@ public class StoreFile {
   private byte[] data;
   private String
     fn,
-    password;
+    password,
+    key;
   private int
     buffer,
     k,
     n;
 
-  public StoreFile(byte[] data, String fn, String password, 
-                   int buffer, int k, int n, IServer srvs[]) {
+  public StoreFile(byte[] data, String fn, String password,
+                   int k, int n, IServer srvs[]) {
     this.data = data;
     this.fn = fn;
     this.password = password;
     this.buffer = buffer;
     this.k = k;
     this.n = n;
+    Hash hash = new Hash();
+    key = hash.getHashKey(fn + password);
     servers = srvs;
   }
 
   //Encode 'val' into 'arr' starting at location 'n'
   public void eint(byte[] arr, int n, int val) {
-    arr[n]   = val & 000000FF;
-    arr[n+1] = val & 0000FF00;
-    arr[n+2] = val & 00FF0000;
-    arr[n+3] = val & FF000000;
+    arr[n]   = (byte)((val & 0x000000FF) >> 0);
+    arr[n+1] = (byte)((val & 0x0000FF00) >> 8);
+    arr[n+2] = (byte)((val & 0x00FF0000) >> 16);
+    arr[n+3] = (byte)((val & 0xFF000000) >> 24);
   }
 
 
@@ -41,7 +44,11 @@ public class StoreFile {
     if(servers == null)
       throw InvalidInputException("You need atleast one server to store data");
     
-    //1. add header information to data
+    //1. Encrypt the data
+    Encryption encrypt = Encryption.getInstance();
+    data = encrypt.encrypt(data, key);
+
+    //2. add header information to data
     //   _______________________
     //  |# of Pad bytes [int32] |
     //  |-----------------------|
@@ -49,23 +56,16 @@ public class StoreFile {
     //  |_______________________|
     data = Pad.prepend(data, 4);
 
-    //2. pad data with (ceiling(data.length/k) - data.length)*k = len
-    int padding = ((int)Math.ceil(data.length/k) - (int)(data.length/k)) * k;
+    //3. pad data with (ceiling(data.length/k) - data.length)*k = len
+    int padding = ((int)Math.ceil(data.length/k) *k) - data.length;
     data = Pad.append(data, padding);
 
-    //3. Set header bytes to the correct value as computed in (2)
+    //4. Set header bytes to the correct value as computed in (2)
     eint(data, 0, padding);
 
-    //4. Encode data with RS.encode(data, k, n) -> return chunks[n][len]
+    //5. Encode data with RS.encode(data, k, n) -> return chunks[n][len]
     RS rs = new RS();
     byte[][] chunk = rs.encode(data, k, n);
-
-    //5. Encrypt each edata[i] chunk for i = 0 -> n-1 with key: fn+password
-    //We can change key if needed later on to be more customized
-    Encryption encrypt = Encryption.getInstance();
-    for(int i = 0; i < n; ++i) {
-      chunk[i] = encrypt(chunk[i], fn+password);
-    }
     
     //TODO: for Ryan
     //6. Compute HashChain 
@@ -73,15 +73,12 @@ public class StoreFile {
     //Initial hash: fn, password
 
     Hash hashChain = new Hash();
-    hashChain.recursiveKey(n, fn, password);
+    hashChain.recursiveKey(n, key, "");
     ArrayList<String> hashArr = hashChain.getArr();
-
-    //Still working!
 
     //7. Store each chunk to it's correct server with filename 
     // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
     //See: IServer.class for server functions, servers Variable @ top
-    //filename = hash.getHashKey(fn + Wordfile.get(HashChain_i))
     //See: Hash.class
 
     int x = 0;
@@ -90,8 +87,8 @@ public class StoreFile {
       BigInteger num = new BigInteger(hashArr.get(x), 16);
       int i = num.mod(numOfServ).intValue();
 
-      servers[i].store(hashChain.getHashKey(fn + hashArr.get(x)), chunk[x]);
-
+      servers[i].store(hashChain.getHashKey(hashArr.get(x)), chunk[x]);
+2
       ++x;
     }
   }

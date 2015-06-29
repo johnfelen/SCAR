@@ -12,10 +12,6 @@
 	         source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
 				<pathelement path="lib/apache-commons-codec-1.4.jar" />
-				<pathelement path="lib/core-1.52.0.0.jar" />
-				<pathelement path="lib/pg-1.51.0.0.jar" />
-				<pathelement path="lib/pkix.1.51.0.0.jar" />
-				<pathelement path="lib/prov-1.52.0.0.jar" />
 			</classpath>
     </javac>
   </target>
@@ -24,7 +20,7 @@
     <jar destfile="build/scar-logic.jar" update="true">
       <fileset dir="build/classes" excludes="*.class"/>
       <manifest>
-	      <attribute name="Class-Path" value="prov-1.52.0.0.jar pkix.1.51.0.0.jar pg-1.51.0.0.jar core-1.52.0.0.jar apache-commons-codec-1.4.jar" />
+	      <attribute name="Class-Path" value="apache-commons-codec-1.4.jar" />
       </manifest>
     </jar>
   </target>
