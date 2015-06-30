@@ -7,15 +7,12 @@
   </target>
   
 
-  <target name="scar-build">
+  <target name="scar-build" depends="build-env">
     <javac srcdir="src" destdir="build/classes" debug="on"
 	         source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
 				<pathelement path="lib/apache-commons-codec-1.4.jar" />
-				<pathelement path="lib/core-1.52.0.0.jar" />
-				<pathelement path="lib/pg-1.51.0.0.jar" />
-				<pathelement path="lib/pkix.1.51.0.0.jar" />
-				<pathelement path="lib/prov-1.52.0.0.jar" />
+				<pathelement path="lib/bcprov-jdk15on-152.jar" />
 				<pathelement path="lib/scar-logic.jar" />
 			</classpath>
     </javac>
@@ -25,7 +22,8 @@
     <jar destfile="build/scar-pc.jar" update="true">
       <fileset dir="build/classes" excludes="*.class"/>
       <manifest>
-	      <attribute name="Class-Path" value="prov-1.52.0.0.jar pkix.1.51.0.0.jar pg-1.51.0.0.jar core-1.52.0.0.jar apache-commons-codec-1.4.jar scar-logic.jar" />
+	      <attribute name="Class-Path" value="bcprov-jdk15on-152.jar apache-commons-codec-1.4.jar scar-logic.jar" />
+        <attribute name="Main-Class" value="scar.pc.SimpleDemo"/>
       </manifest>
     </jar>
   </target>
