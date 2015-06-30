@@ -1,110 +1,71 @@
 package scar;
 
-import org.jlinalg.IRingElement;
-import org.jlinalg.IRingElementFactory;
-import org.jlinalg.Matrix;
-import org.jlinalg.RingElement;
-import org.jlinalg.Vector;
-import org.jlinalg.complex.Complex;
-import org.jlinalg.field_p.FieldP;
-import org.jlinalg.field_p.FieldPFactoryMap;
 
 public class RS {
+  private static GaloisField field = GaloisField.getInstance();
   static final long PRIME = 257;
-
-  
-  //Only used for decoding to give indices for blocks given
-  //These would be created during the process of retrieving data
-  //from servers based on their position in the HashChain
-  public class Chunk {
-    public final byte[] data;
-    public final int ind;
-
-    public Chunk(byte[] d, int i) {
-      data = d;
-      ind = i;
-    }
-  }
-
 
   //See: Figure 22, page 82 from ROMR: Robust Multicast Routing In Mobile Ad-HOC Networks 
   // for more details
-  public Matrix makeEncodingMatrix(int k, int n) {
-    Vector a[], b[], e[];
-    IRingElement row[];
+  public Matrix makeEncodingMatrix(final int k, final int n) {
+    int a[][], b[][], e[][];
     int i,j;
     
-    IRingElementFactory fact = new IRingElementFactory(PRIME);
-    
-    IRingElement zero = fact.get(0);
-    IRingElement one = fact.get(1);
-    IRingElement two = fact.get(2);
-
-
-    //A(i,j) = (2^(n-k+1))^j for i = 0...n-k-1 and j = 0...(k-1)
-    a = new Vector[k];
-    for(i=0; i < n-k; ++i) {
-      row = new IRingElement[k];
-      for(j=0; j < k; ++j) {
-        row[j] = pow(two, 
-                     fact.get(n).subtract(fact.get(k)).add(fact.get(i)).multiply(fact.get(j)));
-      }
-      a[i] = new Vector(row);
-    }
-
-    b = new Vector[k];
-    //B(0,0) = 1
-    //B(0,j) = 0 for j = 1...(k-1)
-    row = new IRingElement[k];
-    row[0] = one;
-    for(i=1; i < k; ++i)
-      row[i] = zero;
-    
-    //B(i,j) = (2^(i-1))^j for i = 1...(k-1) and j = 0...(k-1)
-    for(i=0; i < k; ++i) {
-      row = new IRingElement[k];
-      for(j=0; j < k; ++j) {
-        row[j] = pow(two,
-                     fact.get(i).subtract(one).multiply(fact.get(j)));
-      }
-      b[i] = new Vector(row);
-    }
-
-    //C = A * B^(-1)
-    Matrix C = (new Matrix(A)).multiply((new Matrix(B)).inverse());
-    
-    //E(0-(k-1), j) = Identity Matrix
-    e = new Vector[n];
-    for(i=0; i < k; ++i) {
-      row = new IRingElement[k];
-      for(j=0; j < k; ++j) {
-        row[j] = i != j ? zero : one;
+    //A - (n-k) x k matrix
+    //A(i,j) = (2^(n-k+1))^j for i = 0..n-k-1 and j = 0...(k-1)
+    a = new int[n-k][k];
+    for(i=0;i<a.length;++i) {
+      for(j=0;j<k;++j) {
+        a[i][j] = field.power(field.power(2, field.add(field.subtract(n, k), 1)), j);
       }
     }
-    //E(k, j) = C
-    for(i=k; i < n; ++i) {
-      row[i] = C.getRow(i-k+1);
+
+    //B - k x k matrix
+    //B(0,0) = 1, B(0,j) = 0 for j = 1...(k-1)
+    //B(i,j) = (2^(i-1))^j for i = 1..(k-1) and j = 0...(k-1) 
+    b = new int[k][k];
+    b[0][0] = 1;
+    for(j = 1; j < k; ++j)
+      b[0][j] = 0;
+    for(i=1;i<k;++i) {
+      for(j=1;j<k;++j) {
+        b[i][j] = field.power(field.power(2, field.subtract(i,1)), j);
+      }
     }
+
+    Matrix A = new Matrix(a), B = new Matrix(b);
+    //C = A * B^-1  - n-k x k matrix
+    int c[][] = null;
+    try {
+      c = A.multiply(B.inverse()).getData();
+    } catch(Exception ee) {
+      ee.printStackTrace();
+      System.exit(1);
+    }
+
+    //E - n x k matrix
+    //first k rows = identity 
+    int id[][] = Matrix.identity(k).getData();
+    e = new int[n][k];
+    for(i=0;i<k;++i)
+      e[i] = id[i];
+    //last (n-k) rows = matrix C
+    for(i=k;i<n;++i)
+      e[i] = c[i-k];
     
     return new Matrix(e);
   }
-
+  
   //Transforms a byte array into a K x Size Matrix
   public Matrix makeDataMatrix(byte[] data, int k) {
-    int size = data.length / k ;//Size of each chunk
-    Vector a[] = new Vector[k];
-    IRingElementFactory fact = new IRingElementFactory(PRIME);
-    IRingElement row[];
-    int i, j;
-   
-    //Transform data array into a K x Size Matrix
-    //Basically transforming the 1D array into a 2D.
-    for(i=0; i < k; ++i) {
-      row = new IRingElement[size];
-      for(j=0; j < size; ++j) {
-        row[j] = elements.get(data[(i * size) + j]);
+    int size = data.length / k;
+    int a[][] = new int[k][size];
+    int i,j;
+    
+    for(i=0;i<k;++i) {
+      for(j=0;j<size;++j) {
+        a[i][j] = data[(i * size) + j];
       }
-      a[i] = new Vector(row);
     }
 
     return new Matrix(a);
@@ -113,14 +74,16 @@ public class RS {
   //Tranforms Rows x Cols matrix into byte[Rows][Cols]
   public byte[][] matrixTo2DBytes(Matrix m) {
     int 
-      rows = m.getRows(),
-      cols = m.getCols(),
+      rows = m.rows(),
+      cols = m.cols(),
       i,j;
+    int back[][] = m.getData();
     byte[][] data = new byte[rows][cols];
+   
     
     for(i=0; i < rows; ++i) {
       for(j=0; j < cols; ++j) {
-        data[i][j] = Integer.parseInt(m.get(i+1,j+1).toString("m")[0]);
+        data[i][j] = (byte)back[i][j];
       }
     }
     
@@ -130,14 +93,16 @@ public class RS {
   //Tranforms Rows x Cols matrix into byte[Rows*Cols]
   public byte[] matrixToBytes(Matrix m) {
     int 
-      rows = m.getRows(),
-      cols = m.getCols(),
+      rows = m.rows(),
+      cols = m.cols(),
       i,j;
+    int back[][] = m.getData();
     byte[] data = new byte[rows*cols];
+   
     
     for(i=0; i < rows; ++i) {
       for(j=0; j < cols; ++j) {
-        data[(i*cols) + j] = Integer.parseInt(m.get(i+1,j+1).toString("m")[0]);
+        data[(i*cols) + j] = (byte)back[i][j] ;
       }
     }
     
@@ -148,23 +113,20 @@ public class RS {
   // 1 -> n
   //...
   // n -> 1
-  public void reverseOrder(Matrix m) {
-    int i, rows = m.getRows();
+  public void reverseMatrix(Matrix m) {
+    int i, rows = m.rows();
     for(i=0;i<rows/2;++i) {
-      Vector row = m.getRow(i+1);
-      Vector row2 = m.getRow(rows-i);
-      m.setRow(rows-i, row);
-      m.setRow(i+1, row2);
+      m.swapRows(i, rows-i-1);
     }
   }
 
   //Creates a new matrix made up of rows selects from an existing matrix
   public Matrix selectRowsFromMatrix(Matrix m, int row_ids[]) {
-    Vector v[] = new Vector[row_ids.length];
+    int v[][] = new int[row_ids.length][];
     int i;
     
     for(i=0;i<row_ids.length;++i) {
-      v[i] = m.getRow(row_ids[i]+1);
+      v[i] = m.row(row_ids[i]);
     } 
     
     return new Matrix(v);
@@ -172,17 +134,12 @@ public class RS {
   
   //Make a matrix from k chunks of data
   public Matrix makeMatrixFromChunks(Chunk chunks[], int k) {
-    Vector a[] = new Vector[k];
-    IRingElementFactory fact = new IRingElementFactory(PRIME);
-    IRingElement row[];
+    int a[][] = new int[k][chunks[0].data.length];
     int i, j;
 
     for(i=0;i<k;++i) {
-      row = new IRingElement[chunks[i].data.length];
-      for(j=0;j<chunks[i].data.length;++j) {
-        row[j] = fact.get(chunks[i].data[j]);
-      }
-      a[i] = new Vector(row);
+      for(j=0;j<chunks[i].data.length;++j)
+        a[i][j] = chunks[i].data[j];
     }
     
     return new Matrix(a);
@@ -191,9 +148,9 @@ public class RS {
   //Algorithm: EncodedChunks = EncodeMatrix * DataMatrix
   public byte[][] encode(byte[] data, int k, int n) { 
     Matrix encoder = makeEncodingMatrix(k,n);
-    Matrix data = makeDataMatrix(data, k);
+    Matrix dm = makeDataMatrix(data, k);
     
-    Matrix ret = encoder.multiply(data);
+    Matrix ret = encoder.multiply(dm);
     
     return matrixTo2DBytes(ret); 
   }

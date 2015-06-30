@@ -24,6 +24,8 @@
  * field.multiply( int, int ) - Multiplys two numbers and returns result within the field
  * field.divide( int, int ) - Divides two numbers and returns result within the field
  * field.power( int x, int y) - Does x^y and returns result within the field
+ * field.invert( int x ) - 1/x : This translates to field.divide( 1 , x )
+ * field.subtract( int, int ) - use field.add( int, int ). The negation of 'x' is 'x' hence add = subtract.
  */
 
 package scar;//org.apache.hadoop.raid;
@@ -198,118 +200,11 @@ public class GaloisField {
     return powTable[x];
   }
 
-  /**
-   * Given a Vandermonde matrix V[i][j]=x[j]^i and vector y, solve for z such
-   * that Vz=y. The output z will be placed in y.
-   * @param x the vector which describe the Vandermonde matrix
-   * @param y right-hand side of the Vandermonde system equation.
-   *          will be replaced the output in this vector
-   */
-  public void solveVandermondeSystem(int[] x, int[] y) {
-    solveVandermondeSystem(x, y, x.length);
+  public int invert(int x) {
+    return divide(1, x);
   }
 
-  /**
-   * Given a Vandermonde matrix V[i][j]=x[j]^i and vector y, solve for z such
-   * that Vz=y. The output z will be placed in y.
-   * @param x the vector which describe the Vandermonde matrix
-   * @param y right-hand side of the Vandermonde system equation.
-   *          will be replaced the output in this vector
-   * @param len consider x and y only from 0...len-1
-   */
-  public void solveVandermondeSystem(int[] x, int[] y, int len) {
-    assert(x.length <= len && y.length <= len);
-    for (int i = 0; i < len - 1; i++) {
-      for (int j = len - 1; j > i; j--) {
-        y[j] = y[j] ^ mulTable[x[i]][y[j - 1]];
-      }
-    }
-    for (int i = len - 1; i >= 0; i--) {
-      for (int j = i + 1; j < len; j++) {
-        y[j] = divTable[y[j]][x[j] ^ x[j - i - 1]];
-      }
-      for (int j = i; j < len - 1; j++) {
-        y[j] = y[j] ^ y[j + 1];
-      }
-    }
-  }
-
-  /**
-   * Compute the multiplication of two polynomials. The index in the
-   * array corresponds to the power of the entry. For example p[0] is the
-   * constant term of the polynomial p. 
-   * @param p input polynomial
-   * @param q input polynomial
-   * @return polynomial represents p*q
-   */
-  public int[] multiply(int[] p, int[] q) {
-    int len = p.length + q.length - 1;
-    int[] result = new int[len];
-    for (int i = 0; i < len; i++) {
-      result[i] = 0;
-    }
-    for (int i = 0; i < p.length; i++) {
-      for (int j = 0; j < q.length; j++) {
-        result[i + j] = add(result[i + j], multiply(p[i], q[j]));
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Compute the remainder of a dividend and divisor pair. The index in the
-   * array corresponds to the power of the entry. For example p[0] is the
-   * constant term of the polynomial p. 
-   * @param dividend dividend polynomial, the remainder will be placed here when return
-   * @param divisor divisor polynomial
-   */
-  public void remainder(int[] dividend, int[] divisor) {
-    for (int i = dividend.length - divisor.length; i >= 0; i--) {
-      int ratio =
-        divTable[dividend[i + divisor.length - 1]][divisor[divisor.length - 1]];
-      for (int j = 0; j < divisor.length; j++) {
-        int k = j + i;
-        dividend[k] = dividend[k] ^ mulTable[ratio][divisor[j]];
-      }
-    }
-  }
-
-  /**
-   * Compute the sum of two polynomials. The index in the
-   * array corresponds to the power of the entry. For example p[0] is the
-   * constant term of the polynomial p. 
-   * @param p input polynomial
-   * @param q input polynomial
-   * @return polynomial represents p+q
-   */
-  public int[] add(int[] p, int[] q) {
-    int len = Math.max(p.length, q.length);
-    int[] result = new int[len];
-    for (int i = 0; i < len; i++) {
-      if (i < p.length && i < q.length) {
-        result[i] = add(p[i], q[i]);
-      } else if (i < p.length) {
-        result[i] = p[i];
-      } else {
-        result[i] = q[i];
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Substitute x into polynomial p(x). 
-   * @param p input polynomial
-   * @param x input field
-   * @return p(x)
-   */
-  public int substitute(int[] p, int x) {
-    int result = 0;
-    int y = 1;
-    for (int i = 0; i < p.length; i++) {
-      result = result ^ mulTable[p[i]][y];
-      y = mulTable[x][y];
-    }
-    return result;
+  public int subtract(int x, int y) {
+    return add(x, y);
   }
 }

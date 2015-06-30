@@ -1,5 +1,8 @@
 package scar;
 
+import java.util.*;
+import java.math.*;
+
 public class StoreFile {
   private IServer servers[];
   private byte[] data;
@@ -35,15 +38,7 @@ public class StoreFile {
 
 
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
-  public void store() {
-    //0. Validate input
-    if(n <= k)
-      throw InvalidInputException("N needs to be bigger than K");
-    if(wordFile.length < n)
-      throw InvalidInputException("Wordfile needs atleast N distinct words");
-    if(servers == null)
-      throw InvalidInputException("You need atleast one server to store data");
-    
+  public void store(){
     //1. Encrypt the data
     Encryption encrypt = Encryption.getInstance();
     data = encrypt.encrypt(data, key);
@@ -57,7 +52,7 @@ public class StoreFile {
     data = Pad.prepend(data, 4);
 
     //3. pad data with (ceiling(data.length/k) - data.length)*k = len
-    int padding = ((int)Math.ceil(data.length/k) *k) - data.length;
+    int padding = (((int)Math.ceil(data.length/(float)k)) *k) - data.length;
     data = Pad.append(data, padding);
 
     //4. Set header bytes to the correct value as computed in (2)
@@ -71,10 +66,8 @@ public class StoreFile {
     //6. Compute HashChain 
     //See: Hash.class
     //Initial hash: fn, password
-
     Hash hashChain = new Hash();
-    hashChain.recursiveKey(n, key, "");
-    ArrayList<String> hashArr = hashChain.getArr();
+    ArrayList<String> hashArr = hashChain.hashchain(n, key);
 
     //7. Store each chunk to it's correct server with filename 
     // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
@@ -83,12 +76,12 @@ public class StoreFile {
 
     int x = 0;
     int numOfServ = servers.length;
-    while (x <= chunk.length){
+    while (x < chunk.length){
       BigInteger num = new BigInteger(hashArr.get(x), 16);
-      int i = num.mod(numOfServ).intValue();
+      int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
 
-      servers[i].store(hashChain.getHashKey(hashArr.get(x)), chunk[x]);
-2
+      servers[i].storeData(hashChain.getHashKey(fn+hashArr.get(x)), chunk[x]);
+
       ++x;
     }
   }

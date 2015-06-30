@@ -31,7 +31,7 @@ public class Mysql implements IServer {
     tryConnect();
 	}
 
-  public void tryConnect() 
+  public void tryConnect() {
 		try {
 			Class.forName(dbDriver).newInstance();
 			conn = DriverManager.getConnection(dbConnect, userName, pwd);
@@ -87,22 +87,31 @@ public class Mysql implements IServer {
 
   //Stores our data bytes with key fn
   public void storeData(String fn, byte[] data) {
+    try { 
     PreparedStatement stmt = conn.prepareStatement("insert into scar_db.files values (?, ?)");
     stmt.setString(1, fn);
     stmt.setBytes(2, data);
     stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   //Gets our data bytes from key fn
   public byte[] getData(String fn) {
-    if(isConnected()) {
-      PreparedStatement stmt = conn.prepareStatement("select value from scar_db.files f where f.key = ?");
-      stmt.setString(1, fn);
-      ResultSet rs = stmt.executeQuery();
-      if(rs.next()) {
-        return rs.getBytes(1);
+    try {
+      if(isConnected()) {
+        PreparedStatement stmt = conn.prepareStatement("select value from scar_db.files f where f.key = ?");
+        stmt.setString(1, fn);
+        ResultSet rs = stmt.executeQuery();
+        if(rs.next()) {
+          return rs.getBytes(1);
+        }
       }
+      return null;
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
     }
-    return null;
-  }
+  } 
 }

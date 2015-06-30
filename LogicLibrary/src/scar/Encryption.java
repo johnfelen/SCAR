@@ -1,5 +1,6 @@
 package scar;
 
+import java.lang.reflect.*;
 
 public class Encryption {
   private static Constructor<Encryption> factory; 
@@ -7,7 +8,7 @@ public class Encryption {
   //Set the encryption class to be used in the implementation
   public static void setEncryption(Class<? extends Encryption> eclass) {
     try {
-      factory = eclass.getConstructor();
+      factory = (Constructor<Encryption>)eclass.getConstructor();
     } catch(Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -19,13 +20,18 @@ public class Encryption {
   //used in the implementation
   public static Encryption getInstance() {
     if(factory != null) {
-      return factory.newInstance();
+      try {
+        return factory.newInstance();
+      } catch(Exception e) {
+        e.printStackTrace();
+        return null;
+      }
     }
     return null;
   }
 
   public Encryption() {} 
   
-  public byte[] encrypt(byte[] data, String stringOfKey) {}
-  public byte[] decrypt(byte[] cipherText, String stringOfKey) {}
+  public byte[] encrypt(byte[] data, String stringOfKey) { return null; }
+  public byte[] decrypt(byte[] cipherText, String stringOfKey) { return null; }
 }

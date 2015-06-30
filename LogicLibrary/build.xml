@@ -7,7 +7,7 @@
   </target>
   
 
-  <target name="scar-build">
+  <target name="scar-build" depends="build-env">
     <javac srcdir="src" destdir="build/classes" debug="on"
 	         source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
@@ -21,6 +21,7 @@
       <fileset dir="build/classes" excludes="*.class"/>
       <manifest>
 	      <attribute name="Class-Path" value="apache-commons-codec-1.4.jar" />
+        <attribute name="Main-Class" value="scar.Tests"/>
       </manifest>
     </jar>
   </target>

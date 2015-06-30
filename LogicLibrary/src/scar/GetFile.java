@@ -1,5 +1,8 @@
 package scar;
 
+import java.math.*;
+import java.util.*;
+
 public class GetFile {
   private String
     fn,
@@ -24,10 +27,10 @@ public class GetFile {
   
   public int dint(byte[] data, int start) {
     return 
-      data[start] +
-      (data[start+1] << 8) +
-      (data[start+2] << 16) +
-      (data[start+3] << 24);
+      (data[start] & 0x000000FF) +
+      ((data[start+1] << 8) & 0x0000FF00) +
+      ((data[start+2] << 16) & 0x00FF0000) +
+      ((data[start+3] << 24) & 0xFF000000);
   }
 
 
@@ -35,20 +38,19 @@ public class GetFile {
   public byte[] get() {
     //1. Compute HashChain
     Hash hashChain = new Hash();
-    hashChain.recursiveKey(n, key, "");
-    ArrayList<String> hashArr = hashChain.getArr();
+    ArrayList<String> hashArr = hashChain.hashchain(n, key);
 
     int numOfServ = servers.length;
-    ArrayList<RS.Chunk> chunk = new ArrayList<RS.Chunk>();
+    ArrayList<Chunk> chunk = new ArrayList<Chunk>();
 
     //2. Get data
     int x = 0;
-    while (x <= hashArr.size()){
+    while (x < hashArr.size()){
       BigInteger num = new BigInteger(hashArr.get(x), 16);
-      int i = num.mod(numOfServ).intValue();
+      int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
       
-      byte[] c = servers[i].get(hashChain.getHashKey(hashArr.get(x)));
-      if (c !=NULL){
+      byte[] c = servers[i].getData(hashChain.getHashKey(fn+hashArr.get(x)));
+      if (c != null){
         chunk.add(new Chunk(c, x));
       }
       
@@ -57,7 +59,8 @@ public class GetFile {
     
     //3. Decode k chunks to get encrypted data back
     RS rs = new RS();
-    byte[] data = rs.decode(chunk.toArray(new RS.Chunk[0]), k, n);
+    byte[] data = rs.decode(chunk.toArray(new Chunk[0]), k, n);
+
     
     //4. Get the padding
     int padding = dint(data, 0);

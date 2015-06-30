@@ -8,11 +8,17 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 
 public class Hash {
-
-	private ArrayList<String>keys;
+  private static String DIGEST_METHOD = "SHA-256";
+  private MessageDigest digest;
 	
 	public Hash(){
-		
+    try {
+      digest = MessageDigest.getInstance(DIGEST_METHOD);
+    } catch(Exception e) {
+      System.out.println("Can't find hashing algorithm for : " + DIGEST_METHOD);
+      e.printStackTrace();
+      System.exit(1);
+    }
 	}
 	
 	/**
@@ -21,17 +27,15 @@ public class Hash {
 	 * @return
 	 */
 	public String getHashKey(String content){
-		try{
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(content.getBytes("UTF-8"));
-			
-			return new String(Hex.encodeHex(DigestUtils.md5(hash)));
-		}catch(Exception e){
-			e.printStackTrace();
-			System.out.println("Hashing failed");
-			return "";
-		}
-	}
+    try {
+    byte[] hash = digest.digest(content.getBytes("UTF-8"));
+    
+    return new String(Hex.encodeHex(hash));
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 	
 	/**
 	 * @description returns the last known value of the recurisve thing. use getArr to the a list. 
@@ -41,32 +45,15 @@ public class Hash {
 	 * @return
 	 */
 
-	public void recursiveKey(int n, String key, String password)	//none recursive version, return value is now void
+	public ArrayList<String> hashchain(int n, String key)
+	//none recursive version
 	{
-		String newKey = getHashKey( key + password );	//gets the first hash
-		while( n > 0 )	//TODO Check if 0 is the right number to stop at
-		{
-			newKey = getHashKey( newKey + key + password );	//get the hash of the current key and password with the previous hash
-			this.keys.add( newKey );	//addas to the arraylist keys
-			n--;	//decrement n
-		}
+    ArrayList<String> hashes = new ArrayList<String>();
+    hashes.add(getHashKey(key));
+    
+    for(int i = 1;i<n;++i)
+      hashes.add(getHashKey(hashes.get(i-1)));
 
-		return;
-	}
-
-	
-	/**
-	 * initliaze the arraylist
-	 */
-	public void setArr(){
-		this.keys = new ArrayList();
-	}
-	
-	/**
-	 * returns the keys
-	 * @return
-	 */
-	public ArrayList<String> getArr(){
-		return this.keys;
+		return hashes;
 	}
 }
