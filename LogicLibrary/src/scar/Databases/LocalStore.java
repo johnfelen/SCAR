@@ -13,6 +13,7 @@ public class LocalStore implements IServer {
 
   public void storeData(String fn, byte[] data) {
     try {
+      System.out.println("Storing: " + fn);
       File f = new File(folder+"/"+fn);
       f.createNewFile();
       FileOutputStream fos = new FileOutputStream(f);
@@ -31,7 +32,9 @@ public class LocalStore implements IServer {
       fis.read(data);
       fis.close();
       return data;
-    } catch (Exception e) { e.printStackTrace(); }
+    } catch (Exception e) { 
+      System.out.println("Warning: Failed to retrieve: " + fn);
+    }
     return null;
   }
 }

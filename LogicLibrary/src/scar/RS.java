@@ -16,7 +16,7 @@ public class RS {
     a = new int[n-k][k];
     for(i=0;i<a.length;++i) {
       for(j=0;j<k;++j) {
-        a[i][j] = field.power(field.power(2, field.add(field.subtract(n, k), 1)), j);
+        a[i][j] = field.power(field.power(2, field.add(field.subtract(n, k), i)), j);
       }
     }
 
@@ -180,7 +180,10 @@ public class RS {
 
     reverseMatrix(encoder);
     reverseMatrix(data);
-
-    return matrixToBytes(encoder.multiply(data));
+    
+    try {
+      return matrixToBytes(encoder.inverse().multiply(data));
+    } catch(Exception e) { } 
+    return null;
   }
 }
