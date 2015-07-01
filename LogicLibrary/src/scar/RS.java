@@ -181,9 +181,13 @@ public class RS {
     reverseMatrix(encoder);
     reverseMatrix(data);
     
+    
     try {
       return matrixToBytes(encoder.inverse().multiply(data));
-    } catch(Exception e) { } 
+    } catch(Exception e) { 
+      e.printStackTrace();
+      System.out.println("Failed to decode data");
+    } 
     return null;
   }
 }
