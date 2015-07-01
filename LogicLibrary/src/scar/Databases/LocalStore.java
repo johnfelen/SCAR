@@ -13,7 +13,6 @@ public class LocalStore implements IServer {
 
   public void storeData(String fn, byte[] data) {
     try {
-      System.out.println("Storing: " + fn);
       File f = new File(folder+"/"+fn);
       f.createNewFile();
       FileOutputStream fos = new FileOutputStream(f);
