@@ -13,6 +13,9 @@
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/C:/Users/John/.AndroidStudio/CryptoResearch/app/src/main/res/values/dimens_apptheme.xml -->
+    <eat-comment/>
+    <dimen name="tab_host_default_height">48dp</dimen>
     <!-- From: file:/C:/Users/John/.AndroidStudio/CryptoResearch/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="Pass"> Enter A Password:</string>

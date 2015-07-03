@@ -4,6 +4,7 @@ import java.security.*;
 import javax.crypto.*;
 import org.spongycastle.*;
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Encryption extends scar.Encryption{
@@ -27,8 +28,8 @@ public class Encryption extends scar.Encryption{
         {
             //set up
             SecretKey AESkey = getAESKey(stringOfKey);
-            cipher = Cipher.getInstance("AES", "SC");   //set up cipher for AES
-            cipher.init(Cipher.ENCRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SC");   //set up cipher for AES
+            cipher.init(Cipher.ENCRYPT_MODE, AESkey, new IvParameterSpec( stringOfKey.substring(0, 16).getBytes() ) );  //set the cipher as encrypt mode with the key NOTE: we can figure out a better IV later
 
             byte[] cipherText = cipher.doFinal(data);   //perform encryption
             return cipherText;
@@ -46,8 +47,8 @@ public class Encryption extends scar.Encryption{
         {
             //set up
             SecretKey AESkey = getAESKey(stringOfKey);
-            cipher = Cipher.getInstance("AES", "SC");   //set up cipher for AES
-            cipher.init(Cipher.DECRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SC");   //set up cipher for AES
+            cipher.init(Cipher.ENCRYPT_MODE, AESkey, new IvParameterSpec( stringOfKey.substring(0, 16).getBytes() ) );  //set the cipher as encrypt mode with the key NOTE: we can figure out a better IV later
 
             byte[] plainText = cipher.doFinal(cipherText);  //perform decryption
             return plainText;

@@ -2,6 +2,7 @@ package scar.pc;
 
 import java.security.*;
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;  //import bouncy castle providor
 
@@ -24,8 +25,8 @@ public class PCEncrypt extends scar.Encryption {
       {
         //set up
         SecretKey AESkey = getAESKey(stringOfKey);
-        cipher = Cipher.getInstance("AES", "BC"); //set up cipher for AES
-        cipher.init(Cipher.ENCRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
+        cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC"); //set up cipher for AES
+        cipher.init(Cipher.ENCRYPT_MODE, AESkey, new IvParameterSpec( stringOfKey.substring(0, 16).getBytes() ) );    //set the cipher as encrypt mode with the key NOTE: we can figure out a better IV later
 
         byte[] cipherText = cipher.doFinal(data);   //perform encryption
         return cipherText;
@@ -43,8 +44,8 @@ public class PCEncrypt extends scar.Encryption {
       {
         //set up
         SecretKey AESkey = getAESKey(stringOfKey);
-        cipher = Cipher.getInstance("AES", "BC"); //set up cipher for AES
-        cipher.init(Cipher.DECRYPT_MODE, AESkey);    //set the cipher as encrypt mode with the key
+        cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC"); //set up cipher for AES
+        cipher.init(Cipher.DECRYPT_MODE, AESkey, new IvParameterSpec( stringOfKey.substring(0, 16).getBytes() ) );    //set the cipher as encrypt mode with the key NOTE: we can figure out a better IV later
 
         byte[] plainText = cipher.doFinal(cipherText);  //perform decryption
         return plainText;
