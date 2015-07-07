@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:gravity="center"
+        android:textColor="#2b468b"
+        android:textSize="40dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="-40dp">   <!---40dp is to center it with the SCAR LOGIN label-->
+
+        <EditText
+            android:id="@+id/Enter_password"
+            android:inputType="textMultiLine"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter Your Unique Password"/>
+
+        <Button
+            android:id="@+id/new_password"
+            android:layout_marginTop="35dp"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/newpassword"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:textColor="#98EF8E"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
