@@ -18,6 +18,8 @@
     <string name = "Pass"> Enter A Password:</string>
     <string name = "fname">Enter A File Name:</string>
     <string name = "store">STORE</string>
+    <string name = "newpassword">CREATE A NEW PASSWORD</string>
+    <string name = "login">SCAR LOGIN</string>
             
     <string name = "kind">Store</string>
                 

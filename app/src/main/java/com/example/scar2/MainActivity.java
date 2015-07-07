@@ -38,6 +38,13 @@ public class MainActivity extends TabActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		/*Login part*/
+		setContentView(R.layout.login);
+
+		//TODO
+
+		/*Code is after they succesfully logged in*/
 		setContentView(R.layout.activity_main);
         serverList.add((new Server(1,"MysqlPitt","mysql.cs.pitt.edu",3306,"diablo0897","ChangeMe",1)));
         serverList.add((new Server(2,"MysqlLocal","10.0.3.2",3306,"root","poney373",1)));
