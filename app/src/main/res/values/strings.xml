@@ -20,6 +20,7 @@
     <string name = "store">STORE</string>
     <string name = "newpassword">CREATE A NEW PASSWORD</string>
     <string name = "login">SCAR LOGIN</string>
+    <string name = "loginbutton">LOGIN</string>
             
     <string name = "kind">Store</string>
                 

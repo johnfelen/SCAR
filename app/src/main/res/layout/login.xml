@@ -22,19 +22,30 @@
         android:orientation="vertical"
         android:layout_marginTop="-40dp">   <!---40dp is to center it with the SCAR LOGIN label-->
 
+        <Button
+            android:id="@+id/new_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/newpassword"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:textColor="#98EF8E"
+            />
+
     <EditText
         android:id="@+id/Enter_password"
         android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Your Unique Password"/>
+        android:hint="Enter Your Unique Password"
+        android:layout_marginTop="50dp"/>
 
     <Button
-        android:id="@+id/new_password"
+        android:id="@+id/login"
         android:layout_marginTop="50dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/newpassword"
+        android:text="@string/loginbutton"
         android:gravity="center_vertical|center_horizontal"
         android:background="@drawable/button_rounded_corners"
         android:textColor="#98EF8E"
