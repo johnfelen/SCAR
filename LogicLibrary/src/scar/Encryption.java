@@ -10,7 +10,9 @@ public class Encryption {
   }
 
   public Encryption() {} 
-  
-  public byte[] encrypt(byte[] data, String stringOfKey) { return null; }
-  public byte[] decrypt(byte[] cipherText, String stringOfKey) { return null; }
+
+
+  //key => 32 bytes
+  public byte[] encrypt(byte[] data, byte[] key) { return null; }
+  public byte[] decrypt(byte[] cipherText, byte[] key) { return null; }
 }

@@ -3,7 +3,6 @@ package scar;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 
@@ -21,39 +20,23 @@ public class Hash {
     }
 	}
 	
-	/**
-	 * @description returns the hashed verison of the string in Hex String form
-	 * @param content
-	 * @return
-	 */
-	public String getHashKey(String content){
-    try {
-    byte[] hash = digest.digest(content.getBytes("UTF-8"));
-    
-    return new String(Hex.encodeHex(hash));
-    } catch(Exception e) {
-      e.printStackTrace();
-      return null;
-    }
+	public byte[] getHashKey(String content){
+    return getHashKey(content.getBytes());
+  }
+
+  
+	public byte[] getHashKey(byte[] content){
+    return digest.digest(content);2
   }
 	
-	/**
-	 * @description returns the last known value of the recurisve thing. use getArr to the a list. 
-	 * @param n - "f"
-	 * @param key - filename
-	 * @param password - password
-	 * @return
-	 */
-
-	public ArrayList<String> hashchain(int n, String key)
-	//none recursive version
+	public byte[][] hashchain(int n, String key)
 	{
-    ArrayList<String> hashes = new ArrayList<String>();
-    hashes.add(getHashKey(key));
+    byte[][] hashes = new byte[n][];
+    hashes[0] = getHashKey(key);
     
     for(int i = 1;i<n;++i)
-      hashes.add(getHashKey(hashes.get(i-1)));
-
+      hashes[i] = getHashKey(hashes[i-1]);
+    
 		return hashes;
 	}
 }
