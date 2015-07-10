@@ -2,6 +2,7 @@ package scar;
 
 import java.math.*;
 import java.util.*;
+import org.apache.commons.codec.binary.Hex;
 
 public class GetFile {
   private String
@@ -21,7 +22,7 @@ public class GetFile {
     this.k = k;
     this.n = n;
     Hash hash = new Hash();
-    key = hash.getHashKey(fn + password);
+    key = fn + password;
     servers = srvs;
   }
   
@@ -33,23 +34,30 @@ public class GetFile {
       ((data[start+3] << 24) & 0xFF000000);
   }
 
+  public byte[] concate(byte[] a, byte[] b) {
+    //Returns [a1,...,a_n,b1,...,b_n]
+    byte[] ret = new byte[a.length+b.length];
+    System.arraycopy(a, 0, ret, 0, a.length);
+    System.arraycopy(b, 0, ret, a.length, b.length);
+    return ret;
+  }
 
   //Get as many blocks from servers, decrypt, apply rs, remove padding
   public byte[] get() {
     //1. Compute HashChain
     Hash hashChain = new Hash();
-    ArrayList<String> hashArr = hashChain.hashchain(n, key);
-
+    byte[][] hashArr = hashChain.hashchain(n, key);
+    
     int numOfServ = servers.length;
     ArrayList<Chunk> chunk = new ArrayList<Chunk>();
 
     //2. Get data
     int x = 0;
-    while (x < hashArr.size()){
-      BigInteger num = new BigInteger(hashArr.get(x), 16);
+    while (x < n){
+      BigInteger num = new BigInteger(Hex.encodeHex(hashArr[x]), 16);
       int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
       
-      byte[] c = servers[i].getData(hashChain.getHashKey(fn+hashArr.get(x)));
+      byte[] c = servers[i].getData(Hex.encodeHex(hashChain.getHashKey(concate(fn,hashArr[x]))));
       if (c != null){
         chunk.add(new Chunk(c, x));
       }
@@ -71,7 +79,7 @@ public class GetFile {
 
     //6. Decrypt the data
     Encryption decrypt = Encryption.getInstance();
-    data = decrypt.decrypt(data, key);
+    data = decrypt.decrypt(data, hashChain.getHashKey(key));
 
     return data;
   }

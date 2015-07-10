@@ -2,6 +2,7 @@ package scar;
 
 import java.util.*;
 import java.math.*;
+import org.apache.commons.codec.binary.Hex;
 
 public class StoreFile {
   private IServer servers[];
@@ -24,7 +25,7 @@ public class StoreFile {
     this.k = k;
     this.n = n;
     Hash hash = new Hash();
-    key = hash.getHashKey(fn + password);
+    key = fn + password;
     servers = srvs;
   }
 
@@ -36,12 +37,20 @@ public class StoreFile {
     arr[n+3] = (byte)((val & 0xFF000000) >> 24);
   }
 
-
+  public byte[] concate(byte[] a, byte[] b) {
+    //Returns [a1,...,a_n,b1,...,b_n]
+    byte[] ret = new byte[a.length+b.length];
+    System.arraycopy(a, 0, ret, 0, a.length);
+    System.arraycopy(b, 0, ret, a.length, b.length);
+    return ret;
+  }
+  
+  
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
   public void store(){
     //1. Encrypt the data
     Encryption encrypt = Encryption.getInstance();
-    data = encrypt.encrypt(data, key);
+    data = encrypt.encrypt(data, hash.getHashKey(key));
 
     //2. add header information to data
     //   _______________________
@@ -67,8 +76,8 @@ public class StoreFile {
     //See: Hash.class
     //Initial hash: fn, password
     Hash hashChain = new Hash();
-    ArrayList<String> hashArr = hashChain.hashchain(n, key);
-
+    byte[][] hashArr = hashChain.hashchain(n, key);
+    
     //7. Store each chunk to it's correct server with filename 
     // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
     //See: IServer.class for server functions, servers Variable @ top
@@ -77,10 +86,10 @@ public class StoreFile {
     int x = 0;
     int numOfServ = servers.length;
     while (x < chunk.length){
-      BigInteger num = new BigInteger(hashArr.get(x), 16);
+      BigInteger num = new BigInteger(Hex.encodeHex(hashArr[x]), 16);
       int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
 
-      servers[i].storeData(hashChain.getHashKey(fn+hashArr.get(x)), chunk[x]);
+      servers[i].storeData(Hex.encodeHex(hashChain.getHashKey(concate(fn,hashArr[x]))), chunk[x]);
 
       ++x;
     }
