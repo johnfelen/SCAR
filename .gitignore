@@ -1,3 +1,4 @@
 *.class
 build/
 local.properties
+.idea/
