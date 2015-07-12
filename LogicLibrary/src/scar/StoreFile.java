@@ -2,7 +2,7 @@ package scar;
 
 import java.util.*;
 import java.math.*;
-import org.apache.commons.codec.binary.Hex;
+import org.spongycastle.util.encoders.Hex;
 
 public class StoreFile {
   private IServer servers[];
@@ -24,7 +24,6 @@ public class StoreFile {
     this.buffer = buffer;
     this.k = k;
     this.n = n;
-    Hash hash = new Hash();
     key = fn + password;
     servers = srvs;
   }
@@ -49,47 +48,76 @@ public class StoreFile {
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
   public void store(){
     //1. Encrypt the data
+    //Output format:
+    //   _____________________
+    //  | 16-byte MAC         |
+    //  |---------------------|
+    //  | 16-byte IV          |
+    //  |---------------------|
+    //  | Encrypted Data      |
+    //  |_____________________|
+    Hash hash = new Hash();
     Encryption encrypt = Encryption.getInstance();
-    data = encrypt.encrypt(data, hash.getHashKey(key));
+    data = encrypt.encrypt(data, hash.getHash(key));
 
-    //2. add header information to data
+    //2. add paddding information to data for RS
     //   _______________________
-    //  |# of Pad bytes [int32] |
+    //  | 4-byte # of pad bytes |
     //  |-----------------------|
-    //  |Data data.length bytes |
+    //  | 16-byte MAC           | ---.
+    //  |-----------------------|    |
+    //  | 16-byte IV            | ---.
+    //  |-----------------------|    |-- data before padding added
+    //  | Encrypted Data        | ---.
+    //  |-----------------------|
+    //  | Padded bytes...       |
     //  |_______________________|
     data = Pad.prepend(data, 4);
-
-    //3. pad data with (ceiling(data.length/k) - data.length)*k = len
-    int padding = (((int)Math.ceil(data.length/(float)k)) *k) - data.length;
+    
+    //3. pad data so the chunks are all the same sized
+    //    also account for a n-bit hash
+    int padding = (((int)Math.ceil((data.length+hash.hashSize())/(float)k)) *k) - (data.length+hash.hashSize());
     data = Pad.append(data, padding);
 
-    //4. Set header bytes to the correct value as computed in (2)
+    //4. Set header bytes to the correct value as computed in (3)
     eint(data, 0, padding);
 
     //5. Encode data with RS.encode(data, k, n) -> return chunks[n][len]
     RS rs = new RS();
     byte[][] chunk = rs.encode(data, k, n);
+
+    //6. Add in hmac information to each chunk
+    //   Note: chunk data is not encrypted, we just need
+    //         to ensure the integrity of the chunk for GetFile
+    //   _______________________
+    //  | n-byte HMAC           |
+    //  |-----------------------|
+    //  | Chunk data...         |
+    //  |_______________________|
+    KeyGen keygen = new KeyGen();
+    keygen.seed(hash.getHash(key));
+    byte[] ckey = keygen.genBytes(hash.hashSize());
+    for(int i = 0;i<chunk.length;++i) {
+      chunk[i] = Pad.prepend(chunk[i], hash.hashSize());
+      hash.addHMac(ckey, chunk[i]);
+    }
+
+    //7. Introduce random number of garbage chunks into our chunks [TODO: Finish this]
+    int extrachunks = keygen.nextByte(250-(n+Math.min(10, 250-n))) + Math.min(10, 250-n);
     
-    //TODO: for Ryan
-    //6. Compute HashChain 
-    //See: Hash.class
-    //Initial hash: fn, password
-    Hash hashChain = new Hash();
-    byte[][] hashArr = hashChain.hashchain(n, key);
+    //8. Compute HashChain 
+    byte[][] hashArr = hash.hashchain(n, key);
     
-    //7. Store each chunk to it's correct server with filename 
+    //9. Store each chunk to it's correct server with filename 
     // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
-    //See: IServer.class for server functions, servers Variable @ top
-    //See: Hash.class
 
     int x = 0;
     int numOfServ = servers.length;
     while (x < chunk.length){
-      BigInteger num = new BigInteger(Hex.encodeHex(hashArr[x]), 16);
+      BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
       int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
 
-      servers[i].storeData(Hex.encodeHex(hashChain.getHashKey(concate(fn,hashArr[x]))), chunk[x]);
+      servers[i].storeData(Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashArr[x]))), chunk[x]);
 
       ++x;
     }

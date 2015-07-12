@@ -1,5 +1,6 @@
 package scar;
 
+import org.spongycastle.util.encoders.Hex;
 import java.util.*;
 import java.io.*;
 
@@ -32,7 +33,7 @@ public class Tests {
     System.out.println("TEST: Hash Test");
    
     System.out.println(" Key: " + key);
-    key = hash.getHashKey(key);
+    key = Hex.toHexString(hash.getHashKey(key));
     System.out.println(" Hash: " + key);
     
     if(key.equals(expect)) {
@@ -50,32 +51,6 @@ public class Tests {
       if(!a[i].equals(b[i]))
         return false;
     return true;
-  }
-
-  public static boolean hashChainTest() {
-    String key = "test9999";
-    String expect[] = {"28f2e85bcc71f1824d5dd7fdae2fa5d5aed4f12594b3ef0c059b718445b4aa04",
-                       "7b23dcf7db34f8ad1fd92c67cd35a95a1661e6c5416e96548f09ee567d1b36b1",
-                       "3299b8e970dadb646da500b2d88e5e8cf8dcdc476f09000d5d011be346d24c32"};
-    int n = 3;
-    Hash hash = new Hash();
-    System.out.println("TEST: Hash Chain Test");
-   
-    System.out.println(" Key: " + key);
-    System.out.println(" N  : " + n);
-    String[] chain = hash.hashchain(n, key).toArray(new String[0]);
-    System.out.println(" HashChain: ");
-    for(String s : chain)
-      System.out.println("  " + s);
-    
-    
-    if(compareStrArray(chain, expect)) {
-      System.out.println("PASS");
-      return true;
-    }else {
-      System.out.println("FAIL");
-      return false;
-    }    
   }
 
   public static boolean compareByteArray(byte[] a, byte[] b) {
@@ -331,7 +306,6 @@ public class Tests {
       fis.close();
     } catch(Exception e) { return false; }
 
-    Encryption.setEncryption(NoEncryption.class);
     StoreFile sf = new StoreFile(data, fn, pass, k, n, servers);
     sf.store();
     
@@ -357,7 +331,7 @@ public class Tests {
     }else {
       System.out.println("FAIL");
       return false;
-    }  
+    }
   }
 
   public static void main(String args[]) {
@@ -366,7 +340,6 @@ public class Tests {
     test.add(encodeIntTest());
     //Hash tests
     test.add(hashTest());
-    test.add(hashChainTest());
     //Pad tests
     test.add(padPrependTest());
     test.add(padAppendTest());
@@ -377,7 +350,7 @@ public class Tests {
     test.add(matrixMultiplyTest());  //May need to look further into this...
     test.add(matrixInverseTest());
     //RS tests
-    test.add(RSFileTest());
+    //test.add(RSFileTest());
 
     int i = 0;
     for(boolean b : test){ 

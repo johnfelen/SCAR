@@ -2,7 +2,7 @@ package scar;
 
 import java.math.*;
 import java.util.*;
-import org.apache.commons.codec.binary.Hex;
+import org.spongycastle.util.encoders.Hex;
 
 public class GetFile {
   private String
@@ -21,7 +21,6 @@ public class GetFile {
     this.buffer = buffer;
     this.k = k;
     this.n = n;
-    Hash hash = new Hash();
     key = fn + password;
     servers = srvs;
   }
@@ -45,30 +44,57 @@ public class GetFile {
   //Get as many blocks from servers, decrypt, apply rs, remove padding
   public byte[] get() {
     //1. Compute HashChain
-    Hash hashChain = new Hash();
-    byte[][] hashArr = hashChain.hashchain(n, key);
+    Hash hash = new Hash();
+    byte[][] hashArr = hash.hashchain(n, key);
     
     int numOfServ = servers.length;
     ArrayList<Chunk> chunk = new ArrayList<Chunk>();
 
     //2. Get data
+    // Each chunk:
+    //   _______________________
+    //  | n-byte hash           |
+    //  |-----------------------|
+    //  | Chunk data...         |
+    //  |_______________________|
+    KeyGen keygen = new KeyGen();
+    keygen.seed(hash.getHash(key));
+    byte[] ckey = keygen.genBytes(hash.hashSize());
     int x = 0;
     while (x < n){
-      BigInteger num = new BigInteger(Hex.encodeHex(hashArr[x]), 16);
+      BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
       int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
       
-      byte[] c = servers[i].getData(Hex.encodeHex(hashChain.getHashKey(concate(fn,hashArr[x]))));
-      if (c != null){
-        chunk.add(new Chunk(c, x));
+      byte[] c = servers[i].getData(Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashArr[x]))));
+      if(c != null) {
+        c = hash.checkHMac(ckey, c);
+        if (c != null){ //Only add if valid data
+          chunk.add(new Chunk(c, x));
+        }
       }
       
       ++x;
     }
     
-    //3. Decode k chunks to get encrypted data back
+    
+    //3. Decode k chunks to get encrypted data back via RS
+    if(chunk.size() < k)
+      return null; //We don't have enough chunks to recover all the data
     RS rs = new RS();
     byte[] data = rs.decode(chunk.toArray(new Chunk[0]), k, n);
 
+    //RS Output:
+    //   _______________________
+    //  | 4-byte # of pad bytes |
+    //  |-----------------------|
+    //  | 16-byte MAC           |
+    //  |-----------------------|
+    //  | 16-byte IV            |
+    //  |-----------------------|
+    //  | Encrypted Data        |
+    //  |-----------------------|
+    //  | Padded bytes...       |
+    //  |_______________________|
     
     //4. Get the padding
     int padding = dint(data, 0);
@@ -78,8 +104,15 @@ public class GetFile {
     data = Pad.deprepend(data, 4);
 
     //6. Decrypt the data
+    //   _____________________
+    //  | 16-byte MAC         |
+    //  |---------------------|
+    //  | 16-byte IV          |
+    //  |---------------------|
+    //  | Encrypted Data      |
+    //  |_____________________|
     Encryption decrypt = Encryption.getInstance();
-    data = decrypt.decrypt(data, hashChain.getHashKey(key));
+    data = decrypt.decrypt(data, hash.getHash(key));
 
     return data;
   }
