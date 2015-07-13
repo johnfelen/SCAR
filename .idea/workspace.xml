@@ -8,7 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="84d576b3-a26d-4039-b417-7e3b3f624bd4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LogicLibrary/src/scar/Encryption.java" afterPath="$PROJECT_DIR$/LogicLibrary/src/scar/Encryption.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PC-Impl/src/scar/PCEncrypt.java" afterPath="$PROJECT_DIR$/PC-Impl/src/scar/PCEncrypt.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="scar - android.iws" />
@@ -76,8 +75,8 @@
       <file leaf-file-name="PCEncrypt.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PC-Impl/src/scar/PCEncrypt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-16.84">
-              <caret line="29" column="118" selection-start-line="29" selection-start-column="118" selection-end-line="29" selection-end-column="164" />
+            <state vertical-scroll-proportion="-18.2">
+              <caret line="28" column="50" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,11 +87,14 @@
       <file leaf-file-name="Encryption.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Encryption.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6028369">
-              <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
+            <state vertical-scroll-proportion="1.3817967">
+              <caret line="74" column="56" selection-start-line="74" selection-start-column="56" selection-end-line="74" selection-end-column="56" />
               <folding>
-                <element signature="e#215#216#0" expanded="true" />
-                <element signature="e#254#255#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#493#494#0" expanded="true" />
+                <element signature="e#532#533#0" expanded="true" />
+                <element signature="e#619#620#0" expanded="true" />
+                <element signature="e#706#707#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1745,7 +1747,13 @@
       <option name="project" value="LOCAL" />
       <updated>1435535805002</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="created wrapper functions for encryption logic file">
+      <created>1436755654907</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1436755654907</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1806,7 +1814,8 @@
     <MESSAGE value="PC Encryption implementation added" />
     <MESSAGE value="A couple PC-Impl fixes" />
     <MESSAGE value="android Encryption method complete" />
-    <option name="LAST_COMMIT_MESSAGE" value="android Encryption method complete" />
+    <MESSAGE value="created wrapper functions for encryption logic file" />
+    <option name="LAST_COMMIT_MESSAGE" value="created wrapper functions for encryption logic file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2053,8 +2062,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PC-Impl/src/scar/PCEncrypt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-16.84">
-          <caret line="29" column="118" selection-start-line="29" selection-start-column="118" selection-end-line="29" selection-end-column="164" />
+        <state vertical-scroll-proportion="-18.2">
+          <caret line="28" column="50" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -2063,11 +2072,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LogicLibrary/src/scar/Encryption.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6028369">
-          <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
+        <state vertical-scroll-proportion="1.3817967">
+          <caret line="74" column="56" selection-start-line="74" selection-start-column="56" selection-end-line="74" selection-end-column="56" />
           <folding>
-            <element signature="e#215#216#0" expanded="true" />
-            <element signature="e#254#255#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#493#494#0" expanded="true" />
+            <element signature="e#532#533#0" expanded="true" />
+            <element signature="e#619#620#0" expanded="true" />
+            <element signature="e#706#707#0" expanded="true" />
           </folding>
         </state>
       </provider>
