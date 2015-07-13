@@ -57,18 +57,18 @@ public class StoreFile {
     //  | Encrypted Data      |
     //  |_____________________|
     Hash hash = new Hash();
-    Encryption encrypt = Encryption.getInstance();
+    Encryption encrypt = new Encryption();
     data = encrypt.encrypt(data, hash.getHash(key));
 
     //2. add paddding information to data for RS
     //   _______________________
     //  | 4-byte # of pad bytes |
     //  |-----------------------|
-    //  | 16-byte MAC           | ---.
-    //  |-----------------------|    |
     //  | 16-byte IV            | ---.
-    //  |-----------------------|    |-- data before padding added
+    //  |-----------------------|    |
     //  | Encrypted Data        | ---.
+    //  |-----------------------|    |-- data before padding added
+    //  | 16-byte MAC           | ---.
     //  |-----------------------|
     //  | Padded bytes...       |
     //  |_______________________|

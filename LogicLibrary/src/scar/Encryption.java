@@ -1,104 +1,117 @@
 package scar;
 
 import java.lang.reflect.*;
-import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
-import org.bouncycastle.crypto.modes.CBCBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
+import org.spongycastle.crypto.engines.AESEngine;
+import org.spongycastle.crypto.modes.GCMBlockCipher;
+import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.params.AEADParameters;
 
 public class Encryption
 {
-    //Use this to get an object instance of the encryption class
-    //used in the implementation
-    public static Encryption getInstance()
-    {
-        return new Encryption();
+  private static final int IV_LEN = 16;
+  private static final int MAC_SIZE = 16;
+  
+  //key => 32 bytes
+  public byte[] encrypt( byte[] plainText, byte[] key )
+  //wrapper function to encrypt
+  {
+    //pad the data
+    byte[] paddedData = pad( plainText );
+    
+    //generate the IV
+    KeyGen keygen = new KeyGen();
+    keygen.seed(System.currentTimeMillis());
+    byte[] IV = keygen.genBytes(IV_LEN);
+
+    //Encrypt
+    byte[] cipherText = performCrypto(paddedData, key, IV, true);
+
+    //Append IV to first IV.length bytes of cipherText
+    cipherText = Pad.append(cipherText, IV.length);
+    for(int i = 0;i<IV.length;++i) {
+      cipherText[i] = IV[i];
+    }
+    
+    return cipherText;
+  }
+
+  public byte[] decrypt( byte[] data, byte[] key )
+  //wrapper function to decrypt
+  {
+    //Get IV from data
+    byte[] IV = new byte[IV_LEN];
+    System.arraycopy(data, 0, IV, 0, IV.length);
+    
+    //Remove IV from data
+    byte[] cipherText = new byte[data.length-16]; 
+    System.arraycopy(data, 16, cipherText, 0, cipherText.length); 
+
+    //Decrypt
+    byte[] paddedPlainText = performCrypto(cipherText, key, IV, false);
+
+    //depad the data
+    return depad(paddedPlainText);    
+  }
+
+  private byte[] performCrypto( byte[] data, byte[] key, byte[] IV, boolean encrypt )
+  //this function will do the actual encryption and if encrypt is true then this functions encrypts,
+  //false means to decrypt
+  {
+    GCMBlockCipher cipher = new GCMBlockCipher(new AESEngine());
+    
+    KeyParameter kp = new KeyParameter( key );
+    cipher.init( encrypt, new AEADParameters( kp, MAC_SIZE*8, IV, null ) );
+    //get the length of what the output data should be +/- MAC
+    int outputlen = encrypt ? data.length + MAC_SIZE : data.length - MAC_SIZE;
+    byte[] output = new byte[ outputlen ];  
+
+    int len = 0;
+    while( len < data.length ) { //encrypt/decrypt each block
+      len += cipher.processBytes( data, len, data.length, output, len );
     }
 
-    CBCBlockCipher cipher;	//cipher to encrypt/decrypt
-    byte[] IV;  //IV to be used with CBC encryption
-
-    public Encryption()   //constructor that will create a random IV, it can be set later again
-    {
-        cipher = new CBCBlockCipher( new AESEngine() );   //makes a AES CBC cipher
-        IV = genBytes( System.currentTimeMillis() );    //generate the IV by using the current time as a seed
+    try {
+      //If Encryption, appends our MAC to the last 16 bytes of data
+      //If Decryption, generates MAC and verifies vs MAC encoded in data
+      cipher.doFinal(output, len);
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
     }
+    
+    return output;
+  }
 
-    private void setIV( byte[] correctIV )  //this method will be used to set the IV if they already have one because they are decrypting with this instance
-    {
-        IV = correctIV;
+
+  //PKCS7 padding
+  private byte[] pad( byte[] data )
+  //pads the data so it can be encrypted
+  {
+    final int bsz = 16;
+    int blocks = (int) Math.ceil( data.length/bsz ) + 1;
+    int padding = blocks * bsz - data.length;
+
+    if(padding == 0)
+      padding = bsz;
+
+    byte[] ndat = new byte[ data.length + padding ];
+    System.arraycopy( data, 0, ndat, 0, data.length );
+    ndat[ ndat.length - 1 ] = (byte) padding;
+    return ndat;
+  }
+
+  private byte[] depad( byte[] data )
+  //depads the data so it can be decrypted
+  {
+    if(data != null) {
+      int padding = ( data[ data.length - 1 ] & 0xFF );
+      if(padding > 16 || padding == 0)
+        return null; //Invalid padding -> corrupted data
+      byte[] ndat = new byte[ data.length - padding ];
+      System.arraycopy( data, 0, ndat, 0, ndat.length );
+      return ndat;
+    } else {
+      return data; // corrupted data
     }
-
-    private byte[] getIV()  //this method will be used to stored the IV for later use because they are encrypting with this instance
-    {
-        return IV;
-    }
-
-    //key => 32 bytes
-    public byte[] encrypt( byte[] plainText, byte[] key )   //wrapper function to encrypt
-    {
-        byte[] paddedData = pad( plainText );   //pad the data
-        return performCrypto(paddedData, key, true);
-    }
-
-    public byte[] decrypt( byte[] cipherText, byte[] key )  //wrapper function to decrypt
-    {
-        byte[] paddedPlainText = performCrypto(cipherText, key, false);
-        return depad(paddedPlainText);    //depad the data
-    }
-
-    private byte[] performCrypto( byte[] data, byte[] key, boolean encrypt )  //this function will do the actual encryption and if encrypt is true then this functions encrypts, false means to decrypt
-    {
-        KeyParameter kp = new KeyParameter( key );
-        cipher.init( encrypt, new ParametersWithIV( kp, IV ) );   //initiate the cipher with an IV
-        byte[] outPut = new byte[ data.length ];  //get the length of what the output data should be
-
-        int len = 0;
-        while( len < data.length )  //encrypt/decrypt each block
-        {
-            len += cipher.processBlock( data, len, out, len );
-        }
-
-        return outPut;
-    }
-
-    private byte[] pad( byte[] data )   //pads the data so it can be encrypted
-    {
-        final int bsz = 16;
-        int blocks = (int) Math.ceil( data.length/bsz ) + 1;
-        int padding = blocks * bsz - data.length;
-
-        if(padding == 0)
-        {
-            padding = bsz;
-        }
-
-        byte[] ndat = new byte[ data.length + padding ];
-        System.arraycopy( data, 0, ndat, 0, data.length );
-        ndat[ ndat.length - 1 ] = (byte) padding;
-        return ndat;
-    }
-
-    private byte[] depad( byte[] data )  //depads the data so it can be decrypted
-    {
-        int padding = ( data[ data.length - 1 ] & 0xFF );
-        byte[] ndat = new byte[ data.length - padding ];
-        System.arraycopy( data, 0, ndat, 0, ndat.length );
-        return ndat;
-    }
-
-    private byte[] genBytes( long seed )   //generates random bytes to be used as an IV
-    {
-        byte[] ret = new byte[ 16 ];
-        Random r = new Random( seed );
-
-        for( int i = 0; i < amt; ++i )
-        {
-            ret[i] = (byte) r.nextInt( 256 );
-        }
-
-        return ret;
-    }
-
+  }
 }

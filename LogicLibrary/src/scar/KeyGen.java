@@ -27,4 +27,8 @@ public class KeyGen {
   public void seed(byte[] seed) {
     rnd.setSeed(seed);
   }
+
+  public void seed(long seed) {
+    rnd.setSeed(seed);
+  }
 }

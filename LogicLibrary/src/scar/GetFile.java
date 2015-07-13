@@ -87,11 +87,11 @@ public class GetFile {
     //   _______________________
     //  | 4-byte # of pad bytes |
     //  |-----------------------|
-    //  | 16-byte MAC           |
-    //  |-----------------------|
     //  | 16-byte IV            |
     //  |-----------------------|
     //  | Encrypted Data        |
+    //  |-----------------------|
+    //  | 16-byte MAC           | 
     //  |-----------------------|
     //  | Padded bytes...       |
     //  |_______________________|
@@ -111,7 +111,7 @@ public class GetFile {
     //  |---------------------|
     //  | Encrypted Data      |
     //  |_____________________|
-    Encryption decrypt = Encryption.getInstance();
+    Encryption decrypt = new Encryption();
     data = decrypt.decrypt(data, hash.getHash(key));
 
     return data;
