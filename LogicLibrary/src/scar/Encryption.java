@@ -17,10 +17,22 @@ public class Encryption
     }
 
     CBCBlockCipher cipher;	//cipher to encrypt/decrypt
+    byte[] IV;  //IV to be used with CBC encryption
 
-    public Encryption()
+    public Encryption()   //constructor that will create a random IV, it can be set later again
     {
-        cipher = new CBCBlockCipher( new AESEngine() ); //makes a AES CBC cipher
+        cipher = new CBCBlockCipher( new AESEngine() );   //makes a AES CBC cipher
+        IV = genBytes( System.currentTimeMillis() );    //generate the IV by using the current time as a seed
+    }
+
+    private void setIV( byte[] correctIV )  //this method will be used to set the IV if they already have one because they are decrypting with this instance
+    {
+        IV = correctIV;
+    }
+
+    private byte[] getIV()  //this method will be used to stored the IV for later use because they are encrypting with this instance
+    {
+        return IV;
     }
 
     //key => 32 bytes
@@ -32,8 +44,8 @@ public class Encryption
 
     public byte[] decrypt( byte[] cipherText, byte[] key )  //wrapper function to decrypt
     {
-        byte[] paddedPlainText = performCrypto( cipherText, key, false );
-        return depad( paddedPlainText );    //depad the data
+        byte[] paddedPlainText = performCrypto(cipherText, key, false);
+        return depad(paddedPlainText);    //depad the data
     }
 
     private byte[] performCrypto( byte[] data, byte[] key, boolean encrypt )  //this function will do the actual encryption and if encrypt is true then this functions encrypts, false means to decrypt
@@ -76,15 +88,14 @@ public class Encryption
         return ndat;
     }
 
-    private byte[] genBytes( int amt, int seed )   //generates random bytes to be used as an IV
+    private byte[] genBytes( long seed )   //generates random bytes to be used as an IV
     {
-        byte[] ret = new byte[amt];
-        Random r = new Random(seed);
+        byte[] ret = new byte[ 16 ];
+        Random r = new Random( seed );
 
-        int i;
-        for(i=0;i<amt;++i)
+        for( int i = 0; i < amt; ++i )
         {
-            ret[i] = (byte)r.nextInt(256);
+            ret[i] = (byte) r.nextInt( 256 );
         }
 
         return ret;
