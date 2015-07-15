@@ -50,11 +50,11 @@ public class StoreFile {
     //1. Encrypt the data
     //Output format:
     //   _____________________
-    //  | 16-byte MAC         |
-    //  |---------------------|
     //  | 16-byte IV          |
     //  |---------------------|
     //  | Encrypted Data      |
+    //  |---------------------|
+    //  | 16-byte MAC         |
     //  |_____________________|
     Hash hash = new Hash();
     Encryption encrypt = new Encryption();
