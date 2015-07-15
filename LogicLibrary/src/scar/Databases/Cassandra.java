@@ -1,64 +1,74 @@
 import com.datastax.driver.core.*;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
-import com.datastax.driver.core.utils.UUIDs;
-import com.datastax.driver.osgi.api.MailboxException;
-import com.datastax.driver.osgi.api.MailboxMessage;
-import com.datastax.driver.osgi.api.MailboxService;
-
-import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.delete;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.insertInto;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Host;
+import com.datastax.driver.core.Metadata;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 
 public class Cassandra implements IServer {
-    public static final String CLASSTAG = ??; //Mysql.class.getSimpleName();
-    public String dbserver;
-    public String database = "scar_db" ;
-    public String userName;
-    public String pwd;
-    public String dbDriver = "com.mysql.jdbc.Driver";
-    public String dbPrefix = "jdbc:mysql://";
-    public String dbConnect;
-    public Connection conn = null;
-    public Statement stmt = null;
+    private Cluster cluster;            //Cassandra architecture.  Entry point to access data
+    private Session session;            //object that is manipulated to store/access data
+
     public boolean isConnected = false;
 
-    public Cassandra (String dbserver, String username, String pwd){
-        this.dbserver=dbserver;
-        this.userName=userName;
-        this.pwd=pwd;
-        dbConnect = dbPrefix + dbserver + "/" + database;
-        tryConnect();
+    //get the session reference
+    public Session getSession(){
+        return this.session;
     }
 
-    public void tryConnect(){
-        try{
+    //connect to cluster
+    public void connect(String node){
+        try {
+            cluster = Cluster.builer().addContactPoint(node).build();
+            isConnected = true;
 
+            session = cluster.connect();
         }
-        catch{
-
+        catch (Exception ex){
+            ex.printStackTrace();
+            isConnected = false;
         }
     }
 
-    public boolean isConnected(){
-        return isConnected;
+    //create DBs and tables
+    public void createSchema(){
+        //create DB
+        session.execute("CREATE KEYSPACE IF NOT EXISTS /dbName/ WITH replication " +
+            "= {'class':'SimpleStrategy', 'replication_factor':3};");
+
+        //create table
+        session.execute("CREATE TABLE IF NOT EXISTS /tableName/ (" +
+            /columns/ +
+            ");");
+        //repeat for multiple tables
     }
 
-    public retType executeQuery(String sql){
-
+    //store data in the clusters
+    public void loadData(){
+        //insert data into table
+        session.execute("INSERT INTO /tableName/ (columns) " +
+            "VALUES (" +
+            "data'" +
+            ";");
+        //repeat for multiple tables
     }
 
-    publlic retType executeUpdate(String sql){
+    //retreive data from clusters
+    public void querySchema(){
+        //query a table for data and store the rows
+        ResultSet results = session.execute("SELECT * FROM /tableName/ " +
+            "WHERE /parameters/");
 
+        for (Row row : results){
+            //iterate over the rows in the query results.  Use row.getString(/colName/) to get data
+        }
     }
 
-    public void closeStmt(){
-
-    }
-
-    public void closeConn(){
-
+    //close connections
+    public void close(){
+        session.close();
+        cluster.close();
     }
 
     //Data Storage with input fn as key
