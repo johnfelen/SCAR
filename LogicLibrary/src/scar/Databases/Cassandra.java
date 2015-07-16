@@ -29,6 +29,9 @@ public class Cassandra implements IServer {
         try {
             cluster = Cluster.builer().addContactPoint(node).build();
             isConnected = true;
+            //get connection metadata to see what we are connecting to
+            Metadata metadata = cluster.getMetadata();
+            System.out.printf("Connected to cluster: %s\n", metadata.getClusterName());
 
             session = cluster.connect();
         }
@@ -45,20 +48,15 @@ public class Cassandra implements IServer {
     }
 
     //Data Storage with input fn as key
-    public void storeData(String fn, byte[] data){
+    public void storeData(String fn, byte[] chunks){
         //insert data into table
-        session.execute("INSERT INTO /tableName/ (columns) " +
-                "VALUES (" +
-                "data'" +
-                ";");
-        //repeat for multiple tables
+        session.execute("INSERT INTO scar_files (key, data) VALUES (fn, chunks);");
     }
 
     //Retrieve Data with fn as key
     public byte[] getData(String fn){
         //query a table for data and store the rows
-        ResultSet results = session.execute("SELECT * FROM /tableName/ " +
-                "WHERE /parameters/");
+        ResultSet results = session.execute("SELECT * FROM scar_files WHERE key = fn;");
 
         for (Row row : results){
             //iterate over the rows in the query results.  Use row.getString(/colName/) to get data
