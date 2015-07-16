@@ -6,6 +6,13 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
+/* Table Name scar_files
+ * Columns: 'key' - varchar(32), 'data' - bytes[]/BLOB
+ *
+ * 'key' = the filename hash used to get the file when requested (fn)
+ * 'data' = our chunk data (data)
+ */
+
 public class Cassandra implements IServer {
     private Cluster cluster;            //Cassandra architecture.  Entry point to access data
     private Session session;            //object that is manipulated to store/access data
