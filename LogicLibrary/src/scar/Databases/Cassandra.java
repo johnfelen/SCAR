@@ -31,40 +31,6 @@ public class Cassandra implements IServer {
         }
     }
 
-    //create DBs and tables
-    public void createSchema(){
-        //create DB
-        session.execute("CREATE KEYSPACE IF NOT EXISTS /dbName/ WITH replication " +
-            "= {'class':'SimpleStrategy', 'replication_factor':3};");
-
-        //create table
-        session.execute("CREATE TABLE IF NOT EXISTS /tableName/ (" +
-            /columns/ +
-            ");");
-        //repeat for multiple tables
-    }
-
-    //store data in the clusters
-    public void loadData(){
-        //insert data into table
-        session.execute("INSERT INTO /tableName/ (columns) " +
-            "VALUES (" +
-            "data'" +
-            ";");
-        //repeat for multiple tables
-    }
-
-    //retreive data from clusters
-    public void querySchema(){
-        //query a table for data and store the rows
-        ResultSet results = session.execute("SELECT * FROM /tableName/ " +
-            "WHERE /parameters/");
-
-        for (Row row : results){
-            //iterate over the rows in the query results.  Use row.getString(/colName/) to get data
-        }
-    }
-
     //close connections
     public void close(){
         session.close();
@@ -73,11 +39,22 @@ public class Cassandra implements IServer {
 
     //Data Storage with input fn as key
     public void storeData(String fn, byte[] data){
-
+        //insert data into table
+        session.execute("INSERT INTO /tableName/ (columns) " +
+                "VALUES (" +
+                "data'" +
+                ";");
+        //repeat for multiple tables
     }
 
     //Retrieve Data with fn as key
     public byte[] getData(String fn){
+        //query a table for data and store the rows
+        ResultSet results = session.execute("SELECT * FROM /tableName/ " +
+                "WHERE /parameters/");
 
+        for (Row row : results){
+            //iterate over the rows in the query results.  Use row.getString(/colName/) to get data
+        }
     }
 }
