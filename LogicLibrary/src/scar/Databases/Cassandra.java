@@ -24,7 +24,7 @@ public class Cassandra implements IServer {
         return this.session;
     }
 
-    //connect to cluster
+    //connect to cluster.  node = IP Address
     public void connect(String node){
         try {
             cluster = Cluster.builer().addContactPoint(node).build();
@@ -32,10 +32,13 @@ public class Cassandra implements IServer {
             //get connection metadata to see what we are connecting to
             Metadata metadata = cluster.getMetadata();
             System.out.printf("Connected to cluster: %s\n", metadata.getClusterName());
-
+            
+            //store session for manipulation
             session = cluster.connect();
         }
         catch (Exception ex){
+            //failed connection
+            System.out.println("Unable to connect to Cassandra cluster.  You fail at life!");
             ex.printStackTrace();
             isConnected = false;
         }
@@ -46,6 +49,10 @@ public class Cassandra implements IServer {
         session.close();
         cluster.close();
     }
+    
+    //Current implementation assumes byte[] stored/retrieved as a whole. 
+    //Unsure if byte[] needs to be separated by "chunks" of data.
+    //If so, are we storing across multiple rows?  multiple clusters?
 
     //Data Storage with input fn as key
     public void storeData(String fn, byte[] chunks){
@@ -59,7 +66,7 @@ public class Cassandra implements IServer {
         ResultSet results = session.execute("SELECT * FROM scar_files WHERE key = fn;");
 
         for (Row row : results){
-            //iterate over the rows in the query results.  Use row.getString(/colName/) to get data
+            return row.getBytes("data");
         }
     }
 }
