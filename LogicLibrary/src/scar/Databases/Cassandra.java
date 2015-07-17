@@ -5,6 +5,7 @@ import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.querybuilder;
 
 /* Table Name scar_files
  * Columns: 'key' - varchar(32), 'data' - bytes[]/BLOB
@@ -57,15 +58,29 @@ public class Cassandra implements IServer {
     //Data Storage with input fn as key
     public void storeData(String fn, byte[] chunks){
         //insert data into table
-        session.execute("INSERT INTO scar_files (key, data) VALUES (fn, chunks);");
+        //original statement
+        //session.execute("INSERT INTO scar_files (key, data) VALUES (fn, chunks);");
+        
+        //Using Querybuilder since it is not subject to Insertion attacks
+        Insert insert = QueryBuilder.insertInto("keyspace", "scar_files")
+            .value("key", fn).value("data", chucks);
+        session.execute(insert);
     }
 
     //Retrieve Data with fn as key
     public byte[] getData(String fn){
         //query a table for data and store the rows
-        ResultSet results = session.execute("SELECT * FROM scar_files WHERE key = fn;");
+        //original statement
+        //ResultSet results = session.execute("SELECT * FROM scar_files WHERE key = fn;");
+        
+        //Using QueryBuilder since it is not subject to Insertion attacks
+        Select select = QueryBuilder.select().all().distinct()
+            .from("keyspace", "scar_files")
+            .where(eq("key", fn));
+        ResultSet results = session.execute(select);
 
         for (Row row : results){
+            //returns as a byte[]
             return row.getBytes("data");
         }
     }
