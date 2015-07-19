@@ -4,3 +4,9 @@ app/build/
 local.properties
 .idea/
 .idea/workspace.xml
+.gradle/
+gradle/
+import-summary.txt
+gradlew
+gradlew.bat
+build.gradle
