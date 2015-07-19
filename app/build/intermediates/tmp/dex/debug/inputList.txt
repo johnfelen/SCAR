@@ -1,9 +1,0 @@
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\classes\debug
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-c4a45c67b495759a91249e50fba1a09a6d9c0b4a.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\apache-commons-codec-1.4-9cd7081595f3209ef8e92f2e89498d78a2ba0cb7.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-cd2f32faac50f081df1f1b1a48115e02ecb532fb.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\jlinalg-api_0.6-9275650f71078bd1ffa12023277cd1fd21414b27.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\jedis-2.1.0-758b612f14e4094eee63f4b738d58175eb10f2b0.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\mongo-java-driver-2.9.3-21f0f6b5c789a8bb0c04d221334aebbd73511beb.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\mysql-connector-java-3.0.17-ga-bin-ad9250b5ad95a7067c79bfbe37904eb1e3ad643c.jar
-C:\Users\John\.AndroidStudio\CryptoResearch\app\build\intermediates\pre-dexed\debug\classes-8cdaa6d8ad732a204d2de509c46145bb1fa8f028.jar

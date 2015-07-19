@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- When selected, use black -->
-    <item android:drawable="@drawable/download"
-          android:state_selected="true" />
-    <!-- When not selected, use gray-->
-    <item android:drawable="@drawable/download_off" />
-</selector><!-- From: file:/C:/Users/John/.AndroidStudio/CryptoResearch/app/src/main/res/drawable-hdpi/download_tab.xml -->

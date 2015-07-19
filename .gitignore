@@ -1,5 +1,6 @@
 *.class
 build/
+app/build/
 local.properties
 .idea/
 .idea/workspace.xml
