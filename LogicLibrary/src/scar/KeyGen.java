@@ -1,5 +1,6 @@
 package scar;
 
+import java.security.SecureRandom;
 import org.spongycastle.crypto.prng.*;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.macs.HMac;

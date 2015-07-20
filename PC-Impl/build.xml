@@ -24,6 +24,7 @@
         <attribute name="Main-Class" value="scar.pc.SimpleDemo"/>
       </manifest>
     </jar>
+	<copy todir="test"><fileset dir="lib"/></copy>
   </target>
   
   <target name="deftgt" depends="jar" />

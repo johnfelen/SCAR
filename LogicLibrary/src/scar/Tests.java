@@ -6,6 +6,18 @@ import java.io.*;
 
 public class Tests {
   private static GaloisField field = GaloisField.getInstance();
+  public static void createfile(String fn, byte[] data) {
+    try {
+      File file = new File(fn);
+      file.createNewFile();
+      FileOutputStream fout = new FileOutputStream(file);
+      fout.write(data);
+      fout.flush();
+      fout.close();
+    } catch(Exception e) {
+    }
+  }
+  
   public static boolean encodeIntTest() {
     StoreFile sf = new StoreFile(null, "1","2", 0, 0, null);
     GetFile gf = new GetFile("1","2", 0, 0, null);
@@ -33,7 +45,7 @@ public class Tests {
     System.out.println("TEST: Hash Test");
    
     System.out.println(" Key: " + key);
-    key = Hex.toHexString(hash.getHashKey(key));
+    key = Hex.toHexString(hash.getHash(key));
     System.out.println(" Hash: " + key);
     
     if(key.equals(expect)) {

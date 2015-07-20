@@ -75,8 +75,7 @@ public class StoreFile {
     data = Pad.prepend(data, 4);
     
     //3. pad data so the chunks are all the same sized
-    //    also account for a n-bit hash
-    int padding = (((int)Math.ceil((data.length+hash.hashSize())/(float)k)) *k) - (data.length+hash.hashSize());
+    int padding = (((int)Math.ceil((data.length)/(float)k)) *k) - (data.length);
     data = Pad.append(data, padding);
 
     //4. Set header bytes to the correct value as computed in (3)
@@ -94,16 +93,15 @@ public class StoreFile {
     //  |-----------------------|
     //  | Chunk data...         |
     //  |_______________________|
-    KeyGen keygen = new KeyGen();
-    keygen.seed(hash.getHash(key));
-    byte[] ckey = keygen.genBytes(hash.hashSize());
+    byte[] ckey = hash.getHash(key);
     for(int i = 0;i<chunk.length;++i) {
-      chunk[i] = Pad.prepend(chunk[i], hash.hashSize());
+      chunk[i] = Pad.prepend(chunk[i], hash.macSize());
+      //System.out.println("Chunk: " + i);
       hash.addHMac(ckey, chunk[i]);
     }
 
     //7. Introduce random number of garbage chunks into our chunks [TODO: Finish this]
-    int extrachunks = keygen.nextByte(250-(n+Math.min(10, 250-n))) + Math.min(10, 250-n);
+    //int extrachunks = keygen.nextByte(250-(n+Math.min(10, 250-n))) + Math.min(10, 250-n);
     
     //8. Compute HashChain 
     byte[][] hashArr = hash.hashchain(n, key);

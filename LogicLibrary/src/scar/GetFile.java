@@ -57,9 +57,7 @@ public class GetFile {
     //  |-----------------------|
     //  | Chunk data...         |
     //  |_______________________|
-    KeyGen keygen = new KeyGen();
-    keygen.seed(hash.getHash(key));
-    byte[] ckey = keygen.genBytes(hash.hashSize());
+    byte[] ckey = hash.getHash(key);
     int x = 0;
     while (x < n){
       BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
@@ -67,6 +65,7 @@ public class GetFile {
       
       byte[] c = servers[i].getData(Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashArr[x]))));
       if(c != null) {
+        // System.out.println("Chunk: " + x);
         c = hash.checkHMac(ckey, c);
         if (c != null){ //Only add if valid data
           chunk.add(new Chunk(c, x));
@@ -76,13 +75,12 @@ public class GetFile {
       ++x;
     }
     
-    
     //3. Decode k chunks to get encrypted data back via RS
     if(chunk.size() < k)
       return null; //We don't have enough chunks to recover all the data
     RS rs = new RS();
     byte[] data = rs.decode(chunk.toArray(new Chunk[0]), k, n);
-
+    
     //RS Output:
     //   _______________________
     //  | 4-byte # of pad bytes |
@@ -104,13 +102,13 @@ public class GetFile {
     data = Pad.deprepend(data, 4);
 
     //6. Decrypt the data
-    //   _____________________
-    //  | 16-byte MAC         |
-    //  |---------------------|
-    //  | 16-byte IV          |
-    //  |---------------------|
-    //  | Encrypted Data      |
-    //  |_____________________|
+    //   _______________________
+    //  | 16-byte IV            |
+    //  |-----------------------|
+    //  | Encrypted Data        |
+    //  |-----------------------|
+    //  | 16-byte MAC           | 
+    //  |_______________________|
     Encryption decrypt = new Encryption();
     data = decrypt.decrypt(data, hash.getHash(key));
 

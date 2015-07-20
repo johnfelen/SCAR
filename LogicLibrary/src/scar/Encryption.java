@@ -25,9 +25,9 @@ public class Encryption
 
     //Encrypt
     byte[] cipherText = performCrypto(paddedData, key, IV, true);
-
-    //Append IV to first IV.length bytes of cipherText
-    cipherText = Pad.append(cipherText, IV.length);
+    
+    //Prepend IV to first IV.length bytes of cipherText
+    cipherText = Pad.prepend(cipherText, IV.length);
     for(int i = 0;i<IV.length;++i) {
       cipherText[i] = IV[i];
     }
@@ -44,7 +44,7 @@ public class Encryption
     
     //Remove IV from data
     byte[] cipherText = new byte[data.length-16]; 
-    System.arraycopy(data, 16, cipherText, 0, cipherText.length); 
+    System.arraycopy(data, 16, cipherText, 0, cipherText.length);
 
     //Decrypt
     byte[] paddedPlainText = performCrypto(cipherText, key, IV, false);
@@ -62,11 +62,12 @@ public class Encryption
     KeyParameter kp = new KeyParameter( key );
     cipher.init( encrypt, new AEADParameters( kp, MAC_SIZE*8, IV, null ) );
     //get the length of what the output data should be +/- MAC
+    int inputlen = encrypt ? data.length : data.length - MAC_SIZE;
     int outputlen = encrypt ? data.length + MAC_SIZE : data.length - MAC_SIZE;
     byte[] output = new byte[ outputlen ];  
 
     int len = 0;
-    while( len < data.length ) { //encrypt/decrypt each block
+    while( len < inputlen ) { //encrypt/decrypt each block
       len += cipher.processBytes( data, len, data.length, output, len );
     }
 

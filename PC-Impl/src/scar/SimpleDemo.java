@@ -54,7 +54,6 @@ public class SimpleDemo {
     int k = Integer.parseInt(args[4]);
     int n = Integer.parseInt(args[5]);
     
-    scar.Encryption.setEncryption(PCEncrypt.class);
 
     if(args[0].equals("-store")) {
       store(path, fn, password, k, n);

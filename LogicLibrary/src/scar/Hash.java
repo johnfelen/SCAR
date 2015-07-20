@@ -22,6 +22,16 @@ public class Hash {
     return digest.getDigestSize();
   }
 
+  public int macSize() {
+    return hmac.getMacSize();
+  }
+
+  public static void print(byte[] data, int len) {
+    for(int i = 0;i<len;++i)
+      System.out.print((data[i] & 0xFF) + " ");
+    System.out.println();
+  }
+  
   //prepends HMAC into content 0...HMAC.size bytes
   public void addHMac(byte[] key, byte[] content) {
     int msz = hmac.getMacSize();
@@ -46,7 +56,7 @@ public class Hash {
       byte[] datahmac = new byte[expected.length];
       System.arraycopy(data, 0, expected, 0, expected.length);
       data = Pad.deprepend(data, expected.length);
-      
+
       hmac.reset();
       hmac.init(new KeyParameter(key));
       hmac.update(data, 0, data.length);

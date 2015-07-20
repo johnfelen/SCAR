@@ -1,3 +1,5 @@
+package scar;
+
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Host;
@@ -5,7 +7,8 @@ import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder;
+import com.datastax.driver.core.querybuilder.*;
+
 
 /* Table Name scar_files
  * Columns: 'key' - varchar(32), 'data' - bytes[]/BLOB
@@ -28,7 +31,7 @@ public class Cassandra implements IServer {
     //connect to cluster.  node = IP Address
     public void connect(String node){
         try {
-            cluster = Cluster.builer().addContactPoint(node).build();
+            cluster = Cluster.builder().addContactPoint(node).build();
             isConnected = true;
             //get connection metadata to see what we are connecting to
             Metadata metadata = cluster.getMetadata();
@@ -63,7 +66,7 @@ public class Cassandra implements IServer {
         
         //Using Querybuilder since it is not subject to Insertion attacks
         Insert insert = QueryBuilder.insertInto("keyspace", "scar_files")
-            .value("key", fn).value("data", chucks);
+            .value("key", fn).value("data", chunks);
         session.execute(insert);
     }
 
@@ -74,14 +77,15 @@ public class Cassandra implements IServer {
         //ResultSet results = session.execute("SELECT * FROM scar_files WHERE key = fn;");
         
         //Using QueryBuilder since it is not subject to Insertion attacks
-        Select select = QueryBuilder.select().all().distinct()
-            .from("keyspace", "scar_files")
-            .where(eq("key", fn));
+        Statement select = QueryBuilder.select().all()
+          .from("keyspace", "scar_files")
+          .where(QueryBuilder.eq("key", fn));
         ResultSet results = session.execute(select);
 
         for (Row row : results){
             //returns as a byte[]
-            return row.getBytes("data");
+          return row.getBytes("data").array();
         }
+        return null;
     }
 }

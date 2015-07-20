@@ -11,8 +11,11 @@
     <javac srcdir="src" destdir="build/classes" debug="on"
 	         source="1.5" target="1.5" includeantruntime="no">
 			<classpath>
-				<pathelement path="lib/apache-commons-codec-1.4.jar" />
 				<pathelement path="lib/core-1.52.0.0.jar" />
+				<pathelement path="lib/cassandra-driver-core-2.1.7.jar" />
+				<pathelement path="lib/guava-14.0.1.jar" />
+				<pathelement path="lib/metrics-core-3.0.2.jar" />
+				<pathelement path="lib/slf4j-api-1.7.5.jar" />
 			</classpath>
     </javac>
   </target>
@@ -21,10 +24,12 @@
     <jar destfile="build/scar-logic.jar" update="true">
       <fileset dir="build/classes" excludes="*.class"/>
       <manifest>
-	      <attribute name="Class-Path" value="apache-commons-codec-1.4.jar core-1.52.0.0.jar" />
+	      <attribute name="Class-Path" value="core-1.52.0.0.jar cassandra-driver-core-2.1.7.jar guava-14.0.1.jar metrics-core-3.0.2.jar slf4j-api-1.7.5.jar" />
         <attribute name="Main-Class" value="scar.Tests"/>
       </manifest>
     </jar>
+	<copy file="build/scar-logic.jar" tofile="../app/libs/scar-logic.jar"/>
+	<copy file="build/scar-logic.jar" tofile="../PC-Impl/lib/scar-logic.jar"/>
   </target>
   
   <target name="deftgt" depends="jar" />
