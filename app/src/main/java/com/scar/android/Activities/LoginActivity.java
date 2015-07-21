@@ -20,6 +20,7 @@ public class LoginActivity extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.login);
 
         // Init the MetaData db
         MetaData.init(this);
@@ -50,7 +51,7 @@ public class LoginActivity extends Activity
         });
 
 		/*Login part*/
-        setContentView(R.layout.login);
+
     }
 
 
