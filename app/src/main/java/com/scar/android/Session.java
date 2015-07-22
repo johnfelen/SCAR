@@ -17,4 +17,8 @@ public class Session {
         meta = null;
         password = null;
     }
+
+    public static boolean valid() {
+        return meta != null && meta.valid() && password != null;
+    }
 }

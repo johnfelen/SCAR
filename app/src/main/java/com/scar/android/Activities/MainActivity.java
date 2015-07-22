@@ -13,21 +13,22 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.android.scar.R;
+import com.scar.android.Session;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity {
     TabHost tabHost;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		/*Code is after they succesfully logged in*/
-		setContentView(R.layout.activity_main);
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
 
         // create the TabHost that will contain the Tabs
-       tabHost = (TabHost)findViewById(android.R.id.tabhost);
+        tabHost = (TabHost) findViewById(android.R.id.tabhost);
         //tabHost.getTabWidget().setShowDividers(TabWidget.SHOW_DIVIDER_MIDDLE);
         //tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
-        //change the color of the actionbar
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
 
@@ -35,8 +36,8 @@ public class MainActivity extends TabActivity {
         TabSpec tab2 = tabHost.newTabSpec("Second Tab");
         TabSpec tab3 = tabHost.newTabSpec("Third tab");
 
-       // Set the Tab name and Activity
-       // that will be opened when particular Tab will be selected
+        // Set the Tab name and Activity
+        // that will be opened when particular Tab will be selected
         tab1.setIndicator("STORE"); //, getResources().getDrawable(R.drawable.send_tab) );
         tab1.setContent(new Intent(this,Store.class));
 
@@ -45,7 +46,7 @@ public class MainActivity extends TabActivity {
 
         tab3.setIndicator("SERVERS"); //, getResources().getDrawable(R.drawable.home_tab));
         tab3.setContent(new Intent(this,New_Server.class));
-        
+
         /** Add the tabs  to the TabHost to display. **/
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
@@ -82,18 +83,17 @@ public class MainActivity extends TabActivity {
                 getTabTV( tabHost.getCurrentTab() ).setTextColor(Color.parseColor("#2B468B"));
             }
         });
+    }
 
-        /*
-         * Below is for database
-         */
-        
-        //System.out.println("Does database exist?" +checkDataBase()); 
-        
-        /*
-         * 
-         */
-        
-	}
+    protected void onResume() {
+        super.onResume();
+        //Check if Session is valid before continuing
+        if (!Session.valid()) {
+            //Force user to Login first, MainActivity will go on Stop in the meantime.
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
 
     public TextView getTabTV(int childIndex)
     {

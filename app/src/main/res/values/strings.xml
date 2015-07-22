@@ -6,7 +6,8 @@
     <string name="retrieve_app">RETRIEVE</string>    
     <string name="new_server_app">SERVERS</string> 
     <string name="about_app">HOME</string>
-    
+    <string name="login_app">LOGIN</string>
+    <string name="cp_app">CREATE PASSWORD</string>
  
     <string name="action_about">About</string>
     <string name="hello_world"><u>Welcome to SCAR!</u></string>
@@ -43,5 +44,12 @@
         <item>Mongo DB</item>
         <item>Redis</item>
     </string-array>
-    
+
+
+    <string name="createpass">Create Password</string>
+    <string name="createpass_hint">A password must be at least 32 characters long.</string>
+    <string name="createpassbutton">Create</string>
+    <string name="generatepassbutton">Generate Random Password</string>
+    <string name="cancelbutton">Cancel</string>
+
 </resources>

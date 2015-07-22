@@ -1,6 +1,7 @@
 package com.scar.android;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -43,13 +44,16 @@ public class MetaData {
         TYPE_DROPBOX_STORE = 4;
 
     private final SQLiteDatabase db;
+    private final String dbname;
 
-    public MetaData(SQLiteDatabase db) {
-        this.db = db;
+    public MetaData(Activity act, String dbnm, String key) {
+        dbname = dbnm;
+        File dbf = act.getDatabasePath(dbname);
+        db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
         //Setup tables if needed
         db.execSQL("CREATE TABLE IF NOT EXISTS servers (id INTEGER,type INTEGER,hostname TEXT,port TEXT,username TEXT,password TEXT,PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files (id INTEGER,name TEXT,local TEXT,PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used (server_id INTEGER,file_id INTEGER,PRIMAY KEY(server_id, file_id),FOREIGN KEY(server_id) REFERENCES server(id),FOREIGN KEY(file_id) REFERENCES file(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used (server_id INTEGER,file_id INTEGER,PRIMARY KEY(server_id, file_id),FOREIGN KEY(server_id) REFERENCES server(id),FOREIGN KEY(file_id) REFERENCES file(id))");
     }
 
     /* sets up sqlcipher to work properly
@@ -63,21 +67,22 @@ public class MetaData {
      *
      *  Return null if no database found for given key
      */
-    public static MetaData load(String key) {
+    public static MetaData load(Activity act, String key) {
         int dbid = 0;
         while(true) {
-            File fdb = new File(dbid+".db");
+            File fdb = act.getDatabasePath(dbid+".db");
             if(fdb.exists()){
                 //Try to open db with given key
                 try {
-                    SQLiteDatabase db = SQLiteDatabase.openDatabase(dbid+".db", key, null, SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase db = SQLiteDatabase.openDatabase(fdb.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
                     //Correct database
-                    return new MetaData(db);
+                    return new MetaData(act, dbid+".db",key);
                 } catch(Exception e) {
                     //Failed to open with given key, or some other issue.
                     // Either way discard this db for this key
                 }
             } else break; //stop checking
+            dbid++;
         }
         return null; //Faild to find a db for this key
     }
@@ -88,7 +93,7 @@ public class MetaData {
      * Note call load(key) before this to ensure a db doesn't already
      *  exist with the given key
      */
-    public static MetaData create(String key) {
+    public static void create(Activity act, String key) {
         int dbid = 0;
         //get next dbid
         while(true){
@@ -96,8 +101,27 @@ public class MetaData {
             if(fdb.exists()) continue;
             else break; //found next id
         }
-        //Make the db
-        return new MetaData(SQLiteDatabase.openOrCreateDatabase(dbid+".db", key, null));
+        //Make the db for later use
+        String dbname = dbid + ".db";
+        File dbf = act.getDatabasePath(dbname);
+        dbf.getParentFile().mkdirs();
+        dbf.delete();
+        SQLiteDatabase.openOrCreateDatabase(dbf.getPath(), key, null).close();
+    }
+
+    //Ensures the MetaData is still valid
+    public boolean valid() {
+        return db != null && dbname != null;
+    }
+
+    //Close the database
+    public void close() {
+        db.close();
+    }
+
+    //Reopen the database
+    public void open() {
+
     }
 
     public ScarFile[] listFiles() {
