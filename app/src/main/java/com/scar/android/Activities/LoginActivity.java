@@ -21,7 +21,7 @@ import com.scar.android.Session;
  */
 public class LoginActivity extends Activity
 {
-    String newPassword; //a newly created password will be stored here
+    String checkPass = "";  //used to set the edit text if they did not type a password long enough in
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,15 +42,7 @@ public class LoginActivity extends Activity
         login.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Try to find metadata for password
-                MetaData meta = MetaData.load(getPassword());
-                if(meta != null) {
-                    //If successful open session
-                    Session.init(meta, getPassword());
-                    //put user into main activity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
+                login( getPassword() ); //get the password from the editText and login
             }
         });
 
@@ -70,17 +62,21 @@ public class LoginActivity extends Activity
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT);
                     input.setLayoutParams(lp);
+                    input.setText(checkPass);
                     createNewPass.setView(input);
 
                     /*This onclicklistenere will check if the password is atleast 32 characters and then store it into newPassword*/
                     createNewPass.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            String checkPass = input.getText().toString();
-                            System.out.println(checkPass);
+                            checkPass = input.getText().toString();
                             if (checkPass.length() >= 32)
                             {
-                                newPassword = checkPass;
+                                //TODO save the checkPass to the DB
+                                //TODO check if password has already been created, if created make another toast
+                                String tempLogin = checkPass;   //incase they log out so the password is not stored in create a new password
+                                checkPass = null;
+                                login( tempLogin ); //login with the newly created password
                             }
 
                             else
@@ -101,5 +97,18 @@ public class LoginActivity extends Activity
      */
     private String getPassword() {
         return ((EditText)findViewById(R.id.Enter_password)).getText().toString();
+    }
+
+    private void login(String password)  //used to login to SCAR
+    {
+        //Try to find metadata for password
+        MetaData meta = MetaData.load( password );
+        if(meta != null) {
+            //If successful open session
+            Session.init(meta, password);
+            //put user into main activity
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 }

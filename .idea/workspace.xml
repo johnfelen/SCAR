@@ -39,7 +39,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="">
+    <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="moved the login to its own method so that if a user created a password they could also login in right away">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/cache.properties.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileHashes.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.2.1/taskArtifacts/fileSnapshots.bin" />
@@ -115,8 +115,8 @@
       <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Activities/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8531318">
-              <caret line="87" column="134" selection-start-line="87" selection-start-column="134" selection-end-line="87" selection-end-column="134" />
+            <state vertical-scroll-proportion="0.8012959">
+              <caret line="78" column="48" selection-start-line="78" selection-start-column="48" selection-end-line="78" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -1798,7 +1798,13 @@
       <option name="project" value="LOCAL" />
       <updated>1437525550621</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="could not find a viable way to keep the alertbox open but I made a toast that will alert them that the password is not long enough">
+      <created>1437527948561</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1437527948561</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1861,7 +1867,8 @@
     <MESSAGE value="fixed the set content view in the login so the app will start" />
     <MESSAGE value="create password alertbox mostly finished" />
     <MESSAGE value="ActionBar is hiddin on LoginActivity" />
-    <option name="LAST_COMMIT_MESSAGE" value="ActionBar is hiddin on LoginActivity" />
+    <MESSAGE value="could not find a viable way to keep the alertbox open but I made a toast that will alert them that the password is not long enough" />
+    <option name="LAST_COMMIT_MESSAGE" value="could not find a viable way to keep the alertbox open but I made a toast that will alert them that the password is not long enough" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2308,8 +2315,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Activities/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8531318">
-          <caret line="87" column="134" selection-start-line="87" selection-start-column="134" selection-end-line="87" selection-end-column="134" />
+        <state vertical-scroll-proportion="0.8012959">
+          <caret line="78" column="48" selection-start-line="78" selection-start-column="48" selection-end-line="78" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
