@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.scar.android.MetaData;
 import com.android.scar.R;
@@ -56,10 +57,12 @@ public class LoginActivity extends Activity
         create.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {   //Start create password activity
-                    /*Creates the alertdialog with title and message*/
+                    /*Creates the alertdialog with text and buttons*/
                     AlertDialog.Builder createNewPass = new AlertDialog.Builder(LoginActivity.this);
                     createNewPass.setTitle("Create Password");
                     createNewPass.setMessage("A password must be at least 32 characters long.");
+                    createNewPass.setNegativeButton("CANCEL", null);
+                    createNewPass.setCancelable(false);
 
                     /*This input EditText will be where they actually enter a password*/
                     final EditText input = new EditText(LoginActivity.this);
@@ -73,10 +76,20 @@ public class LoginActivity extends Activity
                     createNewPass.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            newPassword = input.getText().toString();
+                            String checkPass = input.getText().toString();
+                            System.out.println(checkPass);
+                            if (checkPass.length() >= 32)
+                            {
+                                newPassword = checkPass;
+                            }
+
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "The password is not long enough", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
-                    createNewPass.setNegativeButton("CANCEL", null);
+
                     createNewPass.create().show();
             }
         });
