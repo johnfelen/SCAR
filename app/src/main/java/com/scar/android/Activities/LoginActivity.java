@@ -1,5 +1,6 @@
 package com.scar.android.Activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -27,6 +28,9 @@ public class LoginActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        /*Hide the ActionBar*/
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
         // Init the MetaData db
         MetaData.init(this);
 
