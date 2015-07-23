@@ -16,6 +16,9 @@ android {
     }
     productFlavors {
     }
+
+    compileOptions {
+    }
 }
 
 dependencies {

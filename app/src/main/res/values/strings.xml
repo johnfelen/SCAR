@@ -28,21 +28,26 @@
     <string name = "search_by">Search File Name:</string>
     
     <string name = "submit_new_server">ADD NEW SERVER</string>
-    <string name = "submit_load_server">LOAD SERVERS</string>
+    <string name = "delete_server">DELETE SERVER</string>
     
  	<string name = "server_type">Server:</string>
     
  	<string name = "server_password">Password:</string>
  	<string name = "server_username">Username:</string>
  	<string name = "server_hostname">Host Name:</string>
+    <string name = "as_dbname">Database Name:</string>
+    <string name = "as_label">Label:</string>
  	<string name = "server_port">Port:</string>
  	<string name = "server_name">Unique Server Name:</string>
  	
  	<string name = "retrieve_pass">Enter Document Retrieval Password:</string>
  	
      <string-array name="servers_array">
-        <item>Mongo DB</item>
-        <item>Redis</item>
+        <item>MySQL</item>
+        <item>Cassandra</item>
+         <item>SQLite</item>
+         <item>DropBox</item>
+         <item>Google Drive</item>
     </string-array>
 
 

@@ -26,9 +26,61 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp" />
     
-    </LinearLayout>    
+    </LinearLayout>
 
-    
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:id="@+id/linearLayout" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/as_label" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:inputType="text"
+            android:layout_marginTop="10dp"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"
+   android:paddingLeft="5dp"
+   android:paddingRight="5dp"
+   android:orientation="horizontal"
+   android:layout_gravity = "center"
+   >
+
+   <TextView
+       android:id="@+id/server_hostname"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="20dp"
+       android:layout_marginRight="5dp"
+       android:text="@string/server_hostname"
+
+       />
+
+    <EditText
+       android:id="@+id/host_name"
+       android:inputType = "text"
+       android:layout_marginTop="10dp"
+           android:layout_width="220dp"
+       android:layout_height="wrap_content" />
+
+   </LinearLayout>
+
     <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -56,37 +108,8 @@
         android:layout_height="wrap_content" />
     
     </LinearLayout>
-        
-     <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:orientation="horizontal" 
-    android:layout_gravity = "center"
-    >
-    
-    <TextView
-        android:id="@+id/server_hostname"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="5dp"
-        android:text="@string/server_hostname" 
-   
-        />
 
-     <EditText
-        android:id="@+id/host_name"
-        android:inputType = "text"
-        android:layout_marginTop="10dp"
-        	android:layout_width="220dp"
-        android:layout_height="wrap_content" />
-    
-    </LinearLayout>
-    					
-     
-    
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -36,12 +36,16 @@ import scar.IServer;
  */
 
 public class MetaData {
-    private final int
+    public static final int
         TYPE_MYSQL_STORE = 0,
         TYPE_CASS_STORE = 1,
         TYPE_SQLITE_STORE = 2,
-        TYPE_LOCALFILE_STORE = 3,
-        TYPE_DROPBOX_STORE = 4;
+        //TYPE_LOCALFILE_STORE = 3,
+        TYPE_DROPBOX_STORE = 3,
+        TYPE_GDRIVE_STORE = 4,
+
+        STATUS_ACTIVE = 0,
+        STATUS_DISABLE = 1;
 
     private final SQLiteDatabase db;
     private final String dbname;
@@ -51,7 +55,7 @@ public class MetaData {
         File dbf = act.getDatabasePath(dbname);
         db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
         //Setup tables if needed
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers (id INTEGER,type INTEGER,hostname TEXT,port TEXT,username TEXT,password TEXT,PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers (id INTEGER,status INTEGER, type INTEGER,label TEXT, hostname TEXT,port TEXT,username TEXT,password TEXT,PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files (id INTEGER,name TEXT,local TEXT,PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS servers_used (server_id INTEGER,file_id INTEGER,PRIMARY KEY(server_id, file_id),FOREIGN KEY(server_id) REFERENCES server(id),FOREIGN KEY(file_id) REFERENCES file(id))");
     }
@@ -135,6 +139,7 @@ public class MetaData {
             files[i++] = new ScarFile(cursor.getInt(cursor.getColumnIndex("id")),
                                       cursor.getString(cursor.getColumnIndex("name")),
                                       cursor.getString(cursor.getColumnIndex("local")));
+            cursor.moveToNext();
         }
 
         cursor.close();
@@ -147,22 +152,48 @@ public class MetaData {
         cur.moveToFirst();
 
         while(!cur.isAfterLast()) {
-            switch(cur.getInt(cur.getColumnIndex("type"))) {
-                case TYPE_MYSQL_STORE:
-                    break;
-                case TYPE_CASS_STORE:
-                    break;
-                case TYPE_SQLITE_STORE:
-                    servers[i] = new SQLiteStore(cur.getString(cur.getColumnIndex("hostname")));
-                    break;
-                case TYPE_LOCALFILE_STORE:
-                    break;
-                case TYPE_DROPBOX_STORE:
-                    break;
+            if(cur.getInt(cur.getColumnIndex("status")) == STATUS_ACTIVE) {
+                switch (cur.getInt(cur.getColumnIndex("type"))) {
+                    case TYPE_MYSQL_STORE:
+                        break;
+                    case TYPE_CASS_STORE:
+                        break;
+                    case TYPE_SQLITE_STORE:
+                        servers[i] = new SQLiteStore(cur.getString(cur.getColumnIndex("hostname")));
+                        break;
+                    case TYPE_GDRIVE_STORE:
+                        break;
+                    case TYPE_DROPBOX_STORE:
+                        break;
+                }
             }
+            ++i;
+            cur.moveToNext();
         }
+        cur.close();
 
         return servers;
+    }
+
+    public Server[] getAllServerInfo() {
+        Cursor cur = db.rawQuery("select * from servers", null);
+        Server srvs[] = new Server[cur.getCount()];
+        int i = 0;
+        cur.moveToFirst();
+
+        while(!cur.isAfterLast()) {
+            srvs[i++] = new Server(cur.getInt(cur.getColumnIndex("type")),
+                                cur.getInt(cur.getColumnIndex("status")),
+                                cur.getString(cur.getColumnIndex("label")),
+                                cur.getString(cur.getColumnIndex("hostname")),
+                                cur.getString(cur.getColumnIndex("port")),
+                                cur.getString(cur.getColumnIndex("username")),
+                                cur.getString(cur.getColumnIndex("password")));
+            cur.moveToNext();
+        }
+        cur.close();
+
+        return srvs;
     }
 
     public IServer[] getAllServers() {
@@ -179,6 +210,7 @@ public class MetaData {
     }
 
     public void setServers(String fn) {
+        db.beginTransaction();
         Cursor fcur = db.rawQuery("select id from files where name = ?", new String[] { fn });
         fcur.moveToFirst();
         if(fcur.getCount() > 0) {
@@ -193,35 +225,60 @@ public class MetaData {
                 db.rawQuery("insert into servers_used (server_id, file_id) values (" +
                             srvs.getInt(srvs.getColumnIndex("id")) + "," +
                             fid + ")", null);
+                srvs.moveToNext();
             }
+            fcur.moveToNext();
         }
+        fcur.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
-    public void newFile(String fn) {
-        db.rawQuery("insert into files values ((select max(id)+1 from files), ?, null)",
-                new String[] { fn });
+    public void newFile(String fn, String local) {
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ? , ?)");
+        stmt.bindString(1, fn);
+        stmt.bindString(2, local);
+        stmt.executeInsert();
+        db.setTransactionSuccessful();
+        db.endTransaction();
         setServers(fn);
     }
 
-    public void newServer(int type, String host, String port, String uname, String pass) {
-        db.rawQuery("insert into servers values ((select max(id)+1 from servers), " + type +
-                        "?, ?, ?, ?)",
-                new String[]{host, port, uname, pass});
+    public void newServer(int type, String label, String host, String port, String uname, String pass) {
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, status, label, hostname, port, username, password) values ((select max(id)+1 from servers), ?, ?, ?, ? , ?, ? , ?)");
+        stmt.bindLong(1, type);
+        stmt.bindLong(2, STATUS_ACTIVE);
+        stmt.bindString(3, label);
+        stmt.bindString(4, host);
+        stmt.bindString(5, port);
+        stmt.bindString(6, uname);
+        stmt.bindString(7, pass);
+        stmt.executeInsert();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public void updateFile(int id, String fn, String local) {
+        db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update files set name = ?, local = ? where id = " + id);
         stmt.bindString(1, fn);
         stmt.bindString(2, local);
-        stmt.execute();
+        stmt.executeUpdateDelete();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public void updateServer(int id, int type, String host, String port, String uname, String pass) {
+        db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update servers set type = " + type + ", hostname = ?, port = ?, uname = ?, pass = ? where id = " + id);
         stmt.bindString(1, host);
         stmt.bindString(2, port);
         stmt.bindString(3, uname);
         stmt.bindString(4, pass);
-        stmt.execute();
+        stmt.executeUpdateDelete();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 }

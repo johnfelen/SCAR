@@ -25,10 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity android:name="com.scar.android.Activities.Store" android:label="@string/store_app" ></activity>
-        <activity android:name="com.scar.android.Activities.Retrieve" android:label="@string/retrieve_app" ></activity>
-        <activity android:name="com.scar.android.Activities.New_Server" android:label="@string/new_server_app" ></activity>
+
         <activity android:name="com.scar.android.Activities.About" android:label="@string/about_app" ></activity>
         <activity android:name="com.scar.android.Activities.LoginActivity" android:label="@string/login_app"></activity>
         <activity android:name="com.scar.android.Activities.CreatePassword" android:label="@string/cp_app"></activity>
