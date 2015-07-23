@@ -1,7 +1,7 @@
 package com.scar.android.Activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -23,9 +23,7 @@ import com.android.scar.R;
 //this activity lets the user select a file and stores it on the server
 //this activity uses the store_layout.xml file 
 
-public class Store extends Activity {
-
-	public static final String CLASSTAG = Store.class.getSimpleName();
+public class Store extends Fragment {
 	private Button get_doc_btn, store_btn;
 	private ProgressDialog progressDialog;
 	EditText f_name;
@@ -40,15 +38,16 @@ public class Store extends Activity {
             else{
             progressDialog.setProgress(100);
             progressDialog.dismiss();
-            Log.v("SCAR", " " + Store.CLASSTAG + " worker thread done, file stored");
             }
         }
     };
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.store_layout, container, false);
+	}
+
+	public void onStart() {
+		super.onStart();
 		//Internet permission TODO: is this needed?
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -56,10 +55,9 @@ public class Store extends Activity {
 			StrictMode.setThreadPolicy(policy);
 		}
 
-		setContentView(R.layout.store_layout);
-		get_doc_btn = (Button)findViewById(R.id.getImage);
-		store_btn = (Button)findViewById(R.id.store_button);
-		f_name = (EditText) findViewById(R.id.Enter_fname);
+		get_doc_btn = (Button)getActivity().findViewById(R.id.getImage);
+		store_btn = (Button)getActivity().findViewById(R.id.store_button);
+		f_name = (EditText) getActivity().findViewById(R.id.Enter_fname);
 
 		//select document BUTTON
 		get_doc_btn.setOnClickListener(new Button.OnClickListener() {
@@ -79,26 +77,26 @@ public class Store extends Activity {
 		store_btn.setOnClickListener(new Button.OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				if(getFilename().equals("")) {
-					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this);
+				if (getFilename().equals("")) {
+					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give your file a name.");
-					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface dialog, int which){
+						public void onClick(DialogInterface dialog, int which) {
 							dialog.dismiss();
 						}
 					});
 				} else {
 					storeFile();
 				}
-			}});
+			}
+		});
 
 	}
 
-	public void storeFile()
-	{
-		progressDialog = new ProgressDialog(this);
+	public void storeFile() {
+		progressDialog = new ProgressDialog(this.getActivity());
 		progressDialog.setTitle("Store File");
 		progressDialog.setMessage("Working");
 		progressDialog.setIndeterminate(false);
@@ -118,22 +116,11 @@ public class Store extends Activity {
 					//5. run StoreFile with store function
         			handler.sendEmptyMessage(100); //completed successfully
         		} catch (Exception e) {
-        			Log.v("SCAR", " " + Store.CLASSTAG + e.getMessage());
 					handler.sendEmptyMessage(-1);
         		}
 
             }
         }.start();
-
-	}
-
-	@Override
-	//TODO: what does this do?
-	public boolean onOptionsItemSelected(MenuItem item){
-
-		Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-		startActivityForResult(myIntent, 0);
-		return true;
 
 	}
 

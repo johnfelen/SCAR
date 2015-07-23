@@ -1,18 +1,17 @@
 package com.scar.android.Activities;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.util.Log;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -24,10 +23,7 @@ import com.android.scar.R;
 //this activity retrieves the document from the server
 //this activity uses retrieve_layout.xml
 
-public class Retrieve extends Activity  {
-	
-	public static final String CLASSTAG = Retrieve.class.getSimpleName();
-
+public class Retrieve extends Fragment {
 	private Button getDoc;
 	private ProgressDialog progressDialog;
 	EditText doc_name;
@@ -37,10 +33,8 @@ public class Retrieve extends Activity  {
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(final Message msg) {
-            AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this);
-            Log.v("SCAR", " " + Retrieve.CLASSTAG + " handleMessage : " + msg);
+            AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
 			if(msg.what == -1) {
-                Log.v("SCAR", " " + Retrieve.CLASSTAG + " Display fail");
                 progressDialog.setProgress(0);
                 progressDialog.dismiss();
                 newDialog.setTitle("Failed to retrieve file");
@@ -67,18 +61,17 @@ public class Retrieve extends Activity  {
 				newDialog.setTitle("Retrieved!");
 				newDialog
 						.setMessage("Would you like to save this document?");
-				Log.v("SCAR", " " + Store.CLASSTAG
-						+ " worker thread done, file stored");
 
 				//TODO: Save bytes[] to a file that the user can access elsewhere
 			}
         }
     };
 
+
 	public void retrieveFile()
 	{
 		
-			progressDialog = new ProgressDialog(this);
+			progressDialog = new ProgressDialog(this.getActivity());
 			progressDialog.setTitle("Retrieve File");
 			progressDialog.setMessage("Working");
 			progressDialog.setIndeterminate(false);
@@ -101,8 +94,8 @@ public class Retrieve extends Activity  {
 						//4. Goto line 89 and fill out the saving bytes[] to a file
 						handler.sendEmptyMessage(100); //Completed
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						Log.v("SCAR",Retrieve.CLASSTAG+" "+e.getMessage());
+						//Failed
+						handler.sendEmptyMessage(-1);
 					}
 
 				}
@@ -110,28 +103,31 @@ public class Retrieve extends Activity  {
 
 	}
 
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.retrieve_layout);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.retrieve_layout, container, false);
+	}
+
+	public void onStart() {
+		super.onStart();
 		//Internet permission TODO: is this needed?
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 			.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
-		getDoc = (Button)findViewById(R.id.getDoc);
-		doc_name = (EditText) findViewById(R.id.kind);
+		getDoc = (Button)getActivity().findViewById(R.id.getDoc);
+		doc_name = (EditText)getActivity().findViewById(R.id.kind);
 		//RETRIEVE BUTTON
 		getDoc.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if(getFilename().equals("")) {
-					AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this);
+				if (getFilename().equals("")) {
+					AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give the file name.");
-					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface dialog, int which){
+						public void onClick(DialogInterface dialog, int which) {
 							dialog.dismiss();
 						}
 					});
@@ -140,15 +136,6 @@ public class Retrieve extends Activity  {
 				}
 			}
 		});
-	}
-
-
-	@Override
-	//TODO: what does this do?
-	public boolean onOptionsItemSelected(MenuItem item){
-		Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-		startActivityForResult(myIntent, 0);
-		return true;
 	}
 
 	private String getFilename() {

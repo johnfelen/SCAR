@@ -1,21 +1,16 @@
 package com.scar.android.Activities;
 
-import android.app.ActionBar.LayoutParams;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.support.v4.app.Fragment;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.scar.R;
@@ -26,20 +21,19 @@ import com.android.scar.R;
 //this page allows a user to add a new server
 //this file goes with the new_server_layout.xml file
 
-public class New_Server  extends Activity 
+public class New_Server  extends Fragment
 {
-	public int selected;
-	private Button new_server, load_server;
-	private EditText password, port_number ;
-	private EditText username, hostname;
+	private Button new_server;
+	private EditText password, username, hostname, port_number;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.newserver_layout);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.newserver_layout, container, false);
+	}
 
-		new_server = (Button)findViewById(R.id.submit_new_server);
-		load_server = (Button)findViewById(R.id.submit_load_server); 
+	public void onStart() {
+		super.onStart();
+
+		new_server = (Button)getActivity().findViewById(R.id.submit_new_server);
 		
 
 		//ADD NEW SERVER BUTTON shows a dialog box 
@@ -49,15 +43,15 @@ public class New_Server  extends Activity
 			{
 				// TODO Auto-generated method stub
 
-				AlertDialog.Builder newDialog = new AlertDialog.Builder(New_Server.this);
+				AlertDialog.Builder newDialog = new AlertDialog.Builder(New_Server.this.getActivity());
 				newDialog.setTitle("NEW SERVER");
-				ViewGroup add_server = (ViewGroup) getLayoutInflater().inflate(R.layout.add_server_dialog_box, null);
+				ViewGroup add_server = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.add_server_dialog_box, null);
 				newDialog.setView(add_server);
 
 				//CODE FOR THE SPINNER
 				final Spinner server_spinner = (Spinner) add_server.findViewById(R.id.servers_array);
 				// Create an ArrayAdapter using the string array and a default spinner layout
-				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(New_Server.this, R.array.servers_array, android.R.layout.simple_spinner_item);
+				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(New_Server.this.getActivity(), R.array.servers_array, android.R.layout.simple_spinner_item);
 				// Specify the layout to use when the list of choices appears
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				// Apply the adapter to the spinner
@@ -75,12 +69,12 @@ public class New_Server  extends Activity
 						if(hostname.getText().toString().compareTo("") == 0)
 						{
 							//no hostname entered 
-							Toast.makeText(New_Server.this,"No Host Name", Toast.LENGTH_LONG).show();
+							Toast.makeText(New_Server.this.getActivity(),"No Host Name", Toast.LENGTH_LONG).show();
 							dialog.dismiss();
 						}
 						else
 						{
-							Toast.makeText(New_Server.this,"Added new server! " + password.getText() + " " + username.getText() 
+							Toast.makeText(New_Server.this.getActivity(),"Added new server! " + password.getText() + " " + username.getText()
 									+ " " + hostname.getText() + " "+ port_number.getText() + " " + server_spinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
 							dialog.dismiss();
 					
@@ -98,32 +92,14 @@ public class New_Server  extends Activity
 						
 						}
 
-						//Dynamically add a new server to the list
-						LinearLayout serversList = (LinearLayout) findViewById(R.id.layout_server);
-						
-						Switch dynamic_switch = new Switch(New_Server.this);
-						
-					    dynamic_switch.setText(server_spinner.getSelectedItem().toString() + ", "+ hostname.getText() 
-									+ "\nUser: " + username.getText() + " Port: " + port_number.getText());
-						
-						//ADDING A NEW SWITCH FOR SERVER & DIVIDER LINE
-						LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-				        params.setMargins(0, 20, 0, 20);
-						dynamic_switch.setLayoutParams(params);
-						serversList.addView(dynamic_switch);
-						View line = new View(New_Server.this);
-						LinearLayout.LayoutParams line_params = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 2);
-						line.setLayoutParams(line_params);
-						line.setBackgroundColor(Color.LTGRAY);	
-						serversList.addView(line);  
+						//TODO: Dynamically add a new server to the list
+
 					}
 				});
 
 				newDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(DialogInterface dialog, int which){
-
-						Toast.makeText(New_Server.this,"Cancelled.", Toast.LENGTH_LONG).show();
 						dialog.dismiss();
 					}
 				});
@@ -136,10 +112,10 @@ public class New_Server  extends Activity
 
 	
     //back button clicked goes back home to MainActivity.java
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivityForResult(myIntent, 0);
-        return true;
-    }
+    //public boolean onOptionsItemSelected(MenuItem item){
+    //    Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+    //    startActivityForResult(myIntent, 0);
+    //    return true;
+    //}
 }
 

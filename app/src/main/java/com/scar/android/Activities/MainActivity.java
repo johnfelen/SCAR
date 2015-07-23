@@ -1,11 +1,13 @@
 package com.scar.android.Activities;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.app.TabActivity;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.widget.TabHost;
 import android.view.*;
@@ -15,42 +17,27 @@ import android.widget.TextView;
 import com.android.scar.R;
 import com.scar.android.Session;
 
-@SuppressWarnings("deprecation")
-public class MainActivity extends TabActivity {
-    TabHost tabHost;
+public class MainActivity extends FragmentActivity {
+    private FragmentTabHost tabHost;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-        // create the TabHost that will contain the Tabs
-        tabHost = (TabHost) findViewById(android.R.id.tabhost);
-        //tabHost.getTabWidget().setShowDividers(TabWidget.SHOW_DIVIDER_MIDDLE);
-        //tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
-
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
 
-        TabSpec tab1 = tabHost.newTabSpec("First Tab");
-        TabSpec tab2 = tabHost.newTabSpec("Second Tab");
-        TabSpec tab3 = tabHost.newTabSpec("Third tab");
+        // create the TabHost that will contain the Tabs
+        tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        tabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        // Set the Tab name and Activity
-        // that will be opened when particular Tab will be selected
-        tab1.setIndicator("STORE"); //, getResources().getDrawable(R.drawable.send_tab) );
-        tab1.setContent(new Intent(this,Store.class));
+        //TODO: change Store to Files when created
+        tabHost.addTab(tabHost.newTabSpec("1st Tab").setIndicator("FILES"), Store.class, null);
+        tabHost.addTab(tabHost.newTabSpec("2nd Tab").setIndicator("STORE"), Store.class, null);
+        tabHost.addTab(tabHost.newTabSpec("3rd Tab").setIndicator("RETRIEVE"), Retrieve.class, null);
+        tabHost.addTab(tabHost.newTabSpec("4th Tab").setIndicator("SERVERS"), New_Server.class, null);
 
-        tab2.setIndicator("RETRIEVE"); //, getResources().getDrawable(R.drawable.download_tab));
-        tab2.setContent(new Intent(this,Retrieve.class));
-
-        tab3.setIndicator("SERVERS"); //, getResources().getDrawable(R.drawable.home_tab));
-        tab3.setContent(new Intent(this,New_Server.class));
-
-        /** Add the tabs  to the TabHost to display. **/
-        tabHost.addTab(tab1);
-        tabHost.addTab(tab2);
-        tabHost.addTab(tab3);
 
         for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
         {
@@ -97,7 +84,7 @@ public class MainActivity extends TabActivity {
 
     public TextView getTabTV(int childIndex)
     {
-        ViewGroup tabVG = (ViewGroup) getTabHost().getTabWidget().getChildAt( childIndex );
+        ViewGroup tabVG = (ViewGroup) tabHost.getTabWidget().getChildAt( childIndex );
         return (TextView) tabVG.getChildAt(1);
     }
 

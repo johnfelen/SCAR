@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-   <TabHost
+   <android.support.v4.app.FragmentTabHost
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:id="@android:id/tabhost"
@@ -28,4 +28,4 @@
 
      		</FrameLayout>
     	</RelativeLayout>
-    </TabHost>
+    </android.support.v4.app.FragmentTabHost>
