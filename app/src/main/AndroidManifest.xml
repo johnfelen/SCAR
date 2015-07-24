@@ -3,19 +3,22 @@
     package="com.android.scar"
     android:versionCode="1"
     android:versionName="1.0" >
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.scar.android.Activities.MainActivity"
             android:label="@string/app_name" >
@@ -25,11 +28,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.scar.android.Activities.About" android:label="@string/about_app" ></activity>
-        <activity android:name="com.scar.android.Activities.LoginActivity" android:label="@string/login_app"></activity>
-        <activity android:name="com.scar.android.Activities.CreatePassword" android:label="@string/cp_app"></activity>
-        
+        <activity
+            android:name="com.scar.android.Activities.About"
+            android:label="@string/about_app" />
+        <activity
+            android:name="com.scar.android.Activities.LoginActivity"
+            android:label="@string/login_app" />
+        <activity
+            android:name="com.scar.android.Activities.CreatePassword"
+            android:label="@string/cp_app" />
+        <activity
+            android:name="com.scar.android.Activities.AddServer"
+            android:label="@string/as_app" >
+        </activity>
+        <activity
+            android:name="com.scar.android.Activities.ModifyServer"
+            android:label="@string/ms_app" >
+        </activity>
     </application>
 
 </manifest>

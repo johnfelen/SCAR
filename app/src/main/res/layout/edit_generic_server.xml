@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/asl_label"
+        android:id="@+id/textView4"
+        android:layout_alignBottom="@+id/as_label"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/as_label"
+        android:inputType="text"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textView4"
+        android:layout_alignStart="@+id/as_host" />
+
+    <TextView
+        android:id="@+id/server_hostname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/asl_host"
+        android:layout_alignBottom="@+id/as_host"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/as_host"
+        android:inputType = "text"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/as_label"
+        android:layout_alignEnd="@+id/as_port"
+        android:layout_toEndOf="@+id/server_hostname" />
+
+    <TextView
+        android:id="@+id/server_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/asl_port"
+        android:layout_above="@+id/as_uname"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:inputType = "number"
+        android:layout_width="220dp"
+        android:id="@+id/as_port"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/as_host"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/server_hostname" />
+
+    <TextView
+        android:id="@+id/server_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/asl_uname"
+        android:layout_alignBottom="@+id/as_uname"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="220dp"
+        android:id="@+id/as_uname"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/as_port"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/server_username"
+        android:layout_alignStart="@+id/as_port" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/asl_pass"
+        android:id="@+id/textView5"
+        android:layout_alignBottom="@+id/as_pass"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/as_pass"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/as_uname"
+        android:layout_alignEnd="@+id/as_uname"
+        android:layout_toEndOf="@+id/server_username"
+        android:layout_alignStart="@+id/as_uname" />
+
+
+</RelativeLayout>

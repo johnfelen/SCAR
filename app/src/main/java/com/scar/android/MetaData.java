@@ -1,7 +1,6 @@
 package com.scar.android;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -182,7 +181,8 @@ public class MetaData {
         cur.moveToFirst();
 
         while(!cur.isAfterLast()) {
-            srvs[i++] = new Server(cur.getInt(cur.getColumnIndex("type")),
+            srvs[i++] = new Server(cur.getInt(cur.getColumnIndex("id")),
+                                cur.getInt(cur.getColumnIndex("type")),
                                 cur.getInt(cur.getColumnIndex("status")),
                                 cur.getString(cur.getColumnIndex("label")),
                                 cur.getString(cur.getColumnIndex("hostname")),
@@ -240,6 +240,7 @@ public class MetaData {
         stmt.bindString(1, fn);
         stmt.bindString(2, local);
         stmt.executeInsert();
+        stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
         setServers(fn);
@@ -256,28 +257,43 @@ public class MetaData {
         stmt.bindString(6, uname);
         stmt.bindString(7, pass);
         stmt.executeInsert();
+        stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     public void updateFile(int id, String fn, String local) {
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("update files set name = ?, local = ? where id = " + id);
+        SQLiteStatement stmt = db.compileStatement("update files set name = ?, local = ? where id = ?");
         stmt.bindString(1, fn);
         stmt.bindString(2, local);
-        stmt.executeUpdateDelete();
+        stmt.bindLong(3, id);
+        stmt.execute();
+        stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
-    public void updateServer(int id, int type, String host, String port, String uname, String pass) {
+    public void updateServer(Server srv) {
+        updateServer(srv.id, srv.type, srv.status,srv.label,  srv.hostname, srv.port, srv.uname, srv.pass);
+    }
+
+    public void updateServer(int id, int type, int status, String label, String host, String port, String uname, String pass) {
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("update servers set type = " + type + ", hostname = ?, port = ?, uname = ?, pass = ? where id = " + id);
-        stmt.bindString(1, host);
-        stmt.bindString(2, port);
-        stmt.bindString(3, uname);
-        stmt.bindString(4, pass);
-        stmt.executeUpdateDelete();
+        SQLiteStatement stmt = db.compileStatement("update servers set type = ?, status = ?, label = ?, hostname = ?, port = ?, username = ?, password = ? where id = ?");
+        stmt.bindLong(1, type);
+        stmt.bindLong(2, status);
+        stmt.bindString(3, label);
+        stmt.bindString(4, host);
+        if(port != null)
+            stmt.bindString(5, port);
+        if(uname != null)
+            stmt.bindString(6, uname);
+        if(pass != null)
+            stmt.bindString(7, pass);
+        stmt.bindLong(8, id);
+        stmt.execute();
+        stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }

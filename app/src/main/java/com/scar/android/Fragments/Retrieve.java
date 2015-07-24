@@ -1,4 +1,4 @@
-package com.scar.android.Activities;
+package com.scar.android.Fragments;
 
 
 import android.app.AlertDialog;

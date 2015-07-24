@@ -1,7 +1,6 @@
 package com.scar.android.Activities;
 
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,10 +10,12 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.widget.TabHost;
 import android.view.*;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.android.scar.R;
+import com.scar.android.Fragments.Retrieve;
+import com.scar.android.Fragments.ServerList;
+import com.scar.android.Fragments.Store;
 import com.scar.android.Session;
 
 public class MainActivity extends FragmentActivity {
@@ -36,7 +37,7 @@ public class MainActivity extends FragmentActivity {
         tabHost.addTab(tabHost.newTabSpec("1st Tab").setIndicator("FILES"), Store.class, null);
         tabHost.addTab(tabHost.newTabSpec("2nd Tab").setIndicator("STORE"), Store.class, null);
         tabHost.addTab(tabHost.newTabSpec("3rd Tab").setIndicator("RETRIEVE"), Retrieve.class, null);
-        tabHost.addTab(tabHost.newTabSpec("4th Tab").setIndicator("SERVERS"), New_Server.class, null);
+        tabHost.addTab(tabHost.newTabSpec("4th Tab").setIndicator("SERVERS"), ServerList.class, null);
 
 
         for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)

@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.scar.android.Activities.AddServer">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/asl_title"
+        android:id="@+id/textView2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:text="@string/asl_servers"
+            android:id="@+id/textView3"
+            android:inputType="text"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentStart="true" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/asl_types"
+            android:entries="@array/asl_server_types"
+            android:spinnerMode="dropdown"
+            android:prompt="@string/asl_types_prompt"
+            android:layout_below="@+id/textView2"
+            android:layout_toEndOf="@+id/textView3" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ms_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/asl_add_btn">
+
+    </FrameLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/asl_add"
+        android:id="@+id/asl_add_btn"
+        android:textColor="#98EF8E"
+        android:background="@drawable/button_rounded_corners"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/textView2" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#98EF8E"
+        android:background="@drawable/button_rounded_corners"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="@string/cancel"
+        android:id="@+id/asl_cancel_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/ms_content"
+        android:layout_toEndOf="@+id/textView2" />
+</RelativeLayout>

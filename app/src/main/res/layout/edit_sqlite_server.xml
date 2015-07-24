@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/asl_label"
+        android:id="@+id/as_label_tv"
+        android:layout_alignBottom="@+id/as_label"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/as_label"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/as_dbname_tv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/asl_dbname"
+        android:id="@+id/as_dbname_tv"
+        android:layout_alignBottom="@+id/as_dbname"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/as_dbname"
+        android:layout_below="@+id/as_label"
+        android:layout_alignEnd="@+id/as_label"
+        android:layout_toEndOf="@+id/as_dbname_tv" />
+</RelativeLayout>
