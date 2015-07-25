@@ -19,7 +19,7 @@
 
         <EditText
             android:id="@+id/kind"
-            android:layout_width="300dp"
+            android:layout_width="275dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textMultiLine"
