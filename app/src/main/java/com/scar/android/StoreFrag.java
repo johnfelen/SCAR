@@ -12,6 +12,6 @@ public interface StoreFrag {
     void setLabel(String a);
     void setHost(String a);
     void setPort(String a);
-    void setUsername(String a);
-    void setPassword(String a);
+    void setUsername(byte[] a);
+    void setPassword(byte[] a);
 }

@@ -24,8 +24,8 @@ public class GenericStore extends Fragment implements StoreFrag {
         setLabel(bun.getString("lbl"));
         setHost(bun.getString("host"));
         setPort(bun.getString("port"));
-        setUsername(bun.getString("uname"));
-        setPassword(bun.getString("pass"));
+        setUsername(bun.getByteArray("uname"));
+        setPassword(bun.getByteArray("pass"));
     }
 
 
@@ -65,12 +65,13 @@ public class GenericStore extends Fragment implements StoreFrag {
         if(x != null)
             ((EditText)getActivity().findViewById(R.id.as_port)).setText(x.toCharArray(), 0, x.length());
     }
-    public void setUsername(String x) {
-        if(x != null)
-             ((EditText)getActivity().findViewById(R.id.as_uname)).setText(x.toCharArray(), 0, x.length());
+    public void setUsername(byte[] x) {
+        if (x != null) {
+            ((EditText) getActivity().findViewById(R.id.as_uname)).setText(new String(x));
+        }
     }
-    public void setPassword(String x) {
+    public void setPassword(byte[] x) {
         if(x != null)
-            ((EditText)getActivity().findViewById(R.id.as_pass)).setText(x.toCharArray(), 0, x.length());
+            ((EditText)getActivity().findViewById(R.id.as_pass)).setText(new String(x));
     }
 }

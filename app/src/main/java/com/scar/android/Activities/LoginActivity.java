@@ -45,7 +45,7 @@ public class LoginActivity extends Activity
                 MetaData meta = MetaData.load( LoginActivity.this, getPassword() );
                 if(meta != null) {
                     //If successful open session
-                    Session.init(meta, getPassword());
+                    Session.init(meta, getPassword().getBytes());
                     //Return from this activity
                     LoginActivity.this.finish();
                 } else {

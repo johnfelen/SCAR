@@ -42,7 +42,12 @@ public class ModifyServer extends FragmentActivity {
         Button update = (Button)findViewById(R.id.ms_update);
         update.setOnClickListener(new Button.OnClickListener() {
             public void onClick (View arg) {
-                Session.meta.updateServer(srv.id, srv.type, srv.status, frag.getLabel(), frag.getHost(), frag.getPort(), frag.getUsername(), frag.getPassword());
+                srv.label = frag.getLabel();
+                srv.hostname = frag.getHost();
+                srv.port = frag.getPort();
+                srv.uname = frag.getUsername().getBytes();
+                srv.pass = frag.getPassword().getBytes();
+                Session.meta.updateServer(srv);
                 finish(); //kill activity
             }
         });

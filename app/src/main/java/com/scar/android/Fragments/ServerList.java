@@ -70,8 +70,8 @@ public class ServerList extends Fragment
 								   args.getStringExtra("lbl"),
 									args.getStringExtra("host"),
 									args.getStringExtra("port"),
-									args.getStringExtra("uname"),
-									args.getStringExtra("port"));
+									args.getByteArrayExtra("uname"),
+									args.getByteArrayExtra("port"));
 		}
 	}
 

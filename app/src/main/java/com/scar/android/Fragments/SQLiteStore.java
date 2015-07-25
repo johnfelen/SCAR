@@ -25,8 +25,8 @@ public class SQLiteStore extends Fragment implements StoreFrag{
         setLabel(bun.getString("lbl"));
         setHost(bun.getString("host"));
         setPort(bun.getString("port"));
-        setUsername(bun.getString("uname"));
-        setPassword(bun.getString("pass"));
+        setUsername(bun.getByteArray("uname"));
+        setPassword(bun.getByteArray("pass"));
     }
 
     public int getType() {
@@ -54,6 +54,6 @@ public class SQLiteStore extends Fragment implements StoreFrag{
             ((EditText)getActivity().findViewById(R.id.as_dbname)).setText(x.toCharArray(), 0, x.length());
     }
     public void setPort(String x) {}
-    public void setUsername(String x) {}
-    public void setPassword(String x) {}
+    public void setUsername(byte[] x) {}
+    public void setPassword(byte[] x) {}
 }

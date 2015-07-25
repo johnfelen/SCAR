@@ -1,15 +1,14 @@
 package scar;
 
-import java.security.SecureRandom;
 import org.spongycastle.crypto.prng.*;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.macs.HMac;
 
 //Used to generate random bytes of various lengths based on keys as seed
-public class KeyGen {
+public class RndKeyGen {
   SP800SecureRandom rnd;
   
-  public KeyGen() {
+  public RndKeyGen() {
     SP800SecureRandomBuilder rndbuild = new SP800SecureRandomBuilder();
     rnd = rndbuild.buildHMAC(new HMac(new SHA256Digest()), null, false);
   }

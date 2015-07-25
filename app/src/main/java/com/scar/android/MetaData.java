@@ -10,11 +10,37 @@ import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
 
+import scar.DerivedKeyGen;
+import scar.Encryption;
 import scar.IServer;
 
-//TODO: SQLitDatabase.loadLibs(this) in main Activity...
 //TODO: Fill in server loading for each type
+
 //SQLite naming format: #.db starting from 0
+
+// Tables:
+// Files
+//   - id            : int    , File ID [PK]
+//   - Filename      : text   , name of file
+//   - Key           : byte[] , encrypted key for this file { SALT, IV, GCM encrypted data }
+//
+// Servers
+//   - id            : int   , Server ID [PK]
+//   - type          : int   , Server Type
+//   - status        : int   , Server Status
+//   - label         : text  , Server Name
+//   - hostname      : text  , Server hostname
+//   - port          : text  , Server port
+//   - username      : byte[], Server username { SALT, IV, GCM encrypted data }
+//   - password      : byte[], Server password { SALT, IV, GCM encrypted data }
+//
+// Servers_Used
+//   - file_id       : int, File ID
+//   - server_id     : int, Server ID associated with the file
+//
+// Local_Files
+//   - file_id       : int , File ID
+//   - localpath     : text, Path to the a local file for the given file
 
 /* Overview:
  *   Opening/Creating:
@@ -23,7 +49,8 @@ import scar.IServer;
  *   Using:
  *     listFiles() - Returns a list of all file names and local file paths
  *                    that has been stored/recieved by this app
- *     getAllServers() - Get all servers known to the app
+ *     getAllServers() - Get all servers known to the app in a functional state
+ *     getAllServersInfo() - Get all servers known to the app in a descriptive state
  *     getServers(filename) - Returns the servers used for the filename for receiving
  *     setServers(filename) - Sets the current filename to use the current servers known
  *                             in the db; removes any older known ones beforehand.
@@ -54,9 +81,31 @@ public class MetaData {
         File dbf = act.getDatabasePath(dbname);
         db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
         //Setup tables if needed
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers (id INTEGER,status INTEGER, type INTEGER,label TEXT, hostname TEXT,port TEXT,username TEXT,password TEXT,PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS files (id INTEGER,name TEXT,local TEXT,PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used (server_id INTEGER,file_id INTEGER,PRIMARY KEY(server_id, file_id),FOREIGN KEY(server_id) REFERENCES server(id),FOREIGN KEY(file_id) REFERENCES file(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
+                    +"id INTEGER,"
+                    +"status INTEGER,"
+                    +"type INTEGER,"
+                    +"label TEXT,"
+                    +"hostname TEXT,"
+                    +"port TEXT,"
+                    +"username TEXT,"
+                    +"password TEXT,"
+                    +"PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS files ("
+                    +"id INTEGER,"
+                    +"name TEXT,"
+                    +"PRIMARY KEY(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
+                +"server_id INTEGER,"
+                +"file_id INTEGER,"
+                +"PRIMARY KEY(server_id, file_id),"
+                +"FOREIGN KEY(server_id) REFERENCES server(id),"
+                +"FOREIGN KEY(file_id) REFERENCES file(id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
+                +"file_id INTEGER,"
+                +"localpath TEXT,"
+                +"PRIMARY KEY(file_id, localpath),"
+                +"FOREIGN KEY(file_id) REFERENCES file(id))");
     }
 
     /* sets up sqlcipher to work properly
@@ -87,7 +136,7 @@ public class MetaData {
             } else break; //stop checking
             dbid++;
         }
-        return null; //Faild to find a db for this key
+        return null; //Failed to find a db for this key
     }
 
     /* Load a new database with the key being
@@ -117,16 +166,6 @@ public class MetaData {
         return db != null && dbname != null;
     }
 
-    //Close the database
-    public void close() {
-        db.close();
-    }
-
-    //Reopen the database
-    public void open() {
-
-    }
-
     public ScarFile[] listFiles() {
         //Get number of files known atm
         Cursor cursor = db.rawQuery("select * from files", null);
@@ -136,12 +175,23 @@ public class MetaData {
 
         while(!cursor.isAfterLast()) {
             files[i++] = new ScarFile(cursor.getInt(cursor.getColumnIndex("id")),
-                                      cursor.getString(cursor.getColumnIndex("name")),
-                                      cursor.getString(cursor.getColumnIndex("local")));
+                                      cursor.getString(cursor.getColumnIndex("name")));
             cursor.moveToNext();
         }
 
         cursor.close();
+
+        for(ScarFile sf : files) {
+            cursor = db.rawQuery("select * from local_files where file_id = " + sf.id, null);
+            cursor.moveToFirst();
+
+            while(!cursor.isAfterLast()) {
+                sf.addLocal(cursor.getString(cursor.getColumnIndex("localpath")));
+            }
+
+            cursor.close();
+        }
+
         return files;
     }
 
@@ -187,8 +237,8 @@ public class MetaData {
                                 cur.getString(cur.getColumnIndex("label")),
                                 cur.getString(cur.getColumnIndex("hostname")),
                                 cur.getString(cur.getColumnIndex("port")),
-                                cur.getString(cur.getColumnIndex("username")),
-                                cur.getString(cur.getColumnIndex("password")));
+                                decryptText(cur.getBlob(cur.getColumnIndex("username"))),
+                                decryptText(cur.getBlob(cur.getColumnIndex("password"))));
             cur.moveToNext();
         }
         cur.close();
@@ -234,11 +284,13 @@ public class MetaData {
         db.endTransaction();
     }
 
-    public void newFile(String fn, String local) {
+    public void newFile(String fn, byte[] key) {
+        key = encryptText(key);
+
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ? , ?)");
+        SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ?, ?)");
         stmt.bindString(1, fn);
-        stmt.bindString(2, local);
+        stmt.bindBlob(2, key);
         stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
@@ -246,39 +298,47 @@ public class MetaData {
         setServers(fn);
     }
 
-    public void newServer(int type, String label, String host, String port, String uname, String pass) {
+    public void newServer(int type, String label, String host, String port, byte[] uname, byte[] pass) {
+        uname = encryptText(uname);
+        pass = encryptText(pass);
+
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, status, label, hostname, port, username, password) values ((select max(id)+1 from servers), ?, ?, ?, ? , ?, ? , ?)");
         stmt.bindLong(1, type);
         stmt.bindLong(2, STATUS_ACTIVE);
         stmt.bindString(3, label);
         stmt.bindString(4, host);
-        stmt.bindString(5, port);
-        stmt.bindString(6, uname);
-        stmt.bindString(7, pass);
+        if(port != null)
+            stmt.bindString(5, port);
+        if(uname != null)
+            stmt.bindBlob(6, uname);
+        if(pass != null)
+            stmt.bindBlob(7, pass);
         stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
-    public void updateFile(int id, String fn, String local) {
+    public void addLocalFile(int fid, String local) {
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("update files set name = ?, local = ? where id = ?");
-        stmt.bindString(1, fn);
-        stmt.bindString(2, local);
-        stmt.bindLong(3, id);
-        stmt.execute();
+        SQLiteStatement stmt = db.compileStatement("insert into local_files (file_id, local) values (?, ?))");
+        stmt.bindLong(1,fid);
+        stmt.bindString(2,local);
+        stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     public void updateServer(Server srv) {
-        updateServer(srv.id, srv.type, srv.status,srv.label,  srv.hostname, srv.port, srv.uname, srv.pass);
+        updateServer(srv.id, srv.type, srv.status, srv.label, srv.hostname, srv.port, srv.uname, srv.pass);
     }
 
-    public void updateServer(int id, int type, int status, String label, String host, String port, String uname, String pass) {
+    public void updateServer(int id, int type, int status, String label, String host, String port, byte[] uname, byte[] pass) {
+        uname = encryptText(uname);
+        pass = encryptText(pass);
+
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update servers set type = ?, status = ?, label = ?, hostname = ?, port = ?, username = ?, password = ? where id = ?");
         stmt.bindLong(1, type);
@@ -288,13 +348,58 @@ public class MetaData {
         if(port != null)
             stmt.bindString(5, port);
         if(uname != null)
-            stmt.bindString(6, uname);
+            stmt.bindBlob(6, uname);
         if(pass != null)
-            stmt.bindString(7, pass);
+            stmt.bindBlob(7, pass);
         stmt.bindLong(8, id);
         stmt.execute();
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+
+    //Output Format:
+    //   _________________
+    //  | n-byte SALT     |
+    //  |-----------------|
+    //  | m-byte IV       |
+    //  |-----------------|
+    //  | cipher text     |
+    //  |-----------------|
+    //  | 16-byte MAC     |
+    //  |_________________|
+    public byte[] encryptText(byte[] data) {
+        Encryption encrypt = new Encryption();
+        DerivedKeyGen keyGen = new DerivedKeyGen();
+
+        byte[] pack = keyGen.generateKeyPackage(Session.password, 256);
+        byte[] dkey = new byte[pack.length-DerivedKeyGen.SALT_SIZE];
+        System.arraycopy(pack, DerivedKeyGen.SALT_SIZE, dkey, 0, dkey.length);
+
+        dkey = encrypt.encrypt(data, dkey);
+
+        byte[] ret = new byte[dkey.length + DerivedKeyGen.SALT_SIZE];
+        System.arraycopy(pack, 0, ret, 0, DerivedKeyGen.SALT_SIZE);
+        System.arraycopy(dkey, 0, ret, DerivedKeyGen.SALT_SIZE, dkey.length);
+        return ret;
+    }
+
+    public byte[] decryptText(byte[] data) {
+        Encryption decrypt = new Encryption();
+        DerivedKeyGen keyGen = new DerivedKeyGen();
+        byte[] salt = new byte[DerivedKeyGen.SALT_SIZE];
+        byte[] ciph = new byte[data.length - salt.length];
+
+        System.arraycopy(data, 0, salt, 0, salt.length);
+        System.arraycopy(data, salt.length, ciph, 0, ciph.length);
+
+        byte[] ret = decrypt.decrypt(ciph, keyGen.generateKey(Session.password, salt, 256));
+
+        if(ret == null);
+            //Todo: throw some error, this shouldn't be possible since it would mean the database is corrupted
+            //      unless the data was modified in memory post-decryption and not by us
+
+        return ret;
     }
 }

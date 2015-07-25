@@ -9,9 +9,10 @@ public class Server {
     public final int id;
     public int type, status; //See MetaData constants for types/statuses
 
-    public String hostname, port, uname, pass, label;
+    public String hostname, port, label;
+    public byte[] uname, pass;
 
-    public Server(int id, int type, int status,String l, String h, String p, String u, String pa) {
+    public Server(int id, int type, int status,String l, String h, String p, byte[] u, byte[] pa) {
         this.id = id;
         this.type = type;
         this.status = status;
@@ -29,8 +30,8 @@ public class Server {
         label = args.getString("lbl");
         hostname = args.getString("host");
         port = args.getString("port");
-        uname = args.getString("uname");
-        pass = args.getString("pass");
+        uname = args.getByteArray("uname");
+        pass = args.getByteArray("pass");
     }
 
     public String toString() {
@@ -47,8 +48,8 @@ public class Server {
         Bundle bun = new Bundle();
         bun.putString("host", hostname);
         bun.putString("port", port);
-        bun.putString("uname", uname);
-        bun.putString("pass", pass);
+        bun.putByteArray("uname", uname);
+        bun.putByteArray("pass", pass);
         bun.putString("lbl", label);
         bun.putInt("id", id);
         bun.putInt("type", type);

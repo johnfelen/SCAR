@@ -6,9 +6,9 @@ package com.scar.android;
  */
 public class Session {
     public static MetaData meta;
-    public static String password;
+    public static byte[] password;
 
-    public static void init(MetaData data, String pas) {
+    public static void init(MetaData data, byte[] pas) {
         meta = data;
         password = pas;
     }

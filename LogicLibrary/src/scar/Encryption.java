@@ -12,6 +12,14 @@ public class Encryption
   private static final int MAC_SIZE = 16;
   
   //key => 32 bytes
+  //Output Format:
+  //  _________________
+  // | 16-byte IV      |
+  // |-----------------|
+  // | encrypted data  |
+  // |-----------------|
+  // | 16-byte MAC     |
+  // |_________________|
   public byte[] encrypt( byte[] plainText, byte[] key )
   //wrapper function to encrypt
   {
@@ -19,7 +27,7 @@ public class Encryption
     byte[] paddedData = pad( plainText );
     
     //generate the IV
-    KeyGen keygen = new KeyGen();
+    RndKeyGen keygen = new RndKeyGen();
     keygen.seed(System.currentTimeMillis());
     byte[] IV = keygen.genBytes(IV_LEN);
 
