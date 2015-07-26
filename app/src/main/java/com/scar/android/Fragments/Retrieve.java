@@ -4,10 +4,13 @@ package com.scar.android.Fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.scar.R;
+import com.scar.android.Session;
+
+import scar.GetFile;
+import scar.IServer;
 
 //TODO: This needs to be redone
 
@@ -62,7 +69,7 @@ public class Retrieve extends Fragment {
 				newDialog
 						.setMessage("Would you like to save this document?");
 
-				//TODO: Save bytes[] to a file that the user can access elsewhere
+				MediaStore.Images.Media.insertImage( getActivity().getContentResolver(), getBitmap( data ), getFilename() , "Recovered from SCAR");	//Save bytes[] to a file that the user can access elsewhere
 			}
         }
     };
@@ -86,11 +93,17 @@ public class Retrieve extends Fragment {
 				{
 
 					try {
-						//1. Gets the servers for the given filename
-						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
-						//2. Feed filename, password, servers and n = 100, k = 50 to a new scar.GetFile instance
-						//3. Get the bytes[] back from get() via scar.GetFile instance
-						//    set the data class variable to these bytes
+						IServer[] servers = Session.meta.getServers( getFilename() );	//Gets the servers for the given filename
+
+						if( servers.length == 0 )	// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
+						{
+							servers = Session.meta.getAllServers();
+						}
+
+						GetFile get =  new scar.GetFile( getFilename(), new String( Session.password ), 50, 100, servers );	//Feed filename, password, servers and n = 100, k = 50 to a new scar.GetFile instance
+
+						byte[] data = get.get();	//Get the bytes[] back from get() via scar.GetFile instance
+
 						//4. Goto line 89 and fill out the saving bytes[] to a file
 						handler.sendEmptyMessage(100); //Completed
 					} catch (Exception e) {
@@ -141,6 +154,12 @@ public class Retrieve extends Fragment {
 	private String getFilename() {
 		return doc_name.getText().toString();
 	}
+
+	private Bitmap getBitmap( byte[] bytes )	//takes bytes and converts it to a bitmap
+	{
+		return BitmapFactory.decodeByteArray( bytes, 0, bytes.length );
+	}
+
 }
 
 
