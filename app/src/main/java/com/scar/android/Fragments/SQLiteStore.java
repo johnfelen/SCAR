@@ -56,4 +56,6 @@ public class SQLiteStore extends Fragment implements StoreFrag{
     public void setPort(String x) {}
     public void setUsername(byte[] x) {}
     public void setPassword(byte[] x) {}
+
+    public boolean getStatus() { return true; }
 }

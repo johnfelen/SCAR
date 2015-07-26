@@ -18,6 +18,8 @@ public class SQLiteStore implements scar.IServer{
         db.execSQL("CREATE TABLE IF NOT EXISTS files (name TEXT,data BLOB,PRIMARY KEY(name))");
     }
 
+    public boolean getStatus() { return true; }
+
     public void storeData(String fn, byte[] data) {
         SQLiteStatement stmt = db.compileStatement("insert into files (?, ?)");
         stmt.bindString(1, fn);

@@ -6,9 +6,9 @@ import java.util.ArrayList;
  *
  */
 public class ScarFile {
-    final int id;
-    final String filename;
-    final ArrayList<String> localpaths;
+    final public int id;
+    final public String filename;
+    final public ArrayList<String> localpaths;
 
     public ScarFile(int i,String fn) {
         id = i;

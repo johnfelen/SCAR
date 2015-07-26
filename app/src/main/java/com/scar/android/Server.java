@@ -2,6 +2,12 @@ package com.scar.android;
 
 import android.os.Bundle;
 
+import com.scar.android.ServerImpl.SQLiteStore;
+
+import java.net.InetAddress;
+
+import scar.IServer;
+
 /* Contains all information about a specific server in the db
  */
 public class Server {
@@ -37,11 +43,26 @@ public class Server {
     public String toString() {
         return label;
     }
+
     public int getStatus() {
-        if(status == MetaData.STATUS_DISABLE)
-            return DISABLED;
-        //Todo: test status of this server
+        if(status == MetaData.STATUS_DISABLE) return DISABLED;
+        if(!getActual().getStatus()) return OFFLINE;
         return ONLINE;
+    }
+
+    public IServer getActual() {
+        IServer srv = null;
+        switch(type) {
+            case MetaData.TYPE_MYSQL_STORE:
+                break;
+            case MetaData.TYPE_CASS_STORE:
+                break;
+            case MetaData.TYPE_SQLITE_STORE:
+                srv = new SQLiteStore(hostname);
+                break;
+            //TODO: add in Dropbox/Google drive when ready
+        }
+        return srv;
     }
 
     public Bundle bundle() {

@@ -17,12 +17,11 @@
     android:layout_gravity="center"
      >
 
-    <EditText
+    <TextView
         android:id="@+id/Enter_fname"
-        android:inputType="textMultiLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Local File Name"/>
+        android:hint="@string/s_nofile"/>
 
      <Button
         android:id="@+id/getImage"

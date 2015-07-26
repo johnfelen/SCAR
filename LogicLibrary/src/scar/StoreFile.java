@@ -8,23 +8,21 @@ public class StoreFile {
   private IServer servers[];
   private byte[] data;
   private String
-    fn,
-    password,
-    key;
+    fn;
   private int
     buffer,
     k,
     n;
+  private byte[] key;
 
-  public StoreFile(byte[] data, String fn, String password,
+  public StoreFile(byte[] data, String fn, byte[] password,
                    int k, int n, IServer srvs[]) {
     this.data = data;
     this.fn = fn;
-    this.password = password;
     this.buffer = buffer;
     this.k = k;
     this.n = n;
-    key = fn + password;
+    key = password;
     servers = srvs;
   }
 
@@ -93,7 +91,8 @@ public class StoreFile {
     //  |-----------------------|
     //  | Chunk data...         |
     //  |_______________________|
-    byte[] ckey = hash.getHash(key);
+    //TODO: make the HMAC key a seperate key all together
+    byte[] ckey = hash.getHash(hash.getHash(key));
     for(int i = 0;i<chunk.length;++i) {
       chunk[i] = Pad.prepend(chunk[i], hash.macSize());
       //System.out.println("Chunk: " + i);

@@ -47,17 +47,22 @@ import scar.IServer;
  *     load(key) - Tries to open a database that has the password key
  *     create(key) - Makes a new database with the password key
  *   Using:
+ *     getFileKey() - Returns the key for this file if it has any
+ *     setFileKey(id, key) - Sets the key for this file
+ *     getFile(fn) - Returns the file with the given fn if any
  *     listFiles() - Returns a list of all file names and local file paths
  *                    that has been stored/recieved by this app
- *     getAllServers() - Get all servers known to the app in a functional state
+ *     getAllActiveServers() - Get all servers known to the app in a functional state
  *     getAllServersInfo() - Get all servers known to the app in a descriptive state
  *     getServers(filename) - Returns the servers used for the filename for receiving
- *     setServers(filename) - Sets the current filename to use the current servers known
- *                             in the db; removes any older known ones beforehand.
+ *     setServers(filename, srvs) - Sets the current filename to use the given servers
+ *
+ *     addLocalFile(fn, local) - Adds a local path for the given file
+ *
  *     newFile(filename) - Creates a new file in the db and sets up the servers for it
  *     newServer(type, hostname, port, uname, pass) - Creates a new server for the app
  *
- *     updateFile(id, filename, local) - Updates a file in SCAR
+ *     updateFile(id, filename) - Updates a file in SCAR
  *     updateServer(id, type, hostname, port, uname, pass) - Updates a server in SCAR
  */
 
@@ -195,28 +200,68 @@ public class MetaData {
         return files;
     }
 
-    private IServer[] collectServers(Cursor cur) {
-        IServer servers[] = new IServer[cur.getCount()];
+    public byte[] getFileKey(String fn){
+        byte[] key = null;
+        Cursor cur = db.rawQuery("select * from files where name = ?", new String[] { fn });
+        cur.moveToFirst();
+
+        if(!cur.isAfterLast())
+            key = decryptText(cur.getBlob(cur.getColumnIndex("key")));
+
+        cur.close();
+        return key;
+    }
+
+    public void setFileKey(int fid, byte[] key) {
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("update files set key = ? where id = ?");
+        stmt.bindBlob(1, key);
+        stmt.bindLong(2, fid);
+        stmt.execute();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public ScarFile getFile(String fn) {
+        ScarFile sf = null;
+        db.beginTransaction();
+        Cursor cur = db.rawQuery("select * from files where name = ?", new String[] { fn });
+        cur.moveToFirst();
+
+        if(!cur.isAfterLast()) {
+            sf = new ScarFile(cur.getInt(cur.getColumnIndex("id")),
+                              cur.getString(cur.getColumnIndex("name")));
+            //Add in local paths
+            cur.close();
+            cur = db.rawQuery("select * from local_files where file_id = " + sf.id, null);
+            cur.moveToFirst();
+
+            while(!cur.isAfterLast()) {
+                sf.addLocal(cur.getString(cur.getColumnIndex("localpath")));
+            }
+            cur.close();
+        } else
+            cur.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return sf;
+    }
+
+    private Server[] collectServers(Cursor cur) {
+        Server servers[] = new Server[cur.getCount()];
         int i = 0;
         cur.moveToFirst();
 
         while(!cur.isAfterLast()) {
-            if(cur.getInt(cur.getColumnIndex("status")) == STATUS_ACTIVE) {
-                switch (cur.getInt(cur.getColumnIndex("type"))) {
-                    case TYPE_MYSQL_STORE:
-                        break;
-                    case TYPE_CASS_STORE:
-                        break;
-                    case TYPE_SQLITE_STORE:
-                        servers[i] = new SQLiteStore(cur.getString(cur.getColumnIndex("hostname")));
-                        break;
-                    case TYPE_GDRIVE_STORE:
-                        break;
-                    case TYPE_DROPBOX_STORE:
-                        break;
-                }
-            }
-            ++i;
+            servers[i++] = new Server(cur.getInt(cur.getColumnIndex("id")),
+                                    cur.getInt(cur.getColumnIndex("type")),
+                                    cur.getInt(cur.getColumnIndex("status")),
+                                    cur.getString(cur.getColumnIndex("label")),
+                                    cur.getString(cur.getColumnIndex("hostname")),
+                                    cur.getString(cur.getColumnIndex("port")),
+                                    decryptText(cur.getBlob(cur.getColumnIndex("username"))),
+                                    decryptText(cur.getBlob(cur.getColumnIndex("password"))));
             cur.moveToNext();
         }
         cur.close();
@@ -226,32 +271,15 @@ public class MetaData {
 
     public Server[] getAllServerInfo() {
         Cursor cur = db.rawQuery("select * from servers", null);
-        Server srvs[] = new Server[cur.getCount()];
-        int i = 0;
-        cur.moveToFirst();
-
-        while(!cur.isAfterLast()) {
-            srvs[i++] = new Server(cur.getInt(cur.getColumnIndex("id")),
-                                cur.getInt(cur.getColumnIndex("type")),
-                                cur.getInt(cur.getColumnIndex("status")),
-                                cur.getString(cur.getColumnIndex("label")),
-                                cur.getString(cur.getColumnIndex("hostname")),
-                                cur.getString(cur.getColumnIndex("port")),
-                                decryptText(cur.getBlob(cur.getColumnIndex("username"))),
-                                decryptText(cur.getBlob(cur.getColumnIndex("password"))));
-            cur.moveToNext();
-        }
-        cur.close();
-
-        return srvs;
+        return collectServers(cur);
     }
 
-    public IServer[] getAllServers() {
-        Cursor cursor = db.rawQuery("select * from servers", null);
+    public Server[] getAllActiveServers() {
+        Cursor cursor = db.rawQuery("select * from servers where status = " + STATUS_ACTIVE, null);
         return collectServers(cursor);
     }
 
-    public IServer[] getServers(String fn) {
+    public Server[] getServers(String fn) {
         Cursor scur = db.rawQuery("select * " +
                 "from servers join servers_used on servers.id = servers_used.server_id" +
                 "where servers_used.file_id = (select ifnull(id,-1) from files where name = ?)",
@@ -259,27 +287,14 @@ public class MetaData {
         return collectServers(scur);
     }
 
-    public void setServers(String fn) {
+    public void setServers(int fid, Server[] srvs) {
         db.beginTransaction();
-        Cursor fcur = db.rawQuery("select id from files where name = ?", new String[] { fn });
-        fcur.moveToFirst();
-        if(fcur.getCount() > 0) {
-            int fid = fcur.getInt(fcur.getColumnIndex("id"));
-            //Remove old servers
-            db.rawQuery("delete from servers_used where file_id = " + fid, null);
-            //Update with new servers
-            Cursor srvs = db.rawQuery("select id from servers", null);
-            srvs.moveToFirst();
-
-            while (!srvs.isAfterLast()) {
-                db.rawQuery("insert into servers_used (server_id, file_id) values (" +
-                            srvs.getInt(srvs.getColumnIndex("id")) + "," +
-                            fid + ")", null);
-                srvs.moveToNext();
-            }
-            fcur.moveToNext();
-        }
-        fcur.close();
+        //Remove old servers
+        db.rawQuery("delete from servers_used where file_id = " + fid, null);
+        //Update with new servers
+        for(Server srv : srvs)
+            db.rawQuery("insert into servers_used (server_id, file_id) values (" +
+                            srv.id + ", " + fid + ")", null);
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -295,7 +310,6 @@ public class MetaData {
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
-        setServers(fn);
     }
 
     public void newServer(int type, String label, String host, String port, byte[] uname, byte[] pass) {

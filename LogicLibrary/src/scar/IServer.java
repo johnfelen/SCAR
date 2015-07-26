@@ -5,4 +5,5 @@ package scar;
 public interface IServer {
   public void storeData(String fn, byte[] data);
   public byte[] getData(String fn);
+  public boolean getStatus();
 }

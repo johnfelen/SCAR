@@ -11,6 +11,8 @@ public class LocalStore implements IServer {
     this.folder = folder;
   }
 
+  public boolean getStatus() { return true; }
+
   public void storeData(String fn, byte[] data) {
     try {
       File f = new File(folder+"/"+fn);

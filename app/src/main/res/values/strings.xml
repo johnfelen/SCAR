@@ -74,4 +74,7 @@
     <string name="ms_readd">Activate Server</string>
     <string name="ms_status">Server Status:</string>
 
+    <!-- Store Strings -->
+    <string name="s_nofile">No file selected</string>
+    
 </resources>

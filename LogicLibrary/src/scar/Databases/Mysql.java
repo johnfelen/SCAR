@@ -8,6 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import java.net.InetAddress;
+
 
 public class Mysql implements IServer {
 	public static final String CLASSTAG = Mysql.class.getSimpleName();
@@ -41,6 +43,14 @@ public class Mysql implements IServer {
 			ex.printStackTrace();
 			isConnected = false;
 		}
+  }
+
+  public boolean getStatus() {
+    try {
+      if(!InetAddress.getByName(dbserver).isReachable(30))
+        return false;
+    } catch(Exception e) { return false; }
+    return true;
   }
 
   public boolean isConnected()    //checks if the server successfully connected

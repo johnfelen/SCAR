@@ -6,22 +6,20 @@ import org.spongycastle.util.encoders.Hex;
 
 public class GetFile {
   private String
-    fn,
-    password,
-    key;
+    fn;
   private int
     buffer,
     k,
     n;
   private IServer servers[];
+  private byte[] key;
 
-  public GetFile(String fn, String password, int k, int n, IServer srvs[]) {
+  public GetFile(String fn, byte[] password, int k, int n, IServer srvs[]) {
     this.fn = fn;
-    this.password = password;
     this.buffer = buffer;
     this.k = k;
     this.n = n;
-    key = fn + password;
+    key = password;
     servers = srvs;
   }
   

@@ -84,7 +84,7 @@ public class Hash {
     return ret;
   }
 	
-	public byte[][] hashchain(int n, String key)
+	public byte[][] hashchain(int n, byte[] key)
 	{
     byte[][] hashes = new byte[n][];
     hashes[0] = getHash(key);

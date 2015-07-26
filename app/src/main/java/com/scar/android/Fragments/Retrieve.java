@@ -19,7 +19,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.scar.R;
+import com.scar.android.ScarFile;
+import com.scar.android.Server;
 import com.scar.android.Session;
+
+import java.util.ArrayList;
 
 import scar.GetFile;
 import scar.IServer;
@@ -69,7 +73,11 @@ public class Retrieve extends Fragment {
 				newDialog
 						.setMessage("Would you like to save this document?");
 
-				MediaStore.Images.Media.insertImage( getActivity().getContentResolver(), getBitmap( data ), getFilename() , "Recovered from SCAR");	//Save bytes[] to a file that the user can access elsewhere
+				//Save bytes[] to a file that the user can access elsewhere
+				String local = MediaStore.Images.Media.insertImage( getActivity().getContentResolver(), getBitmap( data ), getFilename() , "Recovered from SCAR");
+				//Add to meta data
+				ScarFile f = Session.meta.getFile(getFilename());
+				Session.meta.addLocalFile(f.id, local);
 			}
         }
     };
@@ -93,16 +101,36 @@ public class Retrieve extends Fragment {
 				{
 
 					try {
-						IServer[] servers = Session.meta.getServers( getFilename() );	//Gets the servers for the given filename
+						//Gets the servers for the given filename
+						Server[] servers = Session.meta.getServers(getFilename());
 
-						if( servers.length == 0 )	// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
+						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
+						if( servers.length == 0 )
 						{
-							servers = Session.meta.getAllServers();
+							servers = Session.meta.getAllActiveServers();
 						}
 
-						GetFile get =  new scar.GetFile( getFilename(), new String( Session.password ), 50, 100, servers );	//Feed filename, password, servers and n = 100, k = 50 to a new scar.GetFile instance
+						servers = testServers(servers);
+						IServer[] actualServers = toActualServers(servers);
 
-						byte[] data = get.get();	//Get the bytes[] back from get() via scar.GetFile instance
+						//Feed filename, password, servers and n = 100, k = 50 to a new scar.GetFile instance
+						//TODO: allow user to enter hash string of encryption key in case it's not stored on this device.
+						byte[] key = Session.meta.getFileKey(getFilename());
+						GetFile get =  new scar.GetFile( getFilename(),
+								                         key,
+								                         50,
+								                         100,
+								                         actualServers );
+
+						//Get the bytes[] back from get() via scar.GetFile instance
+						data = get.get();
+
+						if(Session.meta.getFile(getFilename()) == null) {
+							//Add file to the meta if it wasn't already
+							Session.meta.newFile(getFilename(), key);
+							ScarFile f = Session.meta.getFile(getFilename());
+							Session.meta.setServers(f.id, servers);
+						}
 
 						//4. Goto line 89 and fill out the saving bytes[] to a file
 						handler.sendEmptyMessage(100); //Completed
@@ -151,6 +179,26 @@ public class Retrieve extends Fragment {
 		});
 	}
 
+	private IServer[] toActualServers(Server srvs[]){
+		IServer[] ret = new IServer[srvs.length];
+		int i = 0;
+
+		for(Server srv : srvs)
+			ret[i++] = srv.getActual();
+
+		return ret;
+	}
+
+	private Server[] testServers(Server srvs[]) {
+		ArrayList<Server> ret = new ArrayList<Server>();
+
+		for(Server srv : srvs) {
+			if (srv.getActual().getStatus())
+				ret.add(srv);
+		}
+
+		return ret.toArray(new Server[0]);
+	}
 	private String getFilename() {
 		return doc_name.getText().toString();
 	}

@@ -9,6 +9,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.*;
 
+import java.net.InetAddress;
 
 /* Table Name scar_files
  * Columns: 'key' - varchar(32), 'data' - bytes[]/BLOB
@@ -27,6 +28,15 @@ public class Cassandra implements IServer {
     public Session getSession(){
         return this.session;
     }
+
+  public boolean getStatus() {
+    try {
+      //TODO: This needs a hostname, and this class needs a constructor
+      if(!InetAddress.getByName("").isReachable(30))
+        return false;
+    } catch(Exception e) { return false; }
+    return true;
+  }
 
     //connect to cluster.  node = IP Address
     public void connect(String node){
