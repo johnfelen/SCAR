@@ -128,7 +128,7 @@ public class Store extends Fragment {
 					byte[] fileBytes = IOUtils.toByteArray( input );
 					input.close();
 
-					String serverFname = s_name.getText().toString();	//Get filename file will go under
+					String serverFname = getServerFilename();	//Get filename file will go under
 
 					IServer[] currentServers = Session.meta.getAllServers();	//Get all current servers known in SCAR meta db
 
@@ -149,4 +149,10 @@ public class Store extends Fragment {
 	private String getFilename() {
 		return f_name.getText().toString();
 	}
+
+	private String getServerFilename()
+	{
+		return s_name.getText().toString();
+	}
+
 }

@@ -34,7 +34,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Retrieve.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Retrieve.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SCAR.iws" />
@@ -108,26 +108,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Store.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Store.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.48">
-              <caret line="130" column="96" selection-start-line="130" selection-start-column="96" selection-end-line="130" selection-end-column="96" />
+            <state vertical-scroll-proportion="0.43735224">
+              <caret line="128" column="34" selection-start-line="128" selection-start-column="34" selection-end-line="129" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3279#3280#0" expanded="true" />
                 <element signature="e#3312#3313#0" expanded="true" />
-                <element signature="e#4853#4854#0" expanded="true" />
-                <element signature="e#4894#4895#0" expanded="true" />
+                <element signature="e#4845#4846#0" expanded="true" />
+                <element signature="e#4886#4887#0" expanded="true" />
+                <element signature="e#4926#4927#0" expanded="true" />
+                <element signature="e#4967#4968#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Retrieve.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Retrieve.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Retrieve.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18849449">
+            <state vertical-scroll-proportion="-2.851852">
               <caret line="39" column="51" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
               <folding />
             </state>
@@ -1242,8 +1244,8 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout-land/store_layout.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/MetaData.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Retrieve.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java" />
       </list>
     </option>
   </component>
@@ -1951,7 +1953,13 @@
       <option name="project" value="LOCAL" />
       <updated>1437870915271</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="retrieve is complete">
+      <created>1437872228511</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1437872228511</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2018,7 +2026,8 @@
     <MESSAGE value="moved the login to its own method so that if a user created a password they could also login in right away" />
     <MESSAGE value="added differences for local file name and server file name for store" />
     <MESSAGE value="store is completed, had to add commons-io-2.4 to complete it" />
-    <option name="LAST_COMMIT_MESSAGE" value="store is completed, had to add commons-io-2.4 to complete it" />
+    <MESSAGE value="retrieve is complete" />
+    <option name="LAST_COMMIT_MESSAGE" value="retrieve is complete" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2450,20 +2459,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.48">
-          <caret line="130" column="96" selection-start-line="130" selection-start-column="96" selection-end-line="130" selection-end-column="96" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3279#3280#0" expanded="true" />
-            <element signature="e#3312#3313#0" expanded="true" />
-            <element signature="e#4853#4854#0" expanded="true" />
-            <element signature="e#4894#4895#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/app/libs/scar-logic.jar!/scar/GetFile.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5288248">
@@ -2474,9 +2469,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Retrieve.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18849449">
+        <state vertical-scroll-proportion="-2.851852">
           <caret line="39" column="51" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/scar/android/Fragments/Store.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.43735224">
+          <caret line="128" column="34" selection-start-line="128" selection-start-column="34" selection-end-line="129" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3279#3280#0" expanded="true" />
+            <element signature="e#3312#3313#0" expanded="true" />
+            <element signature="e#4845#4846#0" expanded="true" />
+            <element signature="e#4886#4887#0" expanded="true" />
+            <element signature="e#4926#4927#0" expanded="true" />
+            <element signature="e#4967#4968#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
