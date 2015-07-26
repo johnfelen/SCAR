@@ -26,4 +26,5 @@ dependencies {
     compile files('libs/core-1.52.0.0.jar')
     compile files('libs/sqlcipher.jar')
     compile files('libs/scar-logic.jar')
+    compile files('libs/commons-io-2.4.jar')
 }

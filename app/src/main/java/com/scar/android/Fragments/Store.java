@@ -1,6 +1,9 @@
 package com.scar.android.Fragments;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -16,6 +19,15 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.scar.R;
+import com.scar.android.MetaData;
+import com.scar.android.Session;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.InputStream;
+
+import scar.IServer;
+import scar.StoreFile;
 
 //TODO: This needs to be redone
 
@@ -26,7 +38,8 @@ import com.android.scar.R;
 public class Store extends Fragment {
 	private Button get_doc_btn, store_btn;
 	private ProgressDialog progressDialog;
-	EditText f_name;
+	EditText f_name, s_name;
+	Uri imageSelected;
 
     private final  Handler handler = new Handler() {
         @Override
@@ -58,6 +71,7 @@ public class Store extends Fragment {
 		get_doc_btn = (Button)getActivity().findViewById(R.id.getImage);
 		store_btn = (Button)getActivity().findViewById(R.id.store_button);
 		f_name = (EditText) getActivity().findViewById(R.id.Enter_fname);
+		s_name = (EditText)	getActivity().findViewById(R.id.Server_fname);
 
 		//select document BUTTON
 		get_doc_btn.setOnClickListener(new Button.OnClickListener() {
@@ -68,7 +82,7 @@ public class Store extends Fragment {
 						//TODO: External_content_uri is likely not the right thing we want
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(intent, 0);
-
+				imageSelected = intent.getData();	//gets the image selected and saved as a Uri
 			}
 		});
 
@@ -109,11 +123,19 @@ public class Store extends Fragment {
             @Override
             public void run() {
         		try {
-                    //1. Get file that user wants to store
-					//2. Get filename file will go under
-					//3. Get all current servers known in SCAR meta db
-					//4. Feed filename, password, servers and n = 100, k = 50 to a new scar.StoreFile instance
-					//5. run StoreFile with store function
+                    //Get file that user wants to store
+					InputStream input = getActivity().getContentResolver().openInputStream( imageSelected );	//creates an input stream from the image that the user selected
+					byte[] fileBytes = IOUtils.toByteArray( input );
+					input.close();
+
+					String serverFname = s_name.getText().toString();	//Get filename file will go under
+
+					IServer[] currentServers = Session.meta.getAllServers();	//Get all current servers known in SCAR meta db
+
+					StoreFile store = new scar.StoreFile( fileBytes, serverFname, new String( Session.password ), 50, 100, currentServers );	//Feed filename, password, servers and n = 100, k = 50 to a new scar.StoreFile instance
+
+					store.store();	//	run StoreFile with store function
+
         			handler.sendEmptyMessage(100); //completed successfully
         		} catch (Exception e) {
 					handler.sendEmptyMessage(-1);
