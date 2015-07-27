@@ -37,9 +37,9 @@
 
     <string name="createpass">Create Password</string>
     <string name="createpass_hint">A password must be at least 32 characters long.</string>
-    <string name="createpassbutton">Create</string>
-    <string name="generatepassbutton">Generate Random Password</string>
-    <string name="cancelbutton">Cancel</string>
+    <string name="createpassbutton">CREATE</string>
+    <string name="generatepassbutton">GENERATE RANDOM PASSWORD</string>
+    <string name="cancelbutton">CANCEL</string>
     <string name="title_activity_add_server_layout">add_server_layout</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_server">addServer</string>
