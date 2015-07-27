@@ -13,6 +13,7 @@ import android.view.*;
 import android.widget.TextView;
 
 import com.android.scar.R;
+import com.scar.android.Fragments.Files;
 import com.scar.android.Fragments.Retrieve;
 import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
@@ -34,7 +35,7 @@ public class MainActivity extends FragmentActivity {
         tabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
         //TODO: change Store to Files when created
-        tabHost.addTab(tabHost.newTabSpec("1st Tab").setIndicator("FILES"), Store.class, null);
+        tabHost.addTab(tabHost.newTabSpec("1st Tab").setIndicator("FILES"), Files.class, null);
         tabHost.addTab(tabHost.newTabSpec("2nd Tab").setIndicator("STORE"), Store.class, null);
         tabHost.addTab(tabHost.newTabSpec("3rd Tab").setIndicator("RETRIEVE"), Retrieve.class, null);
         tabHost.addTab(tabHost.newTabSpec("4th Tab").setIndicator("SERVERS"), ServerList.class, null);
