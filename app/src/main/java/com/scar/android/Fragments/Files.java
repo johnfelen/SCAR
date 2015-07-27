@@ -14,7 +14,7 @@ import com.android.scar.R;
 public class Files extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.files_layout, container, false);
+        return inflater.inflate(R.layout.files_tab_layout, container, false);
     }
 
 }
