@@ -19,4 +19,9 @@ public class ScarFile {
     public void addLocal(String lp) {
         localpaths.add(lp);
     }
+
+    public String getFilename()
+    {
+        return filename;
+    }
 }
