@@ -33,12 +33,8 @@
     <option name="TOOL_WINDOW_LOG_LEVEL" value="DEBUG" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="create_password fixed and landscape created but there is an error that the cancel and generate password will not show up">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout-land/create_password_layout.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/create_password_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/create_password_layout.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_20_0_0.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_20_0_0.xml" />
+    <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout-land/create_password_layout.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout-land/create_password_layout.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SCAR.iws" />
@@ -85,14 +81,14 @@
       <file leaf-file-name="create_password_layout.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/create_password_layout.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.67695963">
-              <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
+            <state vertical-scroll-proportion="0.3337292">
+              <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
               <folding>
                 <element signature="e#470#490#0" expanded="true" />
                 <element signature="e#719#744#0" expanded="true" />
-                <element signature="e#1698#1724#0" expanded="true" />
-                <element signature="e#2374#2402#0" expanded="true" />
-                <element signature="e#2793#2815#0" expanded="true" />
+                <element signature="e#1699#1725#0" expanded="true" />
+                <element signature="e#2376#2404#0" expanded="true" />
+                <element signature="e#2795#2817#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,8 +100,8 @@
       <file leaf-file-name="store_layout.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/store_layout.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-18.48276">
-              <caret line="32" column="8" selection-start-line="19" selection-start-column="4" selection-end-line="74" selection-end-column="23" />
+            <state vertical-scroll-proportion="-5.0">
+              <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
               <folding>
                 <element signature="e#1086#1104#0" expanded="true" />
               </folding>
@@ -1884,7 +1880,13 @@
       <option name="project" value="LOCAL" />
       <updated>1437872345772</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="create_password fixed and landscape created but there is an error that the cancel and generate password will not show up">
+      <created>1437956922876</created>
+      <option name="number" value="00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1437956922876</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1907,7 +1909,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42157954" sideWeight="0.50479746" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27558637" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2739872" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32925472" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32814237" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32995737" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1953,7 +1955,8 @@
     <MESSAGE value="store is completed, had to add commons-io-2.4 to complete it" />
     <MESSAGE value="retrieve is complete" />
     <MESSAGE value="added a function to get server filename" />
-    <option name="LAST_COMMIT_MESSAGE" value="added a function to get server filename" />
+    <MESSAGE value="create_password fixed and landscape created but there is an error that the cancel and generate password will not show up" />
+    <option name="LAST_COMMIT_MESSAGE" value="create_password fixed and landscape created but there is an error that the cancel and generate password will not show up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2392,8 +2395,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/store_layout.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.48276">
-          <caret line="32" column="8" selection-start-line="19" selection-start-column="4" selection-end-line="74" selection-end-column="23" />
+        <state vertical-scroll-proportion="-5.0">
+          <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
           <folding>
             <element signature="e#1086#1104#0" expanded="true" />
           </folding>
@@ -2405,14 +2408,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/create_password_layout.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.67695963">
-          <caret line="42" column="39" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="39" />
+        <state vertical-scroll-proportion="0.3337292">
+          <caret line="36" column="33" selection-start-line="36" selection-start-column="33" selection-end-line="36" selection-end-column="33" />
           <folding>
             <element signature="e#470#490#0" expanded="true" />
             <element signature="e#719#744#0" expanded="true" />
-            <element signature="e#1698#1724#0" expanded="true" />
-            <element signature="e#2374#2402#0" expanded="true" />
-            <element signature="e#2793#2815#0" expanded="true" />
+            <element signature="e#1699#1725#0" expanded="true" />
+            <element signature="e#2376#2404#0" expanded="true" />
+            <element signature="e#2795#2817#0" expanded="true" />
           </folding>
         </state>
       </provider>
