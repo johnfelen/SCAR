@@ -71,40 +71,42 @@ public class ServerList extends Fragment
 									args.getStringExtra("host"),
 									args.getStringExtra("port"),
 									args.getByteArrayExtra("uname"),
-									args.getByteArrayExtra("port"));
+									args.getByteArrayExtra("pass"));
 		}
 	}
 
 
 	public void refreshList() {
-		//Setup the server list widget
-		ListView lst = (ListView) getActivity().findViewById(R.id.ns_server_list);
-		ArrayAdapter adp = new ArrayAdapter<Server>(getActivity(), R.layout.server_item, Session.meta.getAllServerInfo()) {
-			public 	View getView(int position, View view, ViewGroup parent) {
-				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View ret = inflater.inflate(R.layout.server_item, parent, false);
+		if(Session.meta != null) {
+			//Setup the server list widget
+			ListView lst = (ListView) getActivity().findViewById(R.id.ns_server_list);
+			ArrayAdapter adp = new ArrayAdapter<Server>(getActivity(), R.layout.server_item, Session.meta.getAllServerInfo()) {
+				public View getView(int position, View view, ViewGroup parent) {
+					LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					View ret = inflater.inflate(R.layout.server_item, parent, false);
 
-				TextView name = (TextView) ret.findViewById(R.id.si_name);
-				ImageView stat = (ImageView) ret.findViewById(R.id.si_status);
+					TextView name = (TextView) ret.findViewById(R.id.si_name);
+					ImageView stat = (ImageView) ret.findViewById(R.id.si_status);
 
-				Server srv = getItem(position);
-				name.setText(srv.label.toCharArray(), 0, srv.label.length());
-				switch(srv.getStatus()) {
-					case Server.ONLINE:
-						stat.setImageResource(android.R.drawable.button_onoff_indicator_on);
-						break;
-					case Server.OFFLINE:
-						stat.setImageResource(android.R.drawable.button_onoff_indicator_off);
-						break;
-					case Server.DISABLED:
-						stat.setImageResource(android.R.drawable.ic_delete);
-						break;
+					Server srv = getItem(position);
+					name.setText(srv.label.toCharArray(), 0, srv.label.length());
+					switch (srv.getStatus()) {
+						case Server.ONLINE:
+							stat.setImageResource(android.R.drawable.button_onoff_indicator_on);
+							break;
+						case Server.OFFLINE:
+							stat.setImageResource(android.R.drawable.button_onoff_indicator_off);
+							break;
+						case Server.DISABLED:
+							stat.setImageResource(android.R.drawable.ic_delete);
+							break;
+					}
+
+					return ret;
 				}
-
-				return ret;
-			}
-		};
-		lst.setAdapter(adp);
+			};
+			lst.setAdapter(adp);
+		}
 	}
 }
 
