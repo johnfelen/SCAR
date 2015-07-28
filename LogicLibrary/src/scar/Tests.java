@@ -346,6 +346,28 @@ public class Tests {
     }
   }
 
+  public static boolena DerivedKeyTest() {
+    System.out.println("Derived Key Test");
+    DerivedKeyGen keygen = new DerivedKeyGen();
+    byte[] pack = keyGen.generateKeyPackage("test9999".getBytes(), 256);
+    byte[] dkey1 = new byte[pack-DerivedKeyGen.SALT_SIZE];
+    byte[] salt=  new byte[DerivedKeyGen.SALT_SIZE];
+    System.arraycopy(pack, 0, salt, 0, salt.length);
+    System.arraycopy(pack, DerivedKeyGen.SALT_SIZE, dkey1, 0, dkey1.length);
+
+    keygen = new DerivedKeyGen();
+    byte[] dkey2 =keygen.generateKey("test9999".getBytes(), salt, 256);
+    
+    
+    if(compareByteArray(dkey1, dkey2)){
+      System.out.println("PASS");
+      return true;
+    }else {
+      System.out.println("FAIL");
+      return false;
+    }
+  }
+
   public static void main(String args[]) {
     ArrayList<Boolean> test = new ArrayList<Boolean>();
     //Store/Get File tests
@@ -361,6 +383,8 @@ public class Tests {
     test.add(matrixIdentityTest());
     test.add(matrixMultiplyTest());  //May need to look further into this...
     test.add(matrixInverseTest());
+    //Derived Key tests
+    test.add(DerivedKeyTest());
     //RS tests
     //test.add(RSFileTest());
 

@@ -45,15 +45,15 @@ public class ModifyServer extends FragmentActivity {
                 srv.label = frag.getLabel();
                 srv.hostname = frag.getHost();
                 srv.port = frag.getPort();
-                srv.uname = frag.getUsername().getBytes();
-                srv.pass = frag.getPassword().getBytes();
+                srv.uname = frag.getUsername();
+                srv.pass = frag.getPassword();
                 Session.meta.updateServer(srv);
                 finish(); //kill activity
             }
         });
 
         Button act = (Button)findViewById(R.id.ms_act);
-        switch(srv.getStatus()) {
+        switch(srv.getStatus(this)) {
             case Server.ONLINE:
             case Server.OFFLINE:
                 act.setText(R.string.ms_delete);
@@ -78,7 +78,7 @@ public class ModifyServer extends FragmentActivity {
 
     private void updateStatus() {
         ImageView iv = (ImageView)findViewById(R.id.ms_status);
-        switch(srv.getStatus()) {
+        switch(srv.getStatus(this)) {
             case Server.ONLINE:
                 iv.setImageResource(android.R.drawable.button_onoff_indicator_on);
                 break;

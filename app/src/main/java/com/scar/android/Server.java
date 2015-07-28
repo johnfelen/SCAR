@@ -1,5 +1,6 @@
 package com.scar.android;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.scar.android.ServerImpl.SQLiteStore;
@@ -44,13 +45,13 @@ public class Server {
         return label;
     }
 
-    public int getStatus() {
+    public int getStatus(Activity act) {
         if(status == MetaData.STATUS_DISABLE) return DISABLED;
-        if(!getActual().getStatus()) return OFFLINE;
+        if(getActual(act) == null || !getActual(act).getStatus()) return OFFLINE;
         return ONLINE;
     }
 
-    public IServer getActual() {
+    public IServer getActual(Activity act) {
         IServer srv = null;
         switch(type) {
             case MetaData.TYPE_MYSQL_STORE:
@@ -58,7 +59,7 @@ public class Server {
             case MetaData.TYPE_CASS_STORE:
                 break;
             case MetaData.TYPE_SQLITE_STORE:
-                srv = new SQLiteStore(hostname);
+                srv = new SQLiteStore(act, hostname);
                 break;
             //TODO: add in Dropbox/Google drive when ready
         }

@@ -6,8 +6,8 @@ public interface StoreFrag {
     String getLabel();
     String getHost();
     String getPort();
-    String getUsername();
-    String getPassword();
+    byte[] getUsername();
+    byte[] getPassword();
 
     void setLabel(String a);
     void setHost(String a);

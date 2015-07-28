@@ -45,12 +45,12 @@ public class GenericStore extends Fragment implements StoreFrag {
         return ((EditText)getActivity().findViewById(R.id.as_port)).getText().toString();
     }
 
-    public String getUsername() {
-        return ((EditText)getActivity().findViewById(R.id.as_uname)).getText().toString();
+    public byte[] getUsername() {
+        return ((EditText)getActivity().findViewById(R.id.as_uname)).getText().toString().getBytes();
     }
 
-    public String getPassword() {
-        return ((EditText)getActivity().findViewById(R.id.as_pass)).getText().toString();
+    public byte[] getPassword() {
+        return ((EditText)getActivity().findViewById(R.id.as_pass)).getText().toString().getBytes();
     }
 
     public void setLabel(String x) {

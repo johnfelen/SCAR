@@ -1,6 +1,7 @@
 package com.scar.android;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -107,10 +108,10 @@ public class MetaData {
                 +"FOREIGN KEY(server_id) REFERENCES server(id),"
                 +"FOREIGN KEY(file_id) REFERENCES file(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
-                +"file_id INTEGER,"
-                +"localpath TEXT,"
-                +"PRIMARY KEY(file_id, localpath),"
-                +"FOREIGN KEY(file_id) REFERENCES file(id))");
+                + "file_id INTEGER,"
+                + "localpath TEXT,"
+                + "PRIMARY KEY(file_id, localpath),"
+                + "FOREIGN KEY(file_id) REFERENCES file(id))");
     }
 
     /* sets up sqlcipher to work properly
@@ -164,6 +165,25 @@ public class MetaData {
         dbf.getParentFile().mkdirs();
         dbf.delete();
         SQLiteDatabase.openOrCreateDatabase(dbf.getPath(), key, null).close();
+    }
+
+    // Puts the database back into a state of initial creation
+    public void clean() {
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("delete from local_files");
+        stmt.execute();
+        stmt.close();
+        stmt = db.compileStatement("delete from servers_used");
+        stmt.execute();
+        stmt.close();
+        stmt = db.compileStatement("delete from files");
+        stmt.execute();
+        stmt.close();
+        stmt = db.compileStatement("delete from servers");
+        stmt.execute();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     //Ensures the MetaData is still valid
@@ -254,14 +274,21 @@ public class MetaData {
         cur.moveToFirst();
 
         while(!cur.isAfterLast()) {
+            //TODO: Decryption of keys should be done on an as needed basis, not by default.
+            byte[] uname = cur.getBlob(cur.getColumnIndex("username"));
+            if(uname != null)
+                uname = decryptText(uname);
+            byte[] pass= cur.getBlob(cur.getColumnIndex("password"));
+            if(pass != null)
+                pass = decryptText(pass);
             servers[i++] = new Server(cur.getInt(cur.getColumnIndex("id")),
                                     cur.getInt(cur.getColumnIndex("type")),
                                     cur.getInt(cur.getColumnIndex("status")),
                                     cur.getString(cur.getColumnIndex("label")),
                                     cur.getString(cur.getColumnIndex("hostname")),
                                     cur.getString(cur.getColumnIndex("port")),
-                                    decryptText(cur.getBlob(cur.getColumnIndex("username"))),
-                                    decryptText(cur.getBlob(cur.getColumnIndex("password"))));
+                                    uname,
+                                    pass);
             cur.moveToNext();
         }
         cur.close();
@@ -313,9 +340,6 @@ public class MetaData {
     }
 
     public void newServer(int type, String label, String host, String port, byte[] uname, byte[] pass) {
-        uname = encryptText(uname);
-        pass = encryptText(pass);
-
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, status, label, hostname, port, username, password) values ((select max(id)+1 from servers), ?, ?, ?, ? , ?, ? , ?)");
         stmt.bindLong(1, type);
@@ -324,10 +348,14 @@ public class MetaData {
         stmt.bindString(4, host);
         if(port != null)
             stmt.bindString(5, port);
-        if(uname != null)
+        if(uname != null) {
+            uname = encryptText(uname);
             stmt.bindBlob(6, uname);
-        if(pass != null)
+        }
+        if(pass != null) {
+            pass = encryptText(pass);
             stmt.bindBlob(7, pass);
+        }
         stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
@@ -350,9 +378,6 @@ public class MetaData {
     }
 
     public void updateServer(int id, int type, int status, String label, String host, String port, byte[] uname, byte[] pass) {
-        uname = encryptText(uname);
-        pass = encryptText(pass);
-
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update servers set type = ?, status = ?, label = ?, hostname = ?, port = ?, username = ?, password = ? where id = ?");
         stmt.bindLong(1, type);
@@ -361,10 +386,14 @@ public class MetaData {
         stmt.bindString(4, host);
         if(port != null)
             stmt.bindString(5, port);
-        if(uname != null)
+        if(uname != null) {
+            uname = encryptText(uname);
             stmt.bindBlob(6, uname);
-        if(pass != null)
+        }
+        if(pass != null) {
+            pass = encryptText(pass);
             stmt.bindBlob(7, pass);
+        }
         stmt.bindLong(8, id);
         stmt.execute();
         stmt.close();
@@ -411,7 +440,7 @@ public class MetaData {
         byte[] ret = decrypt.decrypt(ciph, keyGen.generateKey(Session.password, salt, 256));
 
         if(ret == null);
-            //Todo: throw some error, this shouldn't be possible since it would mean the database is corrupted
+            //Todo: throw some error, this shouldn't be possible since it would mean the database is corrupted, but sql-cipher should check for that.
             //      unless the data was modified in memory post-decryption and not by us
 
         return ret;
