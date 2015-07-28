@@ -19,9 +19,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/path"
-        android:id="@+id/filepath"
-        android:layout_gravity="center"
+        android:textSize="15dp"
         android:paddingTop="25dp"/>
+
+    <ListView
+        android:paddingTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/file_path" />
+
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -53,14 +59,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/servers"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:paddingTop="25dp"/>
 
     <ListView
         android:paddingTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/server_list"
-        android:layout_weight=".9" />
+        android:id="@+id/server_list" />
 
 </LinearLayout>
