@@ -41,9 +41,9 @@ public class SQLiteStore extends Fragment implements StoreFrag{
         return ((EditText)getActivity().findViewById(R.id.as_dbname)).getText().toString();
     }
 
-    public String getPort() { return ""; }
-    public String getUsername() { return ""; }
-    public String getPassword() { return ""; }
+    public String getPort() { return null; }
+    public byte[] getUsername() { return null; }
+    public byte[] getPassword() { return null; }
 
     public void setLabel(String x) {
         if(x != null)

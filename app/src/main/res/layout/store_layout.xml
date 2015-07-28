@@ -3,25 +3,30 @@
     android:id="@+id/scrollViewStore"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:layout_marginBottom = "48dp"
     android:background = "@drawable/subtle_pattern"
+    android:layout_marginBottom = "48dp"
     ><!--the layout_marginBottom in scroll view will make the top blue of the tabhost to disappear-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_gravity="center"
-     >
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
+
+        <EditText
+            android:id="@+id/Server_fname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:hint="@string/s_sfhint"/>
+
         <TextView
+            android:layout_marginTop="50dp"
             android:id="@+id/Enter_fname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,43 +34,28 @@
             android:focusable="false"
             android:enabled="false" />
 
-         <Button
+        <Button
             android:id="@+id/getImage"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/getImage"
-             android:gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="50dp"
             android:background="@drawable/button_rounded_corners"
-             android:layout_marginTop="50dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/getImage"
             android:textColor="#98EF8E"
-            />
-    </LinearLayout>
+            android:layout_marginBottom = "2dp"/>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-         <EditText
-            android:id="@+id/Server_fname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:hint="Enter Filename for Server(s)"
-             android:focusable="true" />
-
-         <Button
+        <Button
             android:id="@+id/store_button"
-            android:layout_marginTop="50dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/store"
-             android:gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="50dp"
             android:background="@drawable/button_rounded_corners"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/store"
             android:textColor="#98EF8E"
-             android:layout_marginBottom = "2dp"
-            />
-    </LinearLayout>
+            android:layout_marginBottom = "2dp"/>
 
-</LinearLayout>
+    </LinearLayout>
 
 </ScrollView>

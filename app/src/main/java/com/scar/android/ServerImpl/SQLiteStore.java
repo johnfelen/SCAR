@@ -1,8 +1,11 @@
 package com.scar.android.ServerImpl;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
+import java.io.File;
 
 /*
  * Server Implementation for a local sqlite db
@@ -12,8 +15,8 @@ import android.database.sqlite.SQLiteStatement;
 public class SQLiteStore implements scar.IServer{
     private final SQLiteDatabase db;
 
-    public SQLiteStore(String file) {
-        db = SQLiteDatabase.openOrCreateDatabase(file, null);
+    public SQLiteStore(Activity act, String file) {
+        db = SQLiteDatabase.openOrCreateDatabase(act.getDatabasePath(file), null);
         //create tables if needed
         db.execSQL("CREATE TABLE IF NOT EXISTS files (name TEXT,data BLOB,PRIMARY KEY(name))");
     }

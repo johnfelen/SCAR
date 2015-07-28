@@ -174,7 +174,7 @@ public class Store extends Fragment {
 		int i = 0;
 
 		for(Server srv : srvs)
-			ret[i++] = srv.getActual();
+			ret[i++] = srv.getActual(getActivity());
 
 		return ret;
 	}
@@ -183,7 +183,7 @@ public class Store extends Fragment {
 		ArrayList<Server> ret = new ArrayList<Server>();
 
 		for(Server srv : srvs) {
-			if (srv.getActual().getStatus())
+			if (srv.getActual(getActivity()).getStatus())
 				ret.add(srv);
 		}
 

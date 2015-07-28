@@ -107,10 +107,11 @@ public class MainActivity extends FragmentActivity {
 			startActivity(intent);
 			
 			return true;
-		}
-		else
-		{
-			return super.onOptionsItemSelected(item);
-		}
+		} else if(item.getItemId() == R.id.action_clean) {
+            //TODO: remove when no longer needed for testing
+            Session.meta.clean();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
 	}
 }

@@ -76,6 +76,7 @@
 
     <!-- Store Strings -->
     <string name="s_nofile">No file selected</string>
+    <string name="s_sfhint">Enter name of file</string>
 
     <!--MetaFile Strings-->
     <string name="filename">File Name</string>

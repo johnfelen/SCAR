@@ -18,7 +18,7 @@ public class DerivedKeyGen {
   /* Generates a new derived key from our given key
    */
   public byte[] generateKey(byte[] key, byte[] salt, int keysize) {
-    byte[] pack = generateKeyPackage(key, keysize);
+    byte[] pack = generateKeyPackage(key, salt, keysize);
     byte[] gkey = new byte[pack.length-SALT_SIZE];
     System.arraycopy(pack, SALT_SIZE, gkey, 0, gkey.length);
     return gkey;
