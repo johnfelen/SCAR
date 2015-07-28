@@ -8,8 +8,9 @@
     <string name="about_app">HOME</string>
     <string name="login_app">LOGIN</string>
     <string name="cp_app">CREATE PASSWORD</string>
-    <string name="ms_app">Modify Server</string>
-    <string name="as_app">Add Server</string>
+    <string name="ms_app">MODIFY SERVER</string>
+    <string name="as_app">ADD SERVER</string>
+    <string name="mf_app">META FILE</string>
  
     <string name="action_about">About</string>
     <string name="hello_world"><u>Welcome to SCAR!</u></string>

@@ -29,6 +29,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.scar.android.Activities.MetaFile"
+            android:label="@string/mf_app">
+        </activity>
+        <activity
             android:name="com.scar.android.Activities.About"
             android:label="@string/about_app" />
         <activity
