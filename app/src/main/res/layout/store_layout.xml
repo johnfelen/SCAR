@@ -17,42 +17,54 @@
     android:layout_gravity="center"
      >
 
-    <TextView
-        android:id="@+id/Enter_fname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/s_nofile"/>
-
-     <Button
-        android:id="@+id/getImage"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/getImage"
-         android:gravity="center_vertical|center_horizontal"
-        android:background="@drawable/button_rounded_corners"
-         android:layout_marginTop="50dp"
-        android:textColor="#98EF8E"
-        />
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/Enter_fname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/s_nofile"
+            android:focusable="false"
+            android:enabled="false" />
 
-     <EditText
-        android:id="@+id/Server_fname"
-         android:inputType="textMultiLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         android:layout_marginTop="50dp"
-         android:hint="Enter Filename for Server(s)"/>
+         <Button
+            android:id="@+id/getImage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/getImage"
+             android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+             android:layout_marginTop="50dp"
+            android:textColor="#98EF8E"
+            />
+    </LinearLayout>
 
-     <Button
-        android:id="@+id/store_button"
-        android:layout_marginTop="50dp"    
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/store"
-         android:gravity="center_vertical|center_horizontal"
-        android:background="@drawable/button_rounded_corners"
-        android:textColor="#98EF8E"
-         android:layout_marginBottom = "2dp"
-        />
+        android:orientation="vertical">
+         <EditText
+            android:id="@+id/Server_fname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:hint="Enter Filename for Server(s)"
+             android:focusable="true" />
+
+         <Button
+            android:id="@+id/store_button"
+            android:layout_marginTop="50dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/store"
+             android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:textColor="#98EF8E"
+             android:layout_marginBottom = "2dp"
+            />
+    </LinearLayout>
 
 </LinearLayout>
 
