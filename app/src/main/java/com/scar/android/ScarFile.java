@@ -24,4 +24,9 @@ public class ScarFile {
     {
         return filename;
     }
+
+    public ArrayList<String> getLocalpaths()
+    {
+        return localpaths;
+    }
 }
