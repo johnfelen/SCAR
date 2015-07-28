@@ -34,6 +34,7 @@ public class Files extends Fragment {
         //TODO REMOVE NEXT 4 LINES FOR ACTUAL PRODUCTION CODE and uncomment below
         ArrayList<String> listFiles = new ArrayList<String>();
         listFiles.add("HELLO");
+        listFiles.add("TWO");
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listFiles);  //creates an array adapter to populate the listview
         filesStored.setAdapter(arrayAdapter);

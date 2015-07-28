@@ -6,7 +6,58 @@
     android:paddingRight="16dp"
     android:background = "@drawable/subtle_pattern">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/filename"
+        android:gravity="center"
+        android:textColor="#2b468b"
+        android:textSize="32dp"
+        android:id="@+id/filename"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/path"
+        android:id="@+id/filepath"
+        android:layout_gravity="center"
+        android:paddingTop="25dp"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="35dp">
+
+        <Button
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="35dp"
+            android:text="@string/delete"
+            android:id="@+id/delete_file"
+            android:textColor="#98EF8E"
+            android:background="@drawable/button_rounded_corners" />
+        <Button
+            android:layout_width="125dp"
+            android:layout_marginLeft="35dp"
+            android:layout_height="wrap_content"
+            android:textColor="#98EF8E"
+            android:background="@drawable/button_rounded_corners"
+            android:text="@string/open"
+            android:id="@+id/open_file" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/servers"
+        android:textSize="20dp"
+        android:paddingTop="25dp"/>
+
     <ListView
+        android:paddingTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/server_list"
