@@ -27,7 +27,7 @@ public class MetaFile extends Activity {
 
         //get the name of the file that was sent to start this activity and then get the ScarFile that is associated with it.
         String nameOfFile = getIntent().getExtras().getParcelable( "nameOfFile" );
-        ScarFile selected = Session.meta.getFile(nameOfFile);
+        //ScarFile selected = Session.meta.getFile(nameOfFile); //TODO REMOVE COMMENT FOR ACTUAL PRODUCTION CODE
 
     }
 }
