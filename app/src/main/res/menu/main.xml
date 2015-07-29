@@ -10,6 +10,12 @@
         android:id="@+id/action_clean"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|withText"
-        android:title="Clean Meta"/>
+        android:title="Clean"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText"
+        android:title="Logout"/>
 
 </menu>

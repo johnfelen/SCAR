@@ -107,9 +107,18 @@ public class MainActivity extends FragmentActivity {
 			startActivity(intent);
 			
 			return true;
-		} else if(item.getItemId() == R.id.action_clean) {
+		}
+
+        else if(item.getItemId() == R.id.action_clean) {
             //TODO: remove when no longer needed for testing
             Session.meta.clean();
+            return true;
+        }
+
+        else if( item.getItemId() == R.id.action_logout )
+        {
+            Intent login = new Intent( this, LoginActivity.class );
+            startActivity( login );
             return true;
         }
         return super.onOptionsItemSelected(item);
