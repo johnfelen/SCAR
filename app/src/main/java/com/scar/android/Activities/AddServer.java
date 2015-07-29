@@ -1,6 +1,9 @@
 package com.scar.android.Activities;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,6 +27,10 @@ public class AddServer extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_server_layout);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
+        actionBar.setTitle("ADD SERVER");
 
         Spinner type = (Spinner)findViewById(R.id.asl_types);
 

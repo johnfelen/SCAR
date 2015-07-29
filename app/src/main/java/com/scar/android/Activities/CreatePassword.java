@@ -1,7 +1,10 @@
 package com.scar.android.Activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +22,10 @@ public class CreatePassword extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_password_layout);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
+        actionBar.setTitle("CREATE PASSWORD");
 
         Button create = (Button)findViewById(R.id.cp_create),
                generate =(Button) findViewById(R.id.cp_generate),

@@ -16,11 +16,11 @@ public class About extends Activity {
     {
         super.onCreate(savedInstanceState);
 		setContentView(R.layout.about_layout);
-        setTitle("About");  //set the title of the activity bar
 
         //change the color of the actionbar
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
+        setTitle("About");  //set the title of the activity bar
 
     }
 }

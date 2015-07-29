@@ -14,7 +14,8 @@
         android:text="@string/asl_title"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColor="#2B468B"/>
 
     <LinearLayout
         android:orientation="horizontal"

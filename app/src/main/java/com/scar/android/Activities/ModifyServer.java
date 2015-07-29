@@ -1,5 +1,8 @@
 package com.scar.android.Activities;
 
+import android.app.ActionBar;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,6 +28,10 @@ public class ModifyServer extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.modify_server);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
+        actionBar.setTitle("MODIFY SERVER");
 
         srv = new Server(getIntent().getExtras());
 
