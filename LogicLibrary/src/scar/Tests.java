@@ -19,8 +19,8 @@ public class Tests {
   }
   
   public static boolean encodeIntTest() {
-    StoreFile sf = new StoreFile(null, "1","2", 0, 0, null);
-    GetFile gf = new GetFile("1","2", 0, 0, null);
+    StoreFile sf = new StoreFile(null, "1","2".getBytes(), 0, 0, null);
+    GetFile gf = new GetFile("1", "2".getBytes(), 0, 0, null);
 
     int x = 0x12faf250;
     byte[] arr = new byte[4];
@@ -302,55 +302,11 @@ public class Tests {
     }   
   }
 
-  public static boolean RSFileTest() {
-    System.out.println("RS File Test");
-    IServer servers[] = { new LocalStore("test") };
-    String fn = "scar-logic.jar";
-    String pass = "test9999";
-    int k = 10;
-    int n = 20;
-    byte data[] = null;
-    try {
-      File f = new File(fn);
-      FileInputStream fis = new FileInputStream(f);
-      data = new byte[(int)f.length()];
-      fis.read(data);
-      fis.close();
-    } catch(Exception e) { return false; }
-
-    StoreFile sf = new StoreFile(data, fn, pass, k, n, servers);
-    sf.store();
-    
-    GetFile gf = new GetFile(fn, pass, k, n, servers);
-    byte data2[] = gf.get();
-
-    try {
-      File f = new File("test/"+fn);
-      f.createNewFile();
-      FileOutputStream fos = new FileOutputStream(f);
-      fos.write(data2);
-      fos.flush();
-      fos.close();
-    } catch(Exception e) { return false; }
-    
-    System.out.println(" Store Length: " + data.length);
-    System.out.println(" Get Length: " + data2.length);
-    
-
-    if(compareByteArray(data, data2)){
-      System.out.println("PASS");
-      return true;
-    }else {
-      System.out.println("FAIL");
-      return false;
-    }
-  }
-
-  public static boolena DerivedKeyTest() {
+  public static boolean DerivedKeyTest() {
     System.out.println("Derived Key Test");
     DerivedKeyGen keygen = new DerivedKeyGen();
-    byte[] pack = keyGen.generateKeyPackage("test9999".getBytes(), 256);
-    byte[] dkey1 = new byte[pack-DerivedKeyGen.SALT_SIZE];
+    byte[] pack = keygen.generateKeyPackage("test9999".getBytes(), 256);
+    byte[] dkey1 = new byte[pack.length-DerivedKeyGen.SALT_SIZE];
     byte[] salt=  new byte[DerivedKeyGen.SALT_SIZE];
     System.arraycopy(pack, 0, salt, 0, salt.length);
     System.arraycopy(pack, DerivedKeyGen.SALT_SIZE, dkey1, 0, dkey1.length);

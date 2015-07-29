@@ -25,6 +25,8 @@ public class LocalStore implements IServer {
     catch(Exception e) { e.printStackTrace(); }
   }
 
+  public void close() {} 
+  
   public byte[] getData(String fn) {
     try {
       File f = new File(folder+"/"+fn);

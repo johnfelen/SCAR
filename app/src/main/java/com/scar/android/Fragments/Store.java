@@ -1,6 +1,8 @@
 package com.scar.android.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.drm.DrmStore;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
@@ -10,20 +12,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.scar.R;
+import com.scar.android.Activities.AddServer;
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
 import com.scar.android.Session;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -38,24 +44,34 @@ import scar.StoreFile;
 //this activity uses the store_layout.xml file 
 
 public class Store extends Fragment {
+	private static final int
+		DOC_SELECTED = 0;
+
 	private Button get_doc_btn, store_btn;
 	private ProgressDialog progressDialog;
 	EditText s_name;
 	TextView f_name;
 
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            if(msg.what<100)
-            {
-            	progressDialog.setProgress(msg.what);
-            }
-            else{
-            progressDialog.setProgress(100);
-            progressDialog.dismiss();
-            }
-        }
-    };
+	public void reset() {
+		s_name.setText("");
+		f_name.setText("");
+	}
+
+	public void updateProgress(int what) {
+		if(what == -1) {
+			//TODO: proper error msg to user
+			progressDialog.dismiss();
+			Toast.makeText(getActivity().getApplicationContext(), "An error has occurred during file upload", Toast.LENGTH_LONG).show();
+			reset();
+		} else if(what<100) {
+			progressDialog.setProgress(what);
+		} else {
+			progressDialog.setProgress(100);
+			progressDialog.dismiss();
+			Toast.makeText(getActivity().getApplicationContext(), "The file has been uploaded successfully", Toast.LENGTH_LONG).show();
+			reset();
+		}
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.store_layout, container, false);
@@ -63,7 +79,7 @@ public class Store extends Fragment {
 
 	public void onStart() {
 		super.onStart();
-		//Internet permission TODO: is this needed?
+		//Internet permission
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 			.permitAll().build();
@@ -84,8 +100,6 @@ public class Store extends Fragment {
 						//TODO: External_content_uri is likely not the right thing we want
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(intent, 0);
-				Uri imageSelected = intent.getData();    //gets the image selected and saved as a Uri
-				f_name.setText(imageSelected.getEncodedPath());
 			}
 		});
 
@@ -112,6 +126,14 @@ public class Store extends Fragment {
 
 	}
 
+	public void onActivityResult(int requestCode, int resultCode, Intent args) {
+		//Get our selected doc
+		if(resultCode == Activity.RESULT_OK) {
+			Uri imageSelected = args.getData();    //gets the image selected and saved as a Uri
+			f_name.setText(imageSelected.toString());
+		}
+	}
+
 	public void storeFile() {
 		progressDialog = new ProgressDialog(this.getActivity());
 		progressDialog.setTitle("Store File");
@@ -123,25 +145,41 @@ public class Store extends Fragment {
 		progressDialog.setProgress(0);
 		progressDialog.show();
         new Thread() {
+			public void update(final int per) {
+				Store.this.getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						updateProgress(per);
+					}
+				});
+			}
+
             @Override
             public void run() {
-        		try {
+				IServer[] actualServers = null;
+				try {
                     //Get file that user wants to store
-					InputStream input = getActivity().getContentResolver().openInputStream( Uri.parse(getFilename()) );	//creates an input stream from the image that the user selected
+					//creates an input stream from the image that the user selected
+					InputStream input = getActivity().getContentResolver().openInputStream( Uri.parse(getFilename()) );
+					update(5);
 					byte[] fileBytes = IOUtils.toByteArray(input);
 					input.close();
 
 					//Get filename file will go under
+					update(15);
 					String serverFname = getServerFilename();
 
 					//Get all current servers known in SCAR meta db
+					update(20);
 					Server[] currentServers = Session.meta.getAllActiveServers();
 					currentServers = testServers(currentServers);
-					IServer[] actualServers = toActualServers(currentServers);
+					actualServers = toActualServers(currentServers);
 
 					//Feed filename, password, servers and n = 100, k = 50 to a new scar.StoreFile instance
+					update(30);
 					RndKeyGen keygen = new RndKeyGen();
 					byte[] key = keygen.genBytes(32);
+					update(35);
 					StoreFile store = new scar.StoreFile( fileBytes,
 							                              serverFname,
 							                              key,
@@ -151,22 +189,36 @@ public class Store extends Fragment {
 					//	run StoreFile with store function
 					store.store();
 
+
+					update(90);
 					// Add into meta data
-					if(Session.meta.getFile(serverFname) != null)
+					if(Session.meta.getFile(serverFname) == null)
 						Session.meta.newFile(serverFname, key);
 					ScarFile f = Session.meta.getFile(serverFname);
 					Session.meta.setServers(f.id, currentServers);
 					Session.meta.addLocalFile(f.id, getFilename());
 
 
-        			handler.sendEmptyMessage(100); //completed successfully
+					update(100); //completed successfully
         		} catch (Exception e) {
-					handler.sendEmptyMessage(-1);
+					e.printStackTrace();
+					update(-1);
         		}
+
+				if(actualServers != null)
+					for(IServer srv : actualServers)
+						srv.close();
 
             }
         }.start();
 
+	}
+
+	static String bytesToString(byte[] bs) {
+		String s = "";
+		for(byte b : bs)
+			s += (b & 0xFF) + " " ;
+		return s;
 	}
 
 	private IServer[] toActualServers(Server srvs[]){

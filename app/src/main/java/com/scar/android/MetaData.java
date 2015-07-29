@@ -94,12 +94,13 @@ public class MetaData {
                     +"label TEXT,"
                     +"hostname TEXT,"
                     +"port TEXT,"
-                    +"username TEXT,"
-                    +"password TEXT,"
+                    +"username BLOB,"
+                    +"password BLOB,"
                     +"PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
+                    +"key BLOB,"
                     +"PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
                 +"server_id INTEGER,"
@@ -120,6 +121,19 @@ public class MetaData {
         SQLiteDatabase.loadLibs(act);
     }
 
+    /* Deletes all the meta databases
+     *
+     */
+    public static void DeleteAllDB(Activity act) {
+        int dbid = 0;
+        //get next dbid
+        while(true){
+            File fdb = new File(dbid+".db");
+            if(fdb.exists()) fdb.delete();
+            else break; //found next id
+        }
+    }
+
     /*  Load a previously created database based off
      *  your password given at login
      *
@@ -134,6 +148,7 @@ public class MetaData {
                 try {
                     SQLiteDatabase db = SQLiteDatabase.openDatabase(fdb.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
                     //Correct database
+                    db.close();
                     return new MetaData(act, dbid+".db",key);
                 } catch(Exception e) {
                     //Failed to open with given key, or some other issue.
@@ -212,6 +227,7 @@ public class MetaData {
 
             while(!cursor.isAfterLast()) {
                 sf.addLocal(cursor.getString(cursor.getColumnIndex("localpath")));
+                cursor.moveToNext();
             }
 
             cursor.close();
@@ -247,7 +263,6 @@ public class MetaData {
         db.beginTransaction();
         Cursor cur = db.rawQuery("select * from files where name = ?", new String[] { fn });
         cur.moveToFirst();
-
         if(!cur.isAfterLast()) {
             sf = new ScarFile(cur.getInt(cur.getColumnIndex("id")),
                               cur.getString(cur.getColumnIndex("name")));
@@ -258,6 +273,7 @@ public class MetaData {
 
             while(!cur.isAfterLast()) {
                 sf.addLocal(cur.getString(cur.getColumnIndex("localpath")));
+                cur.moveToNext();
             }
             cur.close();
         } else
@@ -307,32 +323,46 @@ public class MetaData {
     }
 
     public Server[] getServers(String fn) {
-        Cursor scur = db.rawQuery("select * " +
-                "from servers join servers_used on servers.id = servers_used.server_id" +
-                "where servers_used.file_id = (select ifnull(id,-1) from files where name = ?)",
-                                    new String[] { fn });
-        return collectServers(scur);
+        Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
+        cur.moveToFirst();
+        if(!cur.isAfterLast()) {
+            int id = cur.getInt(cur.getColumnIndex("id"));
+            cur.close();
+            cur = db.rawQuery("select * " +
+                            "from servers, servers_used " +
+                            "where servers.id = servers_used.server_id and servers_used.file_id = " + id, null);
+            return collectServers(cur);
+        } else
+            return null;
     }
 
     public void setServers(int fid, Server[] srvs) {
         db.beginTransaction();
         //Remove old servers
-        db.rawQuery("delete from servers_used where file_id = " + fid, null);
+        SQLiteStatement stmt = db.compileStatement("delete from servers_used where file_id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.beginTransaction();
         //Update with new servers
-        for(Server srv : srvs)
-            db.rawQuery("insert into servers_used (server_id, file_id) values (" +
-                            srv.id + ", " + fid + ")", null);
+        for(Server srv : srvs) {
+            stmt = db.compileStatement("insert into servers_used (file_id, server_id) values (?, ?)");
+            stmt.bindLong(1, fid);
+            stmt.bindLong(2, srv.id);
+            stmt.executeInsert();
+            stmt.close();
+        }
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
     public void newFile(String fn, byte[] key) {
-        key = encryptText(key);
-
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ?, ?)");
         stmt.bindString(1, fn);
-        stmt.bindBlob(2, key);
+        stmt.bindBlob(2, encryptText(key));
         stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
@@ -364,11 +394,17 @@ public class MetaData {
 
     public void addLocalFile(int fid, String local) {
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("insert into local_files (file_id, local) values (?, ?))");
-        stmt.bindLong(1,fid);
-        stmt.bindString(2,local);
-        stmt.executeInsert();
-        stmt.close();
+        Cursor cur = db.rawQuery("select * from local_files where file_id = " + fid + " and localpath = ?",
+                new String[]{local});
+        cur.moveToFirst();
+        if(cur.isAfterLast()) {
+            SQLiteStatement stmt = db.compileStatement("insert into local_files  values (?, ?)");
+            stmt.bindLong(1, fid);
+            stmt.bindString(2, local);
+            stmt.executeInsert();
+            stmt.close();
+        }
+        cur.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }

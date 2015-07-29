@@ -47,7 +47,15 @@ public class Server {
 
     public int getStatus(Activity act) {
         if(status == MetaData.STATUS_DISABLE) return DISABLED;
-        if(getActual(act) == null || !getActual(act).getStatus()) return OFFLINE;
+        IServer srv = getActual(act);
+        if(srv == null) return OFFLINE;
+        else {
+            if(!srv.getStatus()) {
+                srv.close();
+                return OFFLINE;
+            }
+            srv.close();
+        }
         return ONLINE;
     }
 

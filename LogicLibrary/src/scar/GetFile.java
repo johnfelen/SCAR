@@ -40,7 +40,7 @@ public class GetFile {
   }
 
   //Get as many blocks from servers, decrypt, apply rs, remove padding
-  public byte[] get() {
+  public byte[] get() throws Exception {
     //1. Compute HashChain
     Hash hash = new Hash();
     byte[][] hashArr = hash.hashchain(n, key);
@@ -55,7 +55,8 @@ public class GetFile {
     //  |-----------------------|
     //  | Chunk data...         |
     //  |_______________________|
-    byte[] ckey = hash.getHash(key);
+    //TODO: make the HMAC key a seperate key all together
+    byte[] ckey = hash.getHash(hash.getHash(key));
     int x = 0;
     while (x < n){
       BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
@@ -74,10 +75,13 @@ public class GetFile {
     }
     
     //3. Decode k chunks to get encrypted data back via RS
-    if(chunk.size() < k)
-      return null; //We don't have enough chunks to recover all the data
+    if(chunk.size() < k) 
+      throw new Exception("Not enough chunks of data to recover the data");
     RS rs = new RS();
     byte[] data = rs.decode(chunk.toArray(new Chunk[0]), k, n);
+    if(data == null) //Failed the MAC check
+      throw new Exception("Decryption failed the GMAC test");
+      
     
     //RS Output:
     //   _______________________

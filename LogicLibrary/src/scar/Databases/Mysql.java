@@ -86,7 +86,7 @@ public class Mysql implements IServer {
 		}
 	}
 
-	public void closeConn() {
+	public void close() {
 		try {
 			conn.close();
 		} catch (SQLException e) {

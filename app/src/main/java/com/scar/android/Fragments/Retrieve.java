@@ -12,13 +12,16 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.scar.R;
+import com.scar.android.FileSaveUtil;
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
 import com.scar.android.Session;
@@ -40,47 +43,51 @@ public class Retrieve extends Fragment {
 	EditText doc_name;
 	private byte[] data = null;
 
+    public void reset() {
+        doc_name.setText("");
+    }
 
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(final Message msg) {
-            AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
-			if(msg.what == -1) {
-                progressDialog.setProgress(0);
-                progressDialog.dismiss();
-                newDialog.setTitle("Failed to retrieve file");
-                newDialog.setMessage("The file has failed to be retrieved");
-                newDialog.setNegativeButton("Close",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                newDialog.show();
-            } else if(msg.what<100)
-            {
-                progressDialog.setProgress(msg.what);
-            }
-            else
-			{
-				progressDialog.setProgress(100);
-				progressDialog.dismiss();
-
-				// print message
-				newDialog.setTitle("Retrieved!");
-				newDialog
-						.setMessage("Would you like to save this document?");
-
-				//Save bytes[] to a file that the user can access elsewhere
-				String local = MediaStore.Images.Media.insertImage( getActivity().getContentResolver(), getBitmap( data ), getFilename() , "Recovered from SCAR");
-				//Add to meta data
-				ScarFile f = Session.meta.getFile(getFilename());
-				Session.meta.addLocalFile(f.id, local);
-			}
+    public void updateProgress(int what) {
+        AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
+        if(what == -1) {
+            progressDialog.setProgress(0);
+            progressDialog.dismiss();
+            newDialog.setTitle("Failed to retrieve file");
+            newDialog.setMessage("The file has failed to be retrieved");
+            newDialog.setNegativeButton("Close",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,
+                                            int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            newDialog.show();
+            reset();
+        } else if(what<100)
+        {
+            progressDialog.setProgress(what);
         }
-    };
+        else
+        {
+            progressDialog.setProgress(100);
+            progressDialog.dismiss();
+
+            // print message
+            newDialog.setTitle("Retrieved!");
+            newDialog
+                    .setMessage("Would you like to save this document?");
+
+            //Save bytes[] to a file that the user can access elsewhere
+            String local = new FileSaveUtil(getFilename(), "png", data).save(getActivity());
+            //local = MediaStore.Images.Media.insertImage( getActivity().getContentResolver(), getBitmap( data ), local , "Recovered from SCAR");
+            //Add to meta data
+            ScarFile f = Session.meta.getFile(getFilename());
+            Session.meta.addLocalFile(f.id, local);
+            Toast.makeText(getActivity().getApplicationContext(), "The file has been recovered successfully as: " + local, Toast.LENGTH_LONG).show();
+            reset();
+        }
+    }
 
 
 	public void retrieveFile()
@@ -97,25 +104,35 @@ public class Retrieve extends Fragment {
 			progressDialog.show();
 			new Thread()
 			{
+                public void update(final int per) {
+                    Retrieve.this.getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            updateProgress(per);
+                        }
+                    });
+                }
+
 				public void run()
 				{
-
+                    IServer[] actualServers = null;
 					try {
 						//Gets the servers for the given filename
 						Server[] servers = Session.meta.getServers(getFilename());
 
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
-						if( servers.length == 0 )
+						if( servers == null || servers.length == 0 )
 						{
 							servers = Session.meta.getAllActiveServers();
+							servers = testServers(servers);
 						}
 
-						servers = testServers(servers);
-						IServer[] actualServers = toActualServers(servers);
+						actualServers = toActualServers(servers);
+                        update(20);
 
 						//Feed filename, password, servers and n = 100, k = 50 to a new scar.GetFile instance
 						//TODO: allow user to enter hash string of encryption key in case it's not stored on this device.
 						byte[] key = Session.meta.getFileKey(getFilename());
+						update(30);
 						GetFile get =  new scar.GetFile( getFilename(),
 								                         key,
 								                         50,
@@ -125,6 +142,7 @@ public class Retrieve extends Fragment {
 						//Get the bytes[] back from get() via scar.GetFile instance
 						data = get.get();
 
+						update(90);
 						if(Session.meta.getFile(getFilename()) == null) {
 							//Add file to the meta if it wasn't already
 							Session.meta.newFile(getFilename(), key);
@@ -133,11 +151,16 @@ public class Retrieve extends Fragment {
 						}
 
 						//4. Goto line 89 and fill out the saving bytes[] to a file
-						handler.sendEmptyMessage(100); //Completed
+						update(100); //Completed
 					} catch (Exception e) {
 						//Failed
-						handler.sendEmptyMessage(-1);
+						e.printStackTrace();
+						update(-1);
 					}
+
+                    if(actualServers == null)
+                        for(IServer srv : actualServers)
+                            srv.close();
 
 				}
 			}.start();
@@ -202,12 +225,6 @@ public class Retrieve extends Fragment {
 	private String getFilename() {
 		return doc_name.getText().toString();
 	}
-
-	private Bitmap getBitmap( byte[] bytes )	//takes bytes and converts it to a bitmap
-	{
-		return BitmapFactory.decodeByteArray( bytes, 0, bytes.length );
-	}
-
 }
 
 
