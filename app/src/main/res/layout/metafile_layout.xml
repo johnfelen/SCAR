@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:paddingBottom="16dp"
     android:background = "@drawable/subtle_pattern">
 
     <TextView
@@ -19,9 +21,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/path"
-        android:id="@+id/filepath"
-        android:layout_gravity="center"
+        android:textSize="15dp"
         android:paddingTop="25dp"/>
+
+    <ListView
+        android:paddingTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/file_path"
+        android:layout_weight=".9"/>
+
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -53,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/servers"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:paddingTop="25dp"/>
 
     <ListView
@@ -61,6 +70,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/server_list"
-        android:layout_weight=".9" />
+        android:layout_weight=".9"/>
 
 </LinearLayout>

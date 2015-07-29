@@ -31,13 +31,6 @@ public class Files extends Fragment {
         super.onStart();
 
         ListView filesStored = (ListView) getActivity().findViewById(R.id.files_list);
-        //TODO REMOVE NEXT 4 LINES FOR ACTUAL PRODUCTION CODE and uncomment below
-        ArrayList<String> listFiles = new ArrayList<String>();
-        listFiles.add("HELLO");
-        listFiles.add("TWO");
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listFiles);  //creates an array adapter to populate the listview
-        filesStored.setAdapter(arrayAdapter);
 
         filesStored.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //implement the item click for ListView
             @Override
@@ -51,7 +44,7 @@ public class Files extends Fragment {
         });
     }
 
-    /*public void onResume() {
+    public void onResume() {
         super.onResume();
         refreshList();
     }
@@ -77,6 +70,6 @@ public class Files extends Fragment {
         }
 
         return listFiles;
-    }*/
+    }
 
 }

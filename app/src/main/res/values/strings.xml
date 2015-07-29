@@ -80,8 +80,8 @@
 
     <!--MetaFile Strings-->
     <string name="filename">File Name</string>
-    <string name="path">File Path</string>
-    <string name="servers">Servers:</string>
+    <string name="path">File Path(s):</string>
+    <string name="servers">Server(s):</string>
     <string name="open">Open File</string>
     <string name="delete">Delete File</string>
 
