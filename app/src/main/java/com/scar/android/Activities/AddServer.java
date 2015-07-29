@@ -30,7 +30,7 @@ public class AddServer extends FragmentActivity {
 
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
-        actionBar.setTitle("ADD SERVER");
+        actionBar.setTitle("SCAR");
 
         Spinner type = (Spinner)findViewById(R.id.asl_types);
 

@@ -31,7 +31,7 @@ public class ModifyServer extends FragmentActivity {
 
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
-        actionBar.setTitle("MODIFY SERVER");
+        actionBar.setTitle("SCAR");
 
         srv = new Server(getIntent().getExtras());
 

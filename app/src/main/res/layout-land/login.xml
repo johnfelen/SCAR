@@ -12,7 +12,7 @@
         android:text="@string/login"
         android:gravity="center"
         android:textColor="#2b468b"
-        android:textSize="40dp"/>
+        android:textSize="32dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

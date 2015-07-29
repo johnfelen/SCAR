@@ -15,7 +15,8 @@
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#2B468B"/>
+        android:textColor="#2B468B"
+        android:textSize="32dp"/>
 
     <LinearLayout
         android:orientation="horizontal"

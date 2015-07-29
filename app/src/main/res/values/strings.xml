@@ -85,4 +85,8 @@
     <string name="open">Open File</string>
     <string name="delete">Delete File</string>
 
+    <!--About Strings-->
+    <string name="about_title">About SCAR</string>
+    <string name="about_info">Nothing seems to be here.</string>
+
 </resources>

@@ -34,7 +34,7 @@ public class LoginActivity extends Activity
 
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
-        actionBar.setTitle("SCAR LOGIN");
+        actionBar.setTitle("SCAR");
 
         // Init the MetaData db
         MetaData.init(this);

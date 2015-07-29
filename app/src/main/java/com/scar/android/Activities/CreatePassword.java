@@ -25,7 +25,7 @@ public class CreatePassword extends Activity {
 
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
-        actionBar.setTitle("CREATE PASSWORD");
+        actionBar.setTitle("SCAR");
 
         Button create = (Button)findViewById(R.id.cp_create),
                generate =(Button) findViewById(R.id.cp_generate),
