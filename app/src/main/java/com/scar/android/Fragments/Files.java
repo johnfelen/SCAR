@@ -1,6 +1,7 @@
 package com.scar.android.Fragments;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,8 +14,10 @@ import android.widget.ListView;
 import com.android.scar.R;
 import com.scar.android.Activities.MetaFile;
 import com.scar.android.ScarFile;
+import com.scar.android.Server;
 import com.scar.android.Session;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -31,6 +34,9 @@ public class Files extends Fragment {
         super.onStart();
 
         ListView filesStored = (ListView) getActivity().findViewById(R.id.files_list);
+        ArrayList<String> listFiles = new ArrayList<String>();
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listFiles);  //creates an array adapter to populate the listview
+        filesStored.setAdapter(arrayAdapter);
 
         filesStored.setOnItemClickListener(new AdapterView.OnItemClickListener() {  //implement the item click for ListView
             @Override
@@ -46,19 +52,9 @@ public class Files extends Fragment {
 
     public void onResume() {
         super.onResume();
-        refreshList();
+        new RefreshListTask().execute(this);
     }
 
-    public void refreshList() {
-        if (Session.meta != null) {
-            ScarFile[] metaDataFiles = Session.meta.listFiles();
-            ArrayList<String> listFiles = getFileNames(metaDataFiles);    //remove extraneous meta data
-            ListView filesStored = (ListView) getActivity().findViewById(R.id.files_list);
-
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listFiles);  //creates an array adapter to populate the listview
-            filesStored.setAdapter(arrayAdapter);
-        }
-    }
 
     private ArrayList<String> getFileNames( ScarFile[] metaDataFiles )  //takes the ScarFile[] array and creates an ArrayList of only the name of the files
     {
@@ -72,4 +68,29 @@ public class Files extends Fragment {
         return listFiles;
     }
 
+
+    private class RefreshListTask extends AsyncTask<Fragment, Object, Object> {
+        //TODO: Show a "loading..." text while loading in the list
+        //TODO: Be smart about the updates and only add/remove servers as needed
+        protected Object doInBackground(Fragment... params) {
+            if(Session.meta != null) {
+                //Setup the server list widget
+                ScarFile[] metaDataFiles = Session.meta.listFiles();
+                final ArrayList<String> listFiles = getFileNames(metaDataFiles);    //remove extraneous meta data
+                ListView filesStored = (ListView) getActivity().findViewById(R.id.files_list);
+                final ArrayAdapter<String> adp = (ArrayAdapter<String>)filesStored.getAdapter();
+
+                params[0].getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        adp.clear();
+                        adp.addAll(listFiles);
+                    }
+                });
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(Object... values) {}
+        protected void onPostExecute(Object res) { }
+    }
 }
