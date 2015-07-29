@@ -118,7 +118,8 @@ public class MainActivity extends FragmentActivity {
         else if( item.getItemId() == R.id.action_logout )
         {
             Intent login = new Intent( this, LoginActivity.class );
-            startActivity( login );
+            Session.clear();
+            startActivity(login);
             return true;
         }
         return super.onOptionsItemSelected(item);
