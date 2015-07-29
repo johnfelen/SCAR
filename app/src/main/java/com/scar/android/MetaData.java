@@ -59,6 +59,7 @@ import scar.IServer;
  *     setServers(filename, srvs) - Sets the current filename to use the given servers
  *
  *     addLocalFile(fn, local) - Adds a local path for the given file
+ *     removeLocalFile(fid, local) - Removes this local path
  *
  *     newFile(filename) - Creates a new file in the db and sets up the servers for it
  *     newServer(type, hostname, port, uname, pass) - Creates a new server for the app
@@ -405,6 +406,17 @@ public class MetaData {
             stmt.close();
         }
         cur.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void removeLocalFile(int fid, String local) {
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("delete from local_files where file_id = ? and localpath = ?");
+        stmt.bindLong(1, fid);
+        stmt.bindString(2, local);
+        stmt.executeUpdateDelete();
+        stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
     }

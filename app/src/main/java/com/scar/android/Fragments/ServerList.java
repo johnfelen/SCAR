@@ -94,7 +94,7 @@ public class ServerList extends Fragment
 
 	public void onActivityResult(int requestCode, int resultCode, Intent args) {
 		//Get our data back from AddServer Activity when it's done
-		if(resultCode == AddServer.SUCCESS) {
+		if(resultCode == AddServer.SUCCESS && args != null) {
 			Session.meta.newServer(args.getIntExtra("type", 0),
 								   args.getStringExtra("lbl"),
 									args.getStringExtra("host"),

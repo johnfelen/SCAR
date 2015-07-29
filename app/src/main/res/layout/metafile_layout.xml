@@ -29,34 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/file_path"
-        android:layout_weight=".9"/>
+        android:layout_weight=".9"
+        android:stackFromBottom="false"
+        android:longClickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true" />
 
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginTop="35dp">
-
-        <Button
-            android:layout_width="125dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="35dp"
-            android:text="@string/delete"
-            android:id="@+id/delete_file"
-            android:textColor="#98EF8E"
-            android:background="@drawable/button_rounded_corners" />
-        <Button
-            android:layout_width="125dp"
-            android:layout_marginLeft="35dp"
-            android:layout_height="wrap_content"
-            android:textColor="#98EF8E"
-            android:background="@drawable/button_rounded_corners"
-            android:text="@string/open"
-            android:id="@+id/open_file" />
-
-    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -70,6 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/server_list"
-        android:layout_weight=".9"/>
+        android:layout_weight=".9"
+        android:focusable="false"
+        android:clickable="false" />
 
 </LinearLayout>
