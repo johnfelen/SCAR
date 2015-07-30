@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.android.scar.R;
 import com.scar.android.FileSaveUtil;
+import com.scar.android.MetaData;
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
 import com.scar.android.Session;
@@ -124,8 +125,21 @@ public class Retrieve extends Fragment {
 						{
 							servers = Session.meta.getAllActiveServers();
 							servers = testServers(servers);
+						} else {
+							//Remove inactive servers
+							ArrayList<Server> tmp = new ArrayList<Server>();
+							for(Server srv : servers)
+								if(srv.status == MetaData.STATUS_ACTIVE)
+									tmp.add(srv);
+							servers = tmp.toArray(new Server[0]);
 						}
 
+
+						if(servers == null || servers.length == 0) {
+							//Not enough servers
+							update(-1);
+							return;
+						}
 						actualServers = toActualServers(servers);
                         update(20);
 

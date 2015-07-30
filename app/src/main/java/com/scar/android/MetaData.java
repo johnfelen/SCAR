@@ -202,6 +202,10 @@ public class MetaData {
         db.endTransaction();
     }
 
+    public void close() {
+        db.close();
+    }
+
     //Ensures the MetaData is still valid
     public boolean valid() {
         return db != null && dbname != null;

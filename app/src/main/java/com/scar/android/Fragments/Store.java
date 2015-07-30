@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.android.scar.R;
 import com.scar.android.Activities.AddServer;
+import com.scar.android.MetaData;
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
 import com.scar.android.Session;
@@ -173,6 +174,11 @@ public class Store extends Fragment {
 					update(20);
 					Server[] currentServers = Session.meta.getAllActiveServers();
 					currentServers = testServers(currentServers);
+					if(currentServers == null || currentServers.length == 0) {
+						//Not enough servers
+						update(-1);
+						return;
+					}
 					actualServers = toActualServers(currentServers);
 
 					//Feed filename, password, servers and n = 100, k = 50 to a new scar.StoreFile instance
@@ -235,7 +241,7 @@ public class Store extends Fragment {
 		ArrayList<Server> ret = new ArrayList<Server>();
 
 		for(Server srv : srvs) {
-			if (srv.getActual(getActivity()).getStatus())
+			if (srv.status == MetaData.STATUS_ACTIVE && srv.getActual(getActivity()).getStatus())
 				ret.add(srv);
 		}
 
