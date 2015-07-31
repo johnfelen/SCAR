@@ -23,6 +23,14 @@ public class RndKeyGen {
     byte n = genBytes(1)[0];
     return (byte)(n % max);
   }
+
+  public byte nextInt(int max) {
+    byte[] i = genBytes(4);
+    return (((i[0]        & 0x000000FF)) +
+            ((i[1] << 8)  & 0x0000FF00) +
+            ((i[2] << 16) & 0x00FF0000) +
+            ((i[3] << 24) & 0xFF000000)) % max;
+  }
   
   public void seed(byte[] seed) {
     rnd.setSeed(seed);
