@@ -5,10 +5,12 @@ package scar;
 //from servers based on their position in the HashChain
 public class Chunk {
   public final byte[] data;
+  public final byte[] hash;
   public final int ind;
   
-  public Chunk(byte[] d, int i) {
+  public Chunk(final byte[] d, final byte[] h, final int i) {
     data = d;
+    hash = h;
     ind = i;
   }
 }

@@ -1,10 +1,13 @@
 package scar;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.math.*;
 import org.spongycastle.util.encoders.Hex;
 
 public class StoreFile {
+  public static final int allowed_threads = 8;
+  
   private IServer servers[];
   private byte[] data;
   private String
@@ -104,19 +107,32 @@ public class StoreFile {
     
     //8. Compute HashChain 
     byte[][] hashArr = hash.hashchain(n, key);
-    
-    //9. Store each chunk to it's correct server with filename 
-    // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
 
+    //9. Shuffle our chunks before storing
+    Chunk[] chunks = new Chunk[chunk.length];
+    for(int i = 0;i<chunks.length;++i) {
+      chunks[i] = new Chunk(chunk[i], hashArr[i], i);
+    }
+    chunks = Shuffle.shuffle(chunks);
+    
+    //10. Store each chunk to it's correct server with filename 
+    // chunk[i] corresponds to HashChain_i and belongs at Server_{HashChain_i % NumberOfServers}
+    ExecutorService pool = Executors.newFixedThreadPool(allowed_threads);
     int x = 0;
     int numOfServ = servers.length;
     while (x < chunk.length){
-      BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
-      int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
+      final String cname = Hex.toHexString(hash.getHash(concate(fn.getBytes(), hashArr[x])));
+      final BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
+      final int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
 
-      servers[i].storeData(Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashArr[x]))), chunk[x]);
-
+      pool.submit(new StorageTask(servers[i], chunks[x], cname, x, StorageTask.TYPE_STORE));
+      
       ++x;
     }
+
+    //wait until tasks are done
+    try {
+      while(!pool.awaitTermination(60, TimeUnit.SECONDS)); 
+    } catch(Exception e) {/* TODO: This is likely an error if it hits */}
   }
 }

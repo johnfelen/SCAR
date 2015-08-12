@@ -2,6 +2,7 @@ package scar;
 
 import java.math.*;
 import java.util.*;
+import java.util.concurrent.*;
 import org.spongycastle.util.encoders.Hex;
 
 public class GetFile {
@@ -39,6 +40,58 @@ public class GetFile {
     return ret;
   }
 
+  private void clearFutures(ArrayList<Future<Chunk>> futures, ArrayList<Chunk> lst, byte[] key) {
+    Hash hash = new Hash();
+    while(futures.size() == n) {
+      final ListIterator<Future<Chunk>> itr = futures.listIterator(0);
+      while(itr.hasNext()) {
+        final Future<Chunk> ftr = itr.next();
+        if(ftr.isDone()){
+          itr.remove();
+          Chunk chk = null; 
+          try {
+            chk = ftr.get();
+          } catch(Exception e) {/* TODO: Handle error*/}
+          if(chk != null) {
+            byte[] data = chk.data;
+            data = hash.checkHMac(key, data);
+            if(data != null) {
+              lst.add(new Chunk(data, null, chk.ind));
+            }
+          }
+        }
+      }
+      
+      if(futures.size() == n) {
+        // no change, sleep
+        try {
+          Thread.sleep(500);
+        }catch(Exception e) {}
+      }
+    }
+  }
+
+  private void fetchChunks(ArrayList<Chunk> lst, byte[][] hashchain, byte[] key) {
+    Hash hash = new Hash();
+    ArrayList<Future<Chunk>> futures = new ArrayList<Future<Chunk>>(n);
+    ExecutorService pool = Executors.newFixedThreadPool(StoreFile.allowed_threads);
+    for(int x = 0;x < n; ++x) {
+      //Clear futures if we maxed out
+      clearFutures(futures, lst, key);
+      
+      //add new task if needed
+      final BigInteger num = new BigInteger(Hex.toHexString(hashchain[x]), 16);
+      final int i = num.mod(new BigInteger(Integer.toString(servers.length))).intValue();
+      final String name = Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashchain[x])));
+      
+      futures.add(pool.submit(new StorageTask(servers[i], null, name, x, StorageTask.TYPE_GET)));
+    }
+
+    //Clear all ongoing futures
+    clearFutures(futures, lst, key);
+  }
+  
+
   //Get as many blocks from servers, decrypt, apply rs, remove padding
   public byte[] get() throws Exception {
     //1. Compute HashChain
@@ -57,22 +110,7 @@ public class GetFile {
     //  |_______________________|
     //TODO: make the HMAC key a seperate key all together
     byte[] ckey = hash.getHash(hash.getHash(key));
-    int x = 0;
-    while (x < n){
-      BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
-      int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
-      
-      byte[] c = servers[i].getData(Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashArr[x]))));
-      if(c != null) {
-        // System.out.println("Chunk: " + x);
-        c = hash.checkHMac(ckey, c);
-        if (c != null){ //Only add if valid data
-          chunk.add(new Chunk(c, x));
-        }
-      }
-      
-      ++x;
-    }
+    fetchChunks(chunk, hashArr, ckey);
     
     //3. Decode k chunks to get encrypted data back via RS
     if(chunk.size() < k) 
