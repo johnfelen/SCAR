@@ -3,7 +3,9 @@
 
     <string name="app_name">SCAR</string>
     <string name="store_app">STORE</string>
-    <string name="retrieve_app">RETRIEVE</string>    
+    <string name="retrieve_app">RETRIEVE</string>
+    <string name="file_app">FILES</string>
+    <string name="servers_app">SERVERS</string>
     <string name="new_server_app">SERVERS</string> 
     <string name="about_app">HOME</string>
     <string name="login_app">LOGIN</string>
