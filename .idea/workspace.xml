@@ -34,8 +34,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f206872a-da41-4774-a94e-9ed7d583ddd3" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SCAR.iws" />
@@ -84,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7197802">
-              <caret line="137" column="46" selection-start-line="137" selection-start-column="46" selection-end-line="137" selection-end-column="46" />
+            <state vertical-scroll-proportion="-15.310345">
+              <caret line="152" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="152" selection-end-column="0" />
               <folding>
                 <element signature="e#2743#2762#0" expanded="true" />
                 <element signature="e#3365#3387#0" expanded="true" />
@@ -102,22 +101,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="divider.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/divider.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="34" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="false">
+      <file leaf-file-name="activity_main.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.448276">
-              <caret line="11" column="27" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="36" />
-              <folding />
+            <state vertical-scroll-proportion="2.9904032">
+              <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+              <folding>
+                <element signature="e#2484#2503#0" expanded="true" />
+                <element signature="e#2977#2999#0" expanded="true" />
+                <element signature="e#3512#3530#0" expanded="true" />
+                <element signature="e#4014#4035#0" expanded="true" />
+              </folding>
             </state>
           </provider>
           <provider editor-type-id="android-designer">
@@ -1205,7 +1199,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Activities/New_Server.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Activities/Store.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/scar/android/Activities/Retrieve.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout-land/retrieve_layout.xml" />
@@ -1256,6 +1249,7 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout-land/server_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml" />
       </list>
     </option>
   </component>
@@ -2011,7 +2005,13 @@
       <option name="project" value="LOCAL" />
       <updated>1438653600795</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="created linear layout with buttons in activity main take over tab host">
+      <created>1439675343585</created>
+      <option name="number" value="00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1439675343585</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2100,7 +2100,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="create password alertbox mostly finished" />
     <MESSAGE value="ActionBar is hiddin on LoginActivity" />
     <MESSAGE value="could not find a viable way to keep the alertbox open but I made a toast that will alert them that the password is not long enough" />
     <MESSAGE value="moved the login to its own method so that if a user created a password they could also login in right away" />
@@ -2125,7 +2124,8 @@
     <MESSAGE value="created a logout option in the fragment tabs" />
     <MESSAGE value="fixed login so you can't back right into MainActivity after loging out" />
     <MESSAGE value="made landscape layouts and updated a few portrait layouts" />
-    <option name="LAST_COMMIT_MESSAGE" value="made landscape layouts and updated a few portrait layouts" />
+    <MESSAGE value="created linear layout with buttons in activity main take over tab host" />
+    <option name="LAST_COMMIT_MESSAGE" value="created linear layout with buttons in activity main take over tab host" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -2594,20 +2594,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.448276">
-          <caret line="11" column="27" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/divider.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.08869565">
           <caret line="3" column="25" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="34" />
           <folding />
         </state>
@@ -2615,13 +2604,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7197802">
-          <caret line="137" column="46" selection-start-line="137" selection-start-column="46" selection-end-line="137" selection-end-column="46" />
+        <state vertical-scroll-proportion="-15.310345">
+          <caret line="152" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="152" selection-end-column="0" />
           <folding>
             <element signature="e#2743#2762#0" expanded="true" />
             <element signature="e#3365#3387#0" expanded="true" />
             <element signature="e#4038#4056#0" expanded="true" />
             <element signature="e#4678#4699#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout-land/activity_main.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.9904032">
+          <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
+          <folding>
+            <element signature="e#2484#2503#0" expanded="true" />
+            <element signature="e#2977#2999#0" expanded="true" />
+            <element signature="e#3512#3530#0" expanded="true" />
+            <element signature="e#4014#4035#0" expanded="true" />
           </folding>
         </state>
       </provider>
