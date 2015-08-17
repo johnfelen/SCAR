@@ -1,5 +1,6 @@
 import com.dropbox.core.*;
 import java.io.*;
+import java.lang.*;
 import java.util.Locale;
 
 public class DropBox{
@@ -29,19 +30,36 @@ public class DropBox{
     try{
       client = new DbxClient(config, accessToken);
       System.out.println("Linked Account: " + client.getAccountInfo().displayName);
-    }
-    catch (Exception ex){
+    }catch (Exception ex){
       System.out.println("Unable to connet to client!");
     }
   }
   
-  //unsure about schema for this.  Dropbox xfers whole files (examples use a .txt file).  How do we store chunks of a file?
-  //we talked about storing them as bit strings in a text file...is that the plan still?
-  public void dbStore(){
+  //using fn to store chucks in Dropbox
+  public void dbStore(String fn, byte[] chunks){
+    ByteArrayInputStream byteStream = new ByteArrayInputStream(chunks);
     
+    try{
+      DbxEntry.File upFile = client.uploadFile("/" + fn, DbxWriteMode.add(), chunks.length, byteStream);
+      System.out.println("Uploaded: " + upFile.toString());
+    } finally {
+      byteStream.close();
+    }
   }
   
-  public void dbGet(){
-  
+  public byte[] dbGet(String fn){
+    ByteArrayOUtputStream byteStream = new ByteArrayOutputStream();
+    byte[] chunks;
+    
+    //unsure if implementation/syntax is right on this
+    try{
+      DbxEntry.File downFile = client.getFile("/" + fn, null, byteStream);
+      chunks = byteStream.toByteArray();
+      System.out.println("Metadata: " + downFile.toString());
+    } finally{
+      byteStream.close();
+    }
+    
+    return chunks;
   }
 }
