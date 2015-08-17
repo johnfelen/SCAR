@@ -9,7 +9,7 @@ public class DropBox{
   private String authURL;                         //URL for authorization page
   private String code;                            //app code from URL
   private String accessToken;                     //token for accessing app's Dropbox.  NEED TO SAVE!!!
-  private DbxClient client;                              //Dropbox client for storage and retrieval
+  private DbxClient client;                       //Dropbox client for storage and retrieval
   
   public void connect() throws IOException, DbxException{
     //begin OAuth process
@@ -35,8 +35,10 @@ public class DropBox{
     }
   }
   
+  //unsure about schema for this.  Dropbox xfers whole files (examples use a .txt file).  How do we store chunks of a file?
+  //we talked about storing them as bit strings in a text file...is that the plan still?
   public void dbStore(){
-  
+    
   }
   
   public void dbGet(){
