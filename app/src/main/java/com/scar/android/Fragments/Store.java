@@ -53,6 +53,18 @@ public class Store extends Fragment {
 	EditText s_name;
 	TextView f_name;
 
+	public static Store newInstance(int num)
+	{
+		Store fragment = new Store();
+
+		// Supply num input as an argument.
+		Bundle args = new Bundle();
+		args.putInt("num", num);
+		fragment.setArguments(args);
+
+		return fragment;
+	}
+
 	public void reset() {
 		s_name.setText("");
 		f_name.setText("");

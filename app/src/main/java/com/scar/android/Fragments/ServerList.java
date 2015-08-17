@@ -32,6 +32,19 @@ import java.util.ArrayList;
 
 public class ServerList extends Fragment
 {
+
+	public static ServerList newInstance(int num)
+	{
+		ServerList fragment = new ServerList();
+
+		// Supply num input as an argument.
+		Bundle args = new Bundle();
+		args.putInt("num", num);
+		fragment.setArguments(args);
+
+		return fragment;
+	}
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.serverlist_layout, container, false);
 	}

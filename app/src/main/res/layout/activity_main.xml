@@ -94,7 +94,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/store_app"
             android:scaleType="fitCenter"
-            android:id="@+id/homeButton" />
+            android:id="@+id/store_tab" />
         <ImageView
             android:layout_width="1dp"
             android:layout_height="fill_parent"
@@ -110,7 +110,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/retrieve_app"
             android:scaleType="fitCenter"
-            android:id="@+id/wallOfFameButton" />
+            android:id="@+id/retrieve_tab" />
         <ImageView
             android:layout_width="1dp"
             android:layout_height="fill_parent"
@@ -126,7 +126,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:scaleType="fitCenter"
             android:text="@string/file_app"
-            android:id="@+id/wallOfShameButton"
+            android:id="@+id/files_tab"
             />
         <ImageView
             android:layout_width="1dp"
@@ -143,7 +143,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:scaleType="fitCenter"
             android:text="@string/servers_app"
-            android:id="@+id/notificationButton" />
+            android:id="@+id/servers_tab" />
     </LinearLayout>
 
 </RelativeLayout>

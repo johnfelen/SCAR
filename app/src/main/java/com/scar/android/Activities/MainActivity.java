@@ -5,9 +5,15 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.view.*;
 import android.widget.TextView;
@@ -20,7 +26,11 @@ import com.scar.android.Fragments.Store;
 import com.scar.android.Session;
 
 public class MainActivity extends FragmentActivity {
-    private FragmentTabHost tabHost;
+    //private FragmentTabHost tabHost;
+    /*These two are for the tabs and screen slider*/
+    private ViewPager viewPager;
+    private PagerAdapter pagerAdapter;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +40,48 @@ public class MainActivity extends FragmentActivity {
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
 
+        /*This will set up the pager and create the screen slider in the main tabs*/
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+
+        Button store = (Button) findViewById(R.id.store_tab);
+        store.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                viewPager.setCurrentItem(0);
+
+            }
+        });
+
+        Button retrieve = (Button) findViewById(R.id.retrieve_tab);
+        retrieve.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                viewPager.setCurrentItem(1);
+
+            }
+        });
+
+        Button files = (Button) findViewById(R.id.files_tab);
+        files.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                viewPager.setCurrentItem(2);
+
+            }
+        });
+
+        Button servers = (Button) findViewById(R.id.servers_tab);
+        servers.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                viewPager.setCurrentItem(3);
+
+            }
+        });
         // create the TabHost that will contain the Tabs
-        tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        /*tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
         //TODO: change Store to Files when created
@@ -71,7 +121,45 @@ public class MainActivity extends FragmentActivity {
                 tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundColor(Color.parseColor("#98EF8E"));
                 getTabTV( tabHost.getCurrentTab() ).setTextColor(Color.parseColor("#2B468B"));
             }
-        });
+        });*/
+    }
+
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter //allows sliding between main tabs
+    {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+
+
+                    return Store.newInstance(position);
+                case 1:
+
+
+                    return Retrieve.newInstance(position);
+
+                case 2:
+
+                    return Files.newInstance(position);
+
+                case 3:
+
+                    return ServerList.newInstance(position);
+
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
     }
 
     protected void onResume() {
@@ -84,11 +172,11 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public TextView getTabTV(int childIndex)
+    /*public TextView getTabTV(int childIndex)
     {
         ViewGroup tabVG = (ViewGroup) tabHost.getTabWidget().getChildAt( childIndex );
         return (TextView) tabVG.getChildAt(1);
-    }
+    }*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

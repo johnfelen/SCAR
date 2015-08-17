@@ -24,6 +24,19 @@ import java.util.ArrayList;
  * Created by John on 7/26/2015.
  */
 public class Files extends Fragment {
+
+    public static Files newInstance(int num)
+    {
+        Files fragment = new Files();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putInt("num", num);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.files_tab_layout, container, false);

@@ -44,6 +44,18 @@ public class Retrieve extends Fragment {
 	EditText doc_name;
 	private byte[] data = null;
 
+	public static Retrieve newInstance(int num)
+	{
+		Retrieve fragment = new Retrieve();
+
+		// Supply num input as an argument.
+		Bundle args = new Bundle();
+		args.putInt("num", num);
+		fragment.setArguments(args);
+
+		return fragment;
+	}
+
     public void reset() {
         doc_name.setText("");
     }
