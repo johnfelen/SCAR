@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/asl_token"
+        android:id="@+id/as_token_tv"
+        android:layout_alignBottom="@+id/as_token"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/as_token"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/as_token_tv" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#98EF8E"
+        android:background="@drawable/button_rounded_corners"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="@string/asl_auth_db"
+        android:id="@+id/as_auth"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

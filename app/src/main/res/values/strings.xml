@@ -68,6 +68,8 @@
     <string name="asl_uname">Username:</string>
     <string name="asl_pass">Password:</string>
     <string name="asl_add">Add Server</string>
+    <string name="asl_token">Access Token:</string>
+    <string name="asl_auth_db">Link DropBox Account</string>
 
     <!-- Modify Server Strings, also uses AddServer Strings -->
     <string name="ms_title">Modify Server</string>

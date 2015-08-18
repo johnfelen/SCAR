@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.android.scar.R;
+import com.scar.android.Fragments.DropBoxStore;
 import com.scar.android.Fragments.GenericStore;
 import com.scar.android.Fragments.SQLiteStore;
 import com.scar.android.MetaData;
@@ -84,9 +85,11 @@ public class AddServer extends FragmentActivity {
                 frag = new SQLiteStore();
                 break;
             case MetaData.TYPE_GDRIVE_STORE:
-            case MetaData.TYPE_DROPBOX_STORE:
-                //TODO: change this later
+                //TODO: change this later, this will likely be a clone of DropBoxStore
                 frag = new GenericStore();
+                break;
+            case MetaData.TYPE_DROPBOX_STORE:
+                frag = new DropBoxStore();
                 break;
         }
         Bundle args = new Bundle();
