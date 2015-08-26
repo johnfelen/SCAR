@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,13 +61,14 @@ public class MetaFile extends Activity {
         lst.setClickable(true);
         lst.setLongClickable(true);
         //TODO: Fix Delete and Open
-        /*
         lst.setOnItemClickListener(new ListView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> _parent, View view, int _position, long id) {
                 final AdapterView<?> parent = _parent;
                 final int position = _position;
                 AlertDialog.Builder newDialog = new AlertDialog.Builder(MetaFile.this);
                 newDialog.setTitle("What action would you like to perform?");
+
+                //delete local filepath
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String file = (String) parent.getItemAtPosition(position);
@@ -74,6 +77,9 @@ public class MetaFile extends Activity {
                         Session.meta.removeLocalFile(selected.id, file);
                         selected = Session.meta.getFile(selected.getFilename());
                         MetaFile.this.refreshFileList();
+
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));   //will refresh the cache
+
                     }
                 });
                 newDialog.setNegativeButton("Close",
@@ -85,12 +91,14 @@ public class MetaFile extends Activity {
                             }
                         });
 
+                //opens the file
                 newDialog.setNeutralButton("Open", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent open = new Intent(Intent.ACTION_VIEW);
-                        open.setData(Uri.parse((String) parent.getItemAtPosition(position)));
-                        startActivity(open);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        File file = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
+                        intent.setDataAndType( Uri.fromFile( file ), "image/*" );
+                        startActivity( intent );    //starts gallary activity with local path Uri
                     }
                 });
 
@@ -101,7 +109,7 @@ public class MetaFile extends Activity {
 
             }
         });
-    */
+
         //sets the serverlist listview in metafile
         lst = (ListView) findViewById( R.id.server_list );
 
