@@ -3,6 +3,7 @@ package com.scar.android.Activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.scar.android.Server;
 import com.scar.android.Session;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by John on 7/27/2015.
@@ -71,14 +74,29 @@ public class MetaFile extends Activity {
                 //delete local filepath
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        String file = (String) parent.getItemAtPosition(position);
-                        File f = new File(Uri.parse(file).toString());
+                        //change the way to get the file to be similar to open's way of getting it
+                        //String file = (String) parent.getItemAtPosition(position);
+                        //File f = new File(Uri.parse(file).toString());
+                        File f = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
                         f.delete();
-                        Session.meta.removeLocalFile(selected.id, file);
+                        Session.meta.removeLocalFile(selected.id, f.toString());
                         selected = Session.meta.getFile(selected.getFilename());
                         MetaFile.this.refreshFileList();
 
-                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));   //will refresh the cache
+                        //1st option is only this one line of code, is very smilar to the open line of code
+                        getContentResolver().delete(Uri.fromFile(f), null, null);    //scans the cache
+
+                        //2nd option will go to a method below
+                        //deleteFileFromMediaStore(getContentResolver(), f); //should delete from media store, I have the Uri set to internal, but it may be external depending on where its saved
+
+                        /*3rd option, the first argument this, is not working because it is not context, may work but last resort because it must be fixed
+                        MediaScannerConnection.scanFile(this, new String[] { Environment.getExternalStorageDirectory().toString() }, null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri)
+                            {
+                                Log.i("ExternalStorage", "Scanned " + path + ":");
+                                Log.i("ExternalStorage", "-> uri=" + uri);
+                            }
+                        });*/
 
                     }
                 });
@@ -145,5 +163,25 @@ public class MetaFile extends Activity {
     public void refreshFileList() {
         ListView lst = (ListView) findViewById(R.id.file_path);
         lst.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, selected.getLocalpaths()));
+    }
+
+    public static void deleteFileFromMediaStore(final ContentResolver contentResolver, final File file) {
+        String canonicalPath;
+        try {
+            canonicalPath = file.getCanonicalPath();
+        } catch (IOException e) {
+            canonicalPath = file.getAbsolutePath();
+        }
+        final Uri uri = MediaStore.Files.getContentUri("internal");
+        //final Uri uri = MediaStore.Files.getContentUri("external");
+        final int result = contentResolver.delete(uri,
+                MediaStore.Files.FileColumns.DATA + "=?", new String[] {canonicalPath});
+        if (result == 0) {
+            final String absolutePath = file.getAbsolutePath();
+            if (!absolutePath.equals(canonicalPath)) {
+                contentResolver.delete(uri,
+                        MediaStore.Files.FileColumns.DATA + "=?", new String[]{absolutePath});
+            }
+        }
     }
 }
