@@ -7,6 +7,7 @@ import org.spongycastle.util.encoders.Hex;
 
 public class StoreFile {
   public static final int allowed_threads = 8;
+  public static final int added_garbage = 50;
   
   private IServer servers[];
   private byte[] data;
@@ -44,7 +45,46 @@ public class StoreFile {
     System.arraycopy(b, 0, ret, a.length, b.length);
     return ret;
   }
-  
+
+  private byte[][] add_garbage(byte[][] good) {
+    RndKeyGen rnd = new RndKeyGen();
+    byte[][] bad = new byte[good.length+added_garbage][];
+    int i;
+    System.arraycopy(good, 0, bad, 0, good.length);
+    
+    for(i=good.length;i<bad.length;++i) {
+      bad[i] = rnd.genBytes(bad[0].length);
+    }
+    return bad;
+  }
+
+  // Idea: Do a round robin of the servers on the chunks
+  private Chunk[] distribute_chunks(byte[][] chunk_data, byte[][] hc) {
+    ArrayList<Integer> id = new ArrayList<Integer>(chunk_data.length);
+    ArrayList<byte[]> tmp = new ArrayList<byte[]>(chunk_data.length);
+    Chunk[] chunks = new Chunk[chunk_data.length];
+    int i, srv;
+
+    //Setup pool
+    for(i=0;i<chunk_data.length;++i) {
+      id.add(i);
+      tmp.add(chunk_data[i]);
+    }
+
+    //Round Robin chunks to servers based on hash chain
+    srv = 0;
+    for(i=0;i<chunk_data.length;++i) {
+      final BigInteger num = new BigInteger(Hex.toHexString(hc[i]), 16);
+      final int ind = num.mod(new BigInteger(Integer.toString(tmp.size()))).intValue();
+      chunks[i] = new Chunk(tmp.remove(ind),
+                            hc[i],
+                            id.remove(ind),
+                            srv);
+      srv = (srv + 1) % servers.length;
+    }
+    
+    return chunks;
+  }
   
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
   public void store(){
@@ -98,21 +138,18 @@ public class StoreFile {
     byte[] ckey = hash.getHash(hash.getHash(key));
     for(int i = 0;i<chunk.length;++i) {
       chunk[i] = Pad.prepend(chunk[i], hash.macSize());
-      //System.out.println("Chunk: " + i);
       hash.addHMac(ckey, chunk[i]);
     }
 
-    //7. Introduce random number of garbage chunks into our chunks [TODO: Finish this]
-    //int extrachunks = keygen.nextByte(250-(n+Math.min(10, 250-n))) + Math.min(10, 250-n);
+    //7. Introduce random bad data into our chunks
+    chunk = add_garbage(chunk);
+
     
-    //8. Compute HashChain 
-    byte[][] hashArr = hash.hashchain(n, key);
+    //8. Compute HashChain and Distibute chunks
+    byte[][] hashArr = hash.hashchain(chunk.length, key);
+    Chunk[] chunks = distribute_chunks(chunk, hashArr);
 
     //9. Shuffle our chunks before storing
-    Chunk[] chunks = new Chunk[chunk.length];
-    for(int i = 0;i<chunks.length;++i) {
-      chunks[i] = new Chunk(chunk[i], hashArr[i], i);
-    }
     chunks = Shuffle.shuffle(chunks);
     
     //10. Store each chunk to it's correct server with filename 
@@ -121,16 +158,17 @@ public class StoreFile {
     int x = 0;
     int numOfServ = servers.length;
     while (x < chunk.length){
-      final String cname = Hex.toHexString(hash.getHash(concate(fn.getBytes(), hashArr[x])));
-      final BigInteger num = new BigInteger(Hex.toHexString(hashArr[x]), 16);
-      final int i = num.mod(new BigInteger(Integer.toString(numOfServ))).intValue();
-
-      pool.submit(new StorageTask(servers[i], chunks[x], cname, x, StorageTask.TYPE_STORE));
+      final String cname = Hex.toHexString(hash.getHash(concate(fn.getBytes(), chunks[x].hash)));
+      pool.submit(new StorageTask(servers[chunks[x].server],
+                                  chunks[x],
+                                  cname,
+                                  StorageTask.TYPE_STORE));
       
       ++x;
     }
 
     //wait until tasks are done
+    pool.shutdown();
     try {
       while(!pool.awaitTermination(60, TimeUnit.SECONDS)); 
     } catch(Exception e) {/* TODO: This is likely an error if it hits */}

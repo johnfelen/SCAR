@@ -1,6 +1,8 @@
 package com.scar.android.ServerImpl;
 
 
+import android.util.Log;
+
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.session.AppKeyPair;
@@ -9,8 +11,8 @@ import java.io.*;
 import java.lang.*;
 
 public class DropBox implements scar.IServer {
-    public static final String APP_KEY = "INSERT_KEY";            //Given by DropBox when app is registered
-    public static final String APP_SECRET = "INSERT_SECRET";      //Given by DropBox when app is registered
+    public static final String APP_KEY = "waqkrdbshgbrwt0";            //Given by DropBox when app is registered
+    public static final String APP_SECRET = "fux54cxmkmi9695";      //Given by DropBox when app is registered
 
     //URL for authorization page
     private String authURL;
@@ -27,7 +29,7 @@ public class DropBox implements scar.IServer {
         connected = false;
     }
 
-    public boolean connect() {
+    public void connect() {
         try {
             AppKeyPair keyPair = new AppKeyPair(APP_KEY, APP_SECRET);
             AndroidAuthSession session = new AndroidAuthSession(keyPair);
@@ -35,54 +37,32 @@ public class DropBox implements scar.IServer {
 
             client = new DropboxAPI<AndroidAuthSession>(session);
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
-        return true;
     }
-
-  /*
-  public void connect() throws IOException, DbxException{
-    //begin OAuth process
-    DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
-    DbxRequestConfig config = new DbxRequestConfig("appName/Ver", Locale.getDefault().toString());
-    DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
-
-    authURL = webAuth.start();        //create authorization URL
-
-    //Code to handle redirects to and from authorization page
-
-    code = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();    //read in code given by Auth URL
-
-    DbxAuthFinish authFinish = webAuth.finish(code);        //use code to complete OAuth workflow
-    accessToken = authFinish.accessToken;                   //store created token for app
-
-    try{
-      client = new DbxClient(config, accessToken);
-      System.out.println("Linked Account: " + client.getAccountInfo().displayName);
-    }catch (Exception ex){
-      System.out.println("Unable to connet to client!");
-    }
-  }
-  */
 
     public void close() {
-    /* TODO: Disconnect a session */
+        if(client != null && client.getSession() != null && client.getSession().isLinked())
+            client.getSession().unlink();
     }
 
     public boolean getStatus() {
-    /* TODO: Try to connect to see if it's reachable */
-        if (connected)
+        if(client != null && client.getSession() != null && client.getSession().isLinked())
             return true;
-        connected = connect();
-        return connected;
+        connect();
+        return client != null && client.getSession() != null && client.getSession().isLinked();
     }
 
     //using fn to store chucks in Dropbox
     public void storeData(String fn, byte[] chunks) {
+        if(client == null)
+            connect();
         ByteArrayInputStream byteStream = new ByteArrayInputStream(chunks);
 
         try {
-            client.putFileOverwriteRequest("/" + fn, byteStream, chunks.length, null);
+            synchronized (client) {
+                client.putFileOverwriteRequest("/" + fn, byteStream, chunks.length, null).upload();
+            }
         } catch (Exception e) {
             //return false;
         }
@@ -90,12 +70,16 @@ public class DropBox implements scar.IServer {
     }
 
     public byte[] getData(String fn) {
+        if(client == null)
+            connect();
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         byte[] chunks;
 
         //unsure if implementation/syntax is right on this
         try {
-            client.getFile("/" + fn, null, byteStream, null);
+            synchronized (client) {
+                client.getFile("/" + fn, null, byteStream, null);
+            }
             chunks = byteStream.toByteArray();
         } catch (Exception e) {
             //failed to fetch files

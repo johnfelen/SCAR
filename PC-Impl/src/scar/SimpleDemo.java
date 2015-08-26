@@ -3,14 +3,14 @@ package scar.pc;
 import java.io.*;
 
 public class SimpleDemo {
-  public static void get(String path, String fn, String password, int k, int n) {
+  public static void get(String path, String fn, byte[] password, int k, int n) {
     scar.IServer servers[] = { new scar.LocalStore("encoded") };
     scar.GetFile gf = new scar.GetFile(fn, password, k, n, servers);
 
-    byte[] data = gf.get(); //data => file bytes
     //Make a new file with filename 'path'
     //Store the data bytes via an FileOutputStream.write for every byte into the file
     try {
+      byte[] data = gf.get(); //data => file bytes
       File file = new File(path);
       file.createNewFile();
       FileOutputStream fout = new FileOutputStream(file);
@@ -23,7 +23,7 @@ public class SimpleDemo {
     }
   }
 
-  public static void store(String path, String fn, String password, int k, int n) {
+  public static void store(String path, String fn, byte[] password, int k, int n) {
     byte[] bArr = null;
     try {
       File file = new File(path);
@@ -40,7 +40,12 @@ public class SimpleDemo {
     }
       
     scar.IServer servers[] = { new scar.LocalStore("encoded") };
-    scar.StoreFile sf = new scar.StoreFile(bArr, fn, password, k, n, servers);
+    scar.StoreFile sf = new scar.StoreFile(bArr,
+                                           fn,
+                                           password,
+                                           k,
+                                           n,
+                                           servers);
     sf.store();
   }
   
@@ -56,10 +61,10 @@ public class SimpleDemo {
     
 
     if(args[0].equals("-store")) {
-      store(path, fn, password, k, n);
+      store(path, fn, password.getBytes(), k, n);
     }
     else if(args[0].equals("-get")) {
-      get(path, fn, password, k, n);
+      get(path, fn, password.getBytes(), k, n);
     }
     else {
       //invalid usage

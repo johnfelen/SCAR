@@ -7,10 +7,12 @@ public class Chunk {
   public final byte[] data;
   public final byte[] hash;
   public final int ind;
+  public final int server;
   
-  public Chunk(final byte[] d, final byte[] h, final int i) {
+  public Chunk(final byte[] d, final byte[] h, final int i, final int srv) {
     data = d;
     hash = h;
     ind = i;
+    server = srv;
   }
 }
