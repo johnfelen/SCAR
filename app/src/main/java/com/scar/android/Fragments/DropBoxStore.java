@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.scar.R;
 import com.dropbox.client2.DropboxAPI;
@@ -47,13 +48,26 @@ public class DropBoxStore extends Fragment implements StoreFrag{
                   if we already have an access token this will overwrite the old one
                   which is fine
                    */
+                AppKeyPair keypair = new AppKeyPair(DropBox.APP_KEY, DropBox.APP_SECRET);
+                AndroidAuthSession session = new AndroidAuthSession(keypair);
+                DBapi = new DropboxAPI<AndroidAuthSession>(session);
+                DBapi.getSession().startOAuth2Authentication(getActivity());
             }
         });
     }
 
     public void onResume() {
+        super.onResume();
         //TODO: Handle DropBox OAUTH2 return, just ensure it was successful
         // you don't need to do anything special to store the access token
+        if(DBapi.getSession().authenticationSuccessful()) {
+            try {
+                DBapi.getSession().finishAuthentication();
+                setLabel(DBapi.getSession().getOAuth2AccessToken());
+            } catch(IllegalStateException e) {
+                Toast.makeText(getActivity(), "Failed to authenticate your dropbox", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public int getType() {

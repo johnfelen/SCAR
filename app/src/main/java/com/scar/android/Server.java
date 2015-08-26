@@ -3,6 +3,7 @@ package com.scar.android;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.scar.android.ServerImpl.DropBox;
 import com.scar.android.ServerImpl.SQLiteStore;
 
 import java.net.InetAddress;
@@ -69,7 +70,9 @@ public class Server {
             case MetaData.TYPE_SQLITE_STORE:
                 srv = new SQLiteStore(act, hostname);
                 break;
-            //TODO: add in Dropbox/Google drive when ready
+            case MetaData.TYPE_DROPBOX_STORE:
+                srv = new DropBox(label);
+                break;
         }
         return srv;
     }

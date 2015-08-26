@@ -28,7 +28,7 @@
         android:paddingRight="5dp"
         android:text="@string/asl_auth_db"
         android:id="@+id/as_auth"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/as_token"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

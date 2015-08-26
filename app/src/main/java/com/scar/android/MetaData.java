@@ -380,7 +380,8 @@ public class MetaData {
         stmt.bindLong(1, type);
         stmt.bindLong(2, STATUS_ACTIVE);
         stmt.bindString(3, label);
-        stmt.bindString(4, host);
+        if(host != null)
+            stmt.bindString(4, host);
         if(port != null)
             stmt.bindString(5, port);
         if(uname != null) {
@@ -435,7 +436,8 @@ public class MetaData {
         stmt.bindLong(1, type);
         stmt.bindLong(2, status);
         stmt.bindString(3, label);
-        stmt.bindString(4, host);
+        if(host != null)
+            stmt.bindString(4, host);
         if(port != null)
             stmt.bindString(5, port);
         if(uname != null) {
