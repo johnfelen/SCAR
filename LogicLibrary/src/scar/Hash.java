@@ -25,12 +25,6 @@ public class Hash {
   public int macSize() {
     return hmac.getMacSize();
   }
-
-  public static void print(byte[] data, int len) {
-    for(int i = 0;i<len;++i)
-      System.out.print((data[i] & 0xFF) + " ");
-    System.out.println();
-  }
   
   //prepends HMAC into content 0...HMAC.size bytes
   public void addHMac(byte[] key, byte[] content) {

@@ -11,14 +11,12 @@ public class StorageTask implements Callable<Chunk>{
   private final IServer srv;
   private final Chunk chk;
   private final String nm;
-  private final int ind;
   private final int ty;
   
-  public StorageTask(final IServer s, final Chunk c, final String name, final int i, final int type) {
+  public StorageTask(final IServer s, final Chunk c, final String name, final int type) {
     srv = s;
     chk = c;
     nm = name;
-    ind = i;
     ty = type;
   }
   
@@ -35,7 +33,10 @@ public class StorageTask implements Callable<Chunk>{
     case TYPE_GET:
       byte[] data = srv.getData(nm);
       if(data != null)
-        return new Chunk(data, null, ind);
+        return new Chunk(data,
+                         chk.hash,
+                         chk.ind,
+                         chk.server);
       else
         return null; //failed to get data
     }

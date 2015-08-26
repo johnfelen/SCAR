@@ -42,7 +42,7 @@ public class GetFile {
 
   private void clearFutures(ArrayList<Future<Chunk>> futures, ArrayList<Chunk> lst, byte[] key) {
     Hash hash = new Hash();
-    while(futures.size() == n) {
+    while(futures.size() > 0) {
       final ListIterator<Future<Chunk>> itr = futures.listIterator(0);
       while(itr.hasNext()) {
         final Future<Chunk> ftr = itr.next();
@@ -52,17 +52,17 @@ public class GetFile {
           try {
             chk = ftr.get();
           } catch(Exception e) {/* TODO: Handle error*/}
-          if(chk != null) {
+          if(chk != null && chk.ind < n) {
             byte[] data = chk.data;
             data = hash.checkHMac(key, data);
             if(data != null) {
-              lst.add(new Chunk(data, null, chk.ind));
+              lst.add(new Chunk(data, chk.hash, chk.ind, chk.server));
             }
           }
         }
       }
       
-      if(futures.size() == n) {
+      if(futures.size() > 0) {
         // no change, sleep
         try {
           Thread.sleep(500);
@@ -71,32 +71,68 @@ public class GetFile {
     }
   }
 
-  private void fetchChunks(ArrayList<Chunk> lst, byte[][] hashchain, byte[] key) {
+  private void fetchChunks(ArrayList<Chunk> lst, Chunk[] data, byte[] key) {
     Hash hash = new Hash();
     ArrayList<Future<Chunk>> futures = new ArrayList<Future<Chunk>>(n);
     ExecutorService pool = Executors.newFixedThreadPool(StoreFile.allowed_threads);
     for(int x = 0;x < n; ++x) {
       //Clear futures if we maxed out
-      clearFutures(futures, lst, key);
-      
-      //add new task if needed
-      final BigInteger num = new BigInteger(Hex.toHexString(hashchain[x]), 16);
-      final int i = num.mod(new BigInteger(Integer.toString(servers.length))).intValue();
-      final String name = Hex.toHexString(hash.getHash(concate(fn.getBytes(),hashchain[x])));
-      
-      futures.add(pool.submit(new StorageTask(servers[i], null, name, x, StorageTask.TYPE_GET)));
+      if(futures.size() >= k) {
+        clearFutures(futures, lst, key);
+      } else {
+        //Stop if we already have enough
+        if(lst.size() >= k) {
+        break;
+        }
+        
+        //add new task if needed
+        final String name = Hex.toHexString(hash.getHash(concate(fn.getBytes(), data[x].hash)));
+          
+        futures.add(pool.submit(new StorageTask(servers[data[x].server],
+                                                data[x],
+                                                name,
+                                                StorageTask.TYPE_GET)));
+      }
     }
-
+    
+    pool.shutdown();
     //Clear all ongoing futures
     clearFutures(futures, lst, key);
   }
   
+  // Idea: Do a round robin of the servers on the chunks
+  private Chunk[] distribute_chunks(byte[][] hc) {
+    ArrayList<Integer> tmp = new ArrayList<Integer>(n);
+    Chunk[] chunks = new Chunk[n+StoreFile.added_garbage];
+    int i, srv;
+
+    //Setup pool
+    for(i=0;i<n+StoreFile.added_garbage;++i) {
+      tmp.add(i);
+    }
+
+    //Round Robin chunks to servers based on hash chain
+    srv = 0;
+    for(i=0;i<n+StoreFile.added_garbage;++i) {
+      final BigInteger num = new BigInteger(Hex.toHexString(hc[i]), 16);
+      final int ind = num.mod(new BigInteger(Integer.toString(tmp.size()))).intValue();
+      final String name = Hex.toHexString(new Hash().getHash(concate(fn.getBytes(), hc[i])));
+      chunks[i] = new Chunk(null,
+                            hc[i],
+                            tmp.remove(ind),
+                            srv);
+      srv = (srv + 1) % servers.length;
+    }
+    
+    return chunks;
+  }
 
   //Get as many blocks from servers, decrypt, apply rs, remove padding
   public byte[] get() throws Exception {
     //1. Compute HashChain
     Hash hash = new Hash();
-    byte[][] hashArr = hash.hashchain(n, key);
+    byte[][] hashArr = hash.hashchain(n+StoreFile.added_garbage, key);
+    Chunk[] chunk_data = distribute_chunks(hashArr);
     
     int numOfServ = servers.length;
     ArrayList<Chunk> chunk = new ArrayList<Chunk>();
@@ -110,7 +146,7 @@ public class GetFile {
     //  |_______________________|
     //TODO: make the HMAC key a seperate key all together
     byte[] ckey = hash.getHash(hash.getHash(key));
-    fetchChunks(chunk, hashArr, ckey);
+    fetchChunks(chunk, chunk_data, ckey);
     
     //3. Decode k chunks to get encrypted data back via RS
     if(chunk.size() < k) 
