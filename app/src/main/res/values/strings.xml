@@ -88,6 +88,8 @@
     <string name="servers">Server(s):</string>
     <string name="open">Open File</string>
     <string name="delete">Delete File</string>
+    <string name="open_local">Open Local</string>
+    <string name="delete_local">Delete Local</string>
 
     <!--About Strings-->
     <string name="about_title">About SCAR</string>
