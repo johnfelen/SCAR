@@ -8,7 +8,6 @@
     android:paddingRight="16dp"
     android:orientation="vertical"
     android:id="@+id/ns_layout"
-    android:layout_marginBottom="48dp"
     android:weightSum="1"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -29,6 +28,7 @@
         android:background="@drawable/button_rounded_corners"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"/>
 
 </LinearLayout>
