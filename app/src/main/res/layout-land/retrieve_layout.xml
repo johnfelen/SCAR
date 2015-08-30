@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textMultiLine"
-            android:hint="Search File Name" />
+            android:hint="Search Item by Name" />
 
         <Button
             android:id="@+id/getDoc"

@@ -18,12 +18,12 @@
     <string name="hello_world"><u>Welcome to SCAR!</u></string>
     <string name = "store_btn">STORE</string>
     <string name = "retrieve_btn">RETRIEVE</string>
-    <string name= "getImage">SELECT DOCUMENT</string>
-    <string name = "getDoc">RETRIEVE DOCUMENT</string>
+    <string name= "getImage">SELECT ITEM</string>
+    <string name = "getDoc">RETRIEVE ITEM</string>
     <string name = "new_server"> Add A New Server!</string>
     <string name = "Pass"> Enter A Password:</string>
     <string name = "fname">Enter A File Name:</string>
-    <string name = "store">STORE</string>
+    <string name = "store">STORE ITEM</string>
     <string name = "newpassword">CREATE A NEW PASSWORD</string>
     <string name = "login">SCAR LOGIN</string>
     <string name = "loginbutton">LOGIN</string>
@@ -79,8 +79,8 @@
     <string name="ms_status">Server Status:</string>
 
     <!-- Store Strings -->
-    <string name="s_nofile">No file selected</string>
-    <string name="s_sfhint">Enter name of file</string>
+    <string name="s_nofile">No Item Selected</string>
+    <string name="s_sfhint">Enter Item Name for Server(s)</string>
 
     <!--MetaFile Strings-->
     <string name="filename">File Name</string>
