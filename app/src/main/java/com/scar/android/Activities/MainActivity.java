@@ -25,11 +25,15 @@ import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
 import com.scar.android.Session;
 
+import java.util.Date;
+
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;
     /*These two are for the tabs and screen slider*/
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
+    private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
+    private boolean backgroundHasNotBeenSet = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,13 +126,33 @@ public class MainActivity extends FragmentActivity {
 
     protected void onResume() {
         super.onResume();
-        //Check if Session is valid before continuing
-        if (!Session.valid()) {
+        long currentTimeStamp = new Date().getTime();   //300000
+        System.out.println( backgroundStartTime );
+        System.out.println( "Current: " + currentTimeStamp );
+        //Check if Session is valid before continuing, 300000 is 5 minutes
+        if (!Session.valid() || currentTimeStamp - backgroundStartTime > 300000 ) {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
+            backgroundHasNotBeenSet = true;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
+
+        else    //incase the user stays on the app for 5 minutes to make sure that the timeout starts when the user actually goes into the backgorund
+        {
+            backgroundHasNotBeenSet = true;
+        }
     }
+
+    protected void onPause()
+    {
+        super.onPause();
+        if( backgroundHasNotBeenSet ) //will only set the background time once
+        {
+            backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'backgorund', may make false positive
+            backgroundHasNotBeenSet = false;
+        }
+    }
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
