@@ -132,6 +132,7 @@ public class MainActivity extends FragmentActivity {
         //Check if Session is valid before continuing, 300000 is 5 minutes
         if (!Session.valid() || currentTimeStamp - backgroundStartTime > 300000 ) {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
+            Session.clear();
             backgroundHasNotBeenSet = true;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -151,6 +152,11 @@ public class MainActivity extends FragmentActivity {
             backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'backgorund', may make false positive
             backgroundHasNotBeenSet = false;
         }
+    }
+
+    protected void onStop()
+    {
+        Session.clear();
     }
 
 
