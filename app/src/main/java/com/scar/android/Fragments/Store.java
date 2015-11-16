@@ -199,11 +199,12 @@ public class Store extends Fragment {
 					byte[] key = keygen.genBytes(32);
 					update(35);
 					StoreFile store = new scar.StoreFile( fileBytes,
-							                              serverFname,
-							                              key,
-							                              50,
-							                              100,
-							                              actualServers );
+                                                serverFname,
+                                                key,
+                                                50,
+                                                100,
+                                                actualServers,
+                                                true); //TODO: change this once we have encrypt checkbox
 					//	run StoreFile with store function
 					store.store();
 
