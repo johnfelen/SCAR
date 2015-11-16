@@ -23,15 +23,19 @@ public class Mysql implements IServer {
 	public Connection conn = null;
 	public Statement stmt = null;
   public boolean isConnected = false;
+  public final int id;
 
-	public Mysql(String dbserver, String userName, String pwd)
+	public Mysql(String dbserver, String userName, String pwd, int id)
 	{
 		this.dbserver=dbserver;
 		this.userName=userName;
 		this.pwd=pwd;
 		dbConnect = dbPrefix + dbserver + "/" + database;
     tryConnect();
+    this.id = id;
 	}
+
+  public int id() { return id; }
 
   public void tryConnect() {
 		try {

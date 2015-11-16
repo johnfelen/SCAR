@@ -7,11 +7,14 @@ import java.io.*;
 ///
 public class LocalStore implements IServer {
   String folder;
-  public LocalStore(String folder) {
+  final int id;
+  public LocalStore(String folder, int id) {
     this.folder = folder;
+    this.id = id;
   }
 
   public boolean getStatus() { return true; }
+  public int id() { return id; }
 
   public void storeData(String fn, byte[] data) {
     try {

@@ -128,7 +128,22 @@ public class GetFile {
   }
 
   //Get as many blocks from servers, decrypt, apply rs, remove padding
-  public byte[] get() throws Exception {
+  //TODO 4Ryan: Adjust get(ChunkMeta[]) to use the ChunkMeta[] array cms
+  //            for gathering the chunk data from their physical servers.
+  // 
+  //            What you basically need to do is take the hash chain hashArr
+  //            and generate the chunk filenames and lookup in the cms array
+  //            for the chunk filename you generated. Then from that ChunkMeta
+  //            use the physical server it has listed to get the data for that
+  //            chunk.
+  // 
+  //            You also need to mark the Chunk id based off the index in
+  //            the hash chain it is.
+  //
+  //     Overview: hashArr[i] -> Chunk.name[i] -> cms[j]
+  //               Chunk.data[i] = servers[cms[j].physical].get...
+  //               Chunk.ind[i] = i
+  public byte[] get(final ChunkMeta cms[]) throws Exception {
     //1. Compute HashChain
     Hash hash = new Hash();
     byte[][] hashArr = hash.hashchain(n+StoreFile.added_garbage, key);

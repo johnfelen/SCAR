@@ -8,6 +8,7 @@ import org.spongycastle.util.encoders.Hex;
 public class StoreFile {
   public static final int allowed_threads = 8;
   public static final int added_garbage = 50;
+  public static final int virtual_servers = 51;
   
   private IServer servers[];
   private byte[] data;
@@ -83,15 +84,17 @@ public class StoreFile {
       chunks[i] = new Chunk(tmp.remove(ind),
                             hc[i],
                             id.remove(ind),
-                            srv);
-      srv = (srv + 1) % servers.length;
+                            srv,
+                            servers[srv % servers.length].id(),
+                            srv % servers.length);
+      srv = (srv + 1) % virtual_servers
     }
     
     return chunks;
   }
   
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
-  public void store(){
+  public ChunkMeta[] store(){
     //1. Encrypt the data
     //Output format:
     //  Encrypted:                  NoEncrypt:
@@ -170,6 +173,9 @@ public class StoreFile {
     ExecutorService pool = Executors.newFixedThreadPool(allowed_threads);
     int x = 0;
     int numOfServ = servers.length;
+    //TODO 4Ryan: Create array of ChunkMeta objects and for each Chunk make a ChunkMeta for that chunk
+    //            where ChunkMeta.name = cname, ChunkMeta.virtual = Chunk.virtual,
+    //            ChunkMeta.physical = Chunk.physical   (See: ChunkMeta.java)
     while (x < chunk.length){
       final String cname = Hex.toHexString(hash.getHash(concate(fn.getBytes(), chunks[x].hash)));
       pool.submit(new StorageTask(servers[chunks[x].server],
@@ -185,5 +191,7 @@ public class StoreFile {
     try {
       while(!pool.awaitTermination(60, TimeUnit.SECONDS)); 
     } catch(Exception e) {/* TODO: This is likely an error if it hits */}
+
+    //TODO 4Ryan: Return the ChunkMeta array you created before
   }
 }
