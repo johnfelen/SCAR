@@ -17,10 +17,13 @@ public class StoreFile {
     buffer,
     k,
     n;
+  private final boolean
+    enc;
   private byte[] key;
 
   public StoreFile(byte[] data, String fn, byte[] password,
-                   int k, int n, IServer srvs[]) {
+                   int k, int n, IServer srvs[],
+                   boolean enc) {
     this.data = data;
     this.fn = fn;
     this.buffer = buffer;
@@ -28,6 +31,7 @@ public class StoreFile {
     this.n = n;
     key = password;
     servers = srvs;
+    this.enc = enc;
   }
 
   //Encode 'val' into 'arr' starting at location 'n'
@@ -90,27 +94,36 @@ public class StoreFile {
   public void store(){
     //1. Encrypt the data
     //Output format:
-    //   _____________________
-    //  | 16-byte IV          |
-    //  |---------------------|
+    //  Encrypted:                  NoEncrypt:
+    //  +---------------------+   +---------------------+
+    //  | 1-byte encrypt flag |   | 1-byte encrypt flag |
+    //  |---------------------|   +---------------------+
+    //  | 16-byte IV          |   | Unencrypted Data    |
+    //  |---------------------|   +---------------------+
     //  | Encrypted Data      |
     //  |---------------------|
     //  | 16-byte MAC         |
     //  |_____________________|
     Hash hash = new Hash();
-    Encryption encrypt = new Encryption();
+    Encryption encrypt = enc ? new Encryption() : new NoEncryption();
     data = encrypt.encrypt(data, hash.getHash(key));
-
+    //Store encrypt flag
+    data = Pad.prepend(data, 1);
+    data[0] = enc ? (byte)1 : (byte)0;
+      
     //2. add paddding information to data for RS
-    //   _______________________
-    //  | 4-byte # of pad bytes |
-    //  |-----------------------|
-    //  | 16-byte IV            | ---.
-    //  |-----------------------|    |
-    //  | Encrypted Data        | ---.
-    //  |-----------------------|    |-- data before padding added
-    //  | 16-byte MAC           | ---.
-    //  |-----------------------|
+    //   Encrypted:                 NoEncrypt:
+    //   _______________________   +-----------------------+
+    //  | 4-byte # of pad bytes |  | 4-byte # of pad bytes |
+    //  |-----------------------|  +-----------------------+
+    //  | 1-byte encrypt flag   |  | 1-byte encrypt flag   |
+    //  |-----------------------|  +-----------------------+
+    //  | 16-byte IV            |  | Unencrypted data      |
+    //  |-----------------------|  +-----------------------+
+    //  | Encrypted Data        |  | Padded bytes...       |
+    //  |-----------------------|  +-----------------------+
+    //  | 16-byte MAC           |  
+    //  |-----------------------|  
     //  | Padded bytes...       |
     //  |_______________________|
     data = Pad.prepend(data, 4);

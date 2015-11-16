@@ -158,18 +158,20 @@ public class GetFile {
       
     
     //RS Output:
-    //   _______________________
-    //  | 4-byte # of pad bytes |
-    //  |-----------------------|
-    //  | 16-byte IV            |
-    //  |-----------------------|
-    //  | Encrypted Data        |
-    //  |-----------------------|
-    //  | 16-byte MAC           | 
-    //  |-----------------------|
+    //  Encrypted:                   NoEncrypt:
+    //   _______________________   +-----------------------+
+    //  | 4-byte # of pad bytes |  | 4-byte # of pad bytes |
+    //  |-----------------------|  +-----------------------+
+    //  | 1-byte encrypt flag   |  | 1-byte encrypt flag   |
+    //  |-----------------------|  +-----------------------+
+    //  | 16-byte IV            |  | Unencrypted data      |
+    //  |-----------------------|  +-----------------------+
+    //  | Encrypted Data        |  | Padded bytes...       |
+    //  |-----------------------|  +-----------------------+
+    //  | 16-byte MAC           |  
+    //  |-----------------------|  
     //  | Padded bytes...       |
     //  |_______________________|
-    
     //4. Get the padding
     int padding = dint(data, 0);
     
@@ -178,14 +180,20 @@ public class GetFile {
     data = Pad.deprepend(data, 4);
 
     //6. Decrypt the data
-    //   _______________________
-    //  | 16-byte IV            |
-    //  |-----------------------|
-    //  | Encrypted Data        |
-    //  |-----------------------|
-    //  | 16-byte MAC           | 
-    //  |_______________________|
-    Encryption decrypt = new Encryption();
+    //  Encrypted:                  NoEncrypt:
+    //  +---------------------+   +---------------------+
+    //  | 1-byte encrypt flag |   | 1-byte encrypt flag |
+    //  |---------------------|   +---------------------+
+    //  | 16-byte IV          |   | Unencrypted Data    |
+    //  |---------------------|   +---------------------+
+    //  | Encrypted Data      |
+    //  |---------------------|
+    //  | 16-byte MAC         |
+    //  |_____________________|
+    //get Enc flag
+    boolean enc = data[0] == 1;
+    data = Pad.deprepend(data, 1);
+    Encryption decrypt = enc ? new Encryption() : new NoEncryption();
     data = decrypt.decrypt(data, hash.getHash(key));
 
     return data;
