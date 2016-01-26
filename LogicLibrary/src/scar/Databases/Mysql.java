@@ -100,7 +100,7 @@ public class Mysql implements IServer {
 	
 
   //Stores our data bytes with key fn
-  public void storeData(String fn, byte[] data) {
+  public boolean storeData(String fn, byte[] data) {
     try { 
     PreparedStatement stmt = conn.prepareStatement("insert into scar_db.files values (?, ?)");
     stmt.setString(1, fn);
@@ -108,7 +108,9 @@ public class Mysql implements IServer {
     stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
+      return false;
     }
+    return true;
   }
 
   //Gets our data bytes from key fn

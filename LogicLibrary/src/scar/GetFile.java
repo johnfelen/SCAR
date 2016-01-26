@@ -71,7 +71,15 @@ public class GetFile {
     }
   }
 
-  private void fetchChunks(ArrayList<Chunk> lst, Chunk[] data, byte[] key) {
+  private int lookupMeta(ChunkMeta metas[], String name){
+    int i;
+    for(i=0;i<metas.length;++i)
+      if(metas[i].name.equals(name))
+        return i;
+    return -1; //should never reach here unless the get-file key is wrong
+  }
+  
+  private void fetchChunks(ArrayList<Chunk> lst, Chunk[] data, ChunkMeta[] metas, byte[] key) {
     Hash hash = new Hash();
     ArrayList<Future<Chunk>> futures = new ArrayList<Future<Chunk>>(n);
     ExecutorService pool = Executors.newFixedThreadPool(StoreFile.allowed_threads);
@@ -87,11 +95,13 @@ public class GetFile {
         
         //add new task if needed
         final String name = Hex.toHexString(hash.getHash(concate(fn.getBytes(), data[x].hash)));
-          
-        futures.add(pool.submit(new StorageTask(servers[data[x].server],
-                                                data[x],
-                                                name,
-                                                StorageTask.TYPE_GET)));
+        int meta = lookupMeta(metas, name);
+        if(meta >= 0) {
+          futures.add(pool.submit(new StorageTask(servers[metas[meta].physical],
+                                                  data[x],
+                                                  name,
+                                                  StorageTask.TYPE_GET)));
+        }
       }
     }
     
@@ -161,7 +171,7 @@ public class GetFile {
     //  |_______________________|
     //TODO: make the HMAC key a seperate key all together
     byte[] ckey = hash.getHash(hash.getHash(key));
-    fetchChunks(chunk, chunk_data, ckey);
+    fetchChunks(chunk, chunk_data, cms, ckey);
     
     //3. Decode k chunks to get encrypted data back via RS
     if(chunk.size() < k) 

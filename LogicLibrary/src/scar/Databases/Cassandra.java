@@ -74,7 +74,7 @@ public class Cassandra implements IServer {
   //If so, are we storing across multiple rows?  multiple clusters?
 
   //Data Storage with input fn as key
-  public void storeData(String fn, byte[] chunks){
+  public boolean storeData(String fn, byte[] chunks){
     //insert data into table
     //original statement
     //session.execute("INSERT INTO scar_files (key, data) VALUES (fn, chunks);");
@@ -83,6 +83,7 @@ public class Cassandra implements IServer {
     Insert insert = QueryBuilder.insertInto("keyspace", "scar_files")
       .value("key", fn).value("data", chunks);
     session.execute(insert);
+    return true;
   }
 
   //Retrieve Data with fn as key

@@ -16,7 +16,7 @@ public class LocalStore implements IServer {
   public boolean getStatus() { return true; }
   public int id() { return id; }
 
-  public void storeData(String fn, byte[] data) {
+  public boolean storeData(String fn, byte[] data) {
     try {
       File f = new File(folder+"/"+fn);
       f.createNewFile();
@@ -25,7 +25,11 @@ public class LocalStore implements IServer {
       fos.flush();
       fos.close();
     }
-    catch(Exception e) { e.printStackTrace(); }
+    catch(Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+    return true;
   }
 
   public void close() {} 

@@ -10,14 +10,16 @@ public class StorageTask implements Callable<Chunk>{
 
   private final IServer srv;
   private final Chunk chk;
+  private final ChunkMeta meta;
   private final String nm;
   private final int ty;
   
-  public StorageTask(final IServer s, final Chunk c, final String name, final int type) {
+  public StorageTask(final IServer s, final Chunk c, final ChunkMeta meta, final String name, final int type) {
     srv = s;
     chk = c;
     nm = name;
     ty = type;
+    this.meta = meta;
   }
   
   public Chunk call() {
@@ -28,7 +30,10 @@ public class StorageTask implements Callable<Chunk>{
     
     switch(ty) {
     case TYPE_STORE:
-      srv.storeData(nm, chk.data);
+      if(srv.storeData(nm, chk.data))
+        meta.uploaded = true;
+      else
+        meta.uploaded = false;
       break;
     case TYPE_GET:
       byte[] data = srv.getData(nm);
@@ -44,3 +49,5 @@ public class StorageTask implements Callable<Chunk>{
     return null;
   }
 }
+rvers, decrypt, apply rs, remove padding
+  //TODO 4Ryan: Adjus

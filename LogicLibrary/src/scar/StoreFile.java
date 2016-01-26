@@ -176,10 +176,13 @@ public class StoreFile {
     //TODO 4Ryan: Create array of ChunkMeta objects and for each Chunk make a ChunkMeta for that chunk
     //            where ChunkMeta.name = cname, ChunkMeta.virtual = Chunk.virtual,
     //            ChunkMeta.physical = Chunk.physical   (See: ChunkMeta.java)
+    ChunkMeta meta[] = new ChunkMeta[chunk.length];
     while (x < chunk.length){
       final String cname = Hex.toHexString(hash.getHash(concate(fn.getBytes(), chunks[x].hash)));
+      meta[x] = new ChunkMeta(cname, chunks[x].virtual, chunks[x].physical);
       pool.submit(new StorageTask(servers[chunks[x].server],
                                   chunks[x],
+                                  meta[x],
                                   cname,
                                   StorageTask.TYPE_STORE));
       
@@ -193,5 +196,6 @@ public class StoreFile {
     } catch(Exception e) {/* TODO: This is likely an error if it hits */}
 
     //TODO 4Ryan: Return the ChunkMeta array you created before
+    return meta;
   }
 }
