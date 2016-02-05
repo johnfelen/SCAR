@@ -1,6 +1,6 @@
 # SCAR
 Scatter Conceal and Recover, or SCAR for short, was the research project that two other students and I worked on during the 2015 summer semester.  
-We also built an Android application to use the algorithm, which is what the GitHub link is pointing to.  
+We also built an Android application to use the algorithm.
 This project uses the Reed-Solomon algorithm of bit redundancy, databases, and a splish-splash of cryptography to securely break files into N parts but only need k parts to recreate the file.  
 In other words: magic.  
 A high level overview of the project is that the algorithm will encrypt a file using and AES key that we get from SHA-256 hashing some unique information together.  
