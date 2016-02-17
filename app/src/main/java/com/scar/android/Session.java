@@ -14,7 +14,7 @@ public class Session {
     }
 
     public static void clear() {
-        meta.close();
+        //meta.close();
         meta = null;
         password = null;
     }

@@ -22,5 +22,6 @@ public class About extends Activity {
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
         setTitle("SCAR");  //set the title of the activity bar
 
+
     }
 }
