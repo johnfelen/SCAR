@@ -14,7 +14,7 @@ public class Session {
     }
 
     public static void clear() {
-        meta.close();
+        //meta.close(); <-- this breaks the build!!!
         meta = null;
         password = null;
     }

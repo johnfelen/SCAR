@@ -154,8 +154,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    @Override
     protected void onStop()
     {
+        super.onStop();
         Session.clear();
     }
 
