@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 import com.android.scar.R;
 
@@ -21,7 +23,7 @@ public class About extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#2B468B")));
         setTitle("SCAR");  //set the title of the activity bar
-
-
+        TextView scrollParagraph = (TextView)findViewById(R.id.AboutParagraph);
+        scrollParagraph.setMovementMethod(new ScrollingMovementMethod());
     }
 }
