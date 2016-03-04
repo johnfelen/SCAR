@@ -207,7 +207,8 @@ public class MetaData {
     }
 
     //Ensures the MetaData is still valid
-    public boolean valid() {
+    public boolean valid()
+    {
         return db != null && dbname != null;
     }
 
