@@ -1,5 +1,7 @@
 package com.scar.android;
 
+import android.util.Log;
+
 /**
  * SCAR Session for holding information about the current
  * session

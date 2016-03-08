@@ -130,7 +130,7 @@ public class MainActivity extends FragmentActivity {
         System.out.println( backgroundStartTime );
         System.out.println( "Current: " + currentTimeStamp );
         //Check if Session is valid before continuing, 300000 is 5 minutes
-        if ( currentTimeStamp - backgroundStartTime > 300000)//|| !Session.valid() ) {
+        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() )
         {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
             Session.clear();
@@ -138,7 +138,6 @@ public class MainActivity extends FragmentActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-
         else    //incase the user stays on the app for 5 minutes to make sure that the timeout starts when the user actually goes into the backgorund
         {
             backgroundHasNotBeenSet = true;
@@ -150,7 +149,7 @@ public class MainActivity extends FragmentActivity {
         super.onPause();
         if( backgroundHasNotBeenSet ) //will only set the background time once
         {
-            backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'backgorund', may make false positive
+            backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'background', may make false positive
             backgroundHasNotBeenSet = false;
         }
     }
@@ -158,7 +157,8 @@ public class MainActivity extends FragmentActivity {
     protected void onStop()
     {
         super.onStop();
-        Session.clear();
+        //Session.clear(); //I believe this is a fix to the leaving main activity and requiring user to re log in. need
+        // to double check that this does not compromise the security of the app
     }
 
 
