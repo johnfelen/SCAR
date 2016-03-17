@@ -130,8 +130,8 @@ public class MainActivity extends FragmentActivity {
         System.out.println( backgroundStartTime );
         System.out.println( "Current: " + currentTimeStamp );
         //Check if Session is valid before continuing, 300000 is 5 minutes
-        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() )
-        {
+
+        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() ) {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
             Session.clear();
             backgroundHasNotBeenSet = true;
