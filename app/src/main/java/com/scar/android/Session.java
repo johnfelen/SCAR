@@ -28,7 +28,8 @@ public class Session {
         locked = false;
     }
     public static void clear() {
-        //meta.close();
+        if(meta!=null)
+            meta.close();
         meta = null;
         password = null;
     }
