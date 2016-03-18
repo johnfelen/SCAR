@@ -6,3 +6,10 @@ import-summary.txt
 PC-Impl/test/
 .idea/
 .gradle/
+.gradle/2.2.1/taskArtifacts/cache.properties.lock
+.gradle/2.2.1/taskArtifacts/fileHashes.bin
+*.bin
+.idea/misc.xml
+.gradle/2.2.1/taskArtifacts/cache.properties.lock
+.gradle/2.2.1/taskArtifacts/outputFileStates.bin
+app/app.iml
