@@ -166,7 +166,7 @@ public class Retrieve extends Fragment {
 								                         actualServers );
 
 						//Get the bytes[] back from get() via scar.GetFile instance
-						data = get.get();
+						data = get.get(); //argument is chunk array
 
 						update(90);
 						if(Session.meta.getFile(getFilename()) == null) {

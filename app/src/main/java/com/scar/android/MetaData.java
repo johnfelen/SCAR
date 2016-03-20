@@ -103,6 +103,8 @@ public class MetaData {
                     +"name TEXT,"
                     +"key BLOB,"
                     +"PRIMARY KEY(id))");
+        //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
+        //separate database for scheduler without some of the fields.
         db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
                 +"server_id INTEGER,"
                 +"file_id INTEGER,"
@@ -189,7 +191,8 @@ public class MetaData {
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-        stmt = db.compileStatement("delete from servers_used");
+        stmt = db.compileStatement("delete from servers_used"); //wont need this table
+        //instead need table
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from files");
@@ -328,6 +331,7 @@ public class MetaData {
         return collectServers(cursor);
     }
 
+    //instead supply filename and return chunks rename as GETCHUNKS
     public Server[] getServers(String fn) {
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
         cur.moveToFirst();
