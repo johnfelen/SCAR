@@ -130,7 +130,7 @@ public class Retrieve extends Fragment {
                     IServer[] actualServers = null;
 					try {
 						//Gets the servers for the given filename
-						Server[] servers = Session.meta.getServers(getFilename());
+						Server[] servers = Session.meta.getChunks(getFilename());
 
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
 						if( servers == null || servers.length == 0 )
