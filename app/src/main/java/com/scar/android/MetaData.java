@@ -2,6 +2,7 @@ package com.scar.android;
 
 import android.app.Activity;
 import android.util.Log;
+import scar.*;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -55,7 +56,7 @@ import scar.IServer;
  *                    that has been stored/recieved by this app
  *     getAllActiveServers() - Get all servers known to the app in a functional state
  *     getAllServersInfo() - Get all servers known to the app in a descriptive state
- *     getServers(filename) - Returns the servers used for the filename for receiving
+ *     getServers(filename) - Returns the servers used for the filename for receiving RENAMING TO GET CHUNKS!
  *     setServers(filename, srvs) - Sets the current filename to use the given servers
  *
  *     addLocalFile(fn, local) - Adds a local path for the given file
@@ -97,20 +98,34 @@ public class MetaData {
                     +"port TEXT,"
                     +"username BLOB,"
                     +"password BLOB,"
-                    +"PRIMARY KEY(id))");
+                    +"PRIMARY KEY(id),"
+                    +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
                     +"key BLOB,"
-                    +"PRIMARY KEY(id))");
+                    +"PRIMARY KEY(id),"
+                    +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
         //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
         //separate database for scheduler without some of the fields.
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
+        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_private ("
+                +"file_id INTEGER,"
+                +"name TEXT,"
+                +"virtual_id INTEGER,"
+                +"physical_id INTEGER,"
+                +"chunk_id INTEGER," //chunk id
+                +"PRIMARY KEY(chunk_id)," //not sure whether to include virtual id or physical id or neither
+                +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
+                +"FOREIGN KEY(file_id) REFERENCES files(id))");
+        /*
+        need this in different database
+        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
                 +"server_id INTEGER,"
                 +"file_id INTEGER,"
                 +"PRIMARY KEY(server_id, file_id),"
                 +"FOREIGN KEY(server_id) REFERENCES server(id),"
                 +"FOREIGN KEY(file_id) REFERENCES file(id))");
+         */
         db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
                 + "file_id INTEGER,"
                 + "localpath TEXT,"
@@ -191,8 +206,7 @@ public class MetaData {
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-        stmt = db.compileStatement("delete from servers_used"); //wont need this table
-        //instead need table
+        stmt = db.compileStatement("delete from chunks_private");
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from files");
@@ -332,24 +346,41 @@ public class MetaData {
     }
 
     //instead supply filename and return chunks rename as GETCHUNKS
-    public Server[] getServers(String fn) {
-        Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
+    public ChunkMeta[] getChunks(String fn) {
+        Cursor cur = db.rawQuery("SELECT id FROM files where name = ?", new String[]{ fn });
         cur.moveToFirst();
-        if(!cur.isAfterLast()) {
+        if(!cur.isAfterLast())
+        {
             int id = cur.getInt(cur.getColumnIndex("id"));
             cur.close();
-            cur = db.rawQuery("select * " +
-                            "from servers, servers_used " +
-                            "where servers.id = servers_used.server_id and servers_used.file_id = " + id, null);
-            return collectServers(cur);
-        } else
+
+            cur = db.rawQuery("SELECT name, virtual_id, physical_id"
+                    +"FROM chunks_private"
+                    +"WHERE file_id = " + id, null);
+
+            ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
+            cur.moveToFirst();
+
+            int i = 0;
+            while(!cur.isAfterLast()) {
+                chunks[i++] = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                        (int)cur.getLong(cur.getColumnIndex("virtual_id")),
+                        (int)cur.getLong(cur.getColumnIndex("physical_id")));
+                cur.moveToNext();
+            }
+
+            cur.close();
+            return chunks;
+        }
+        else
             return null;
     }
 
-    public void setServers(int fid, Server[] srvs) {
+    //not sure what to do with this method here. not even sure what its purpose is or what calls it
+    public void setChunks(int fid, ChunkMeta[] srvs) {
         db.beginTransaction();
         //Remove old servers
-        SQLiteStatement stmt = db.compileStatement("delete from servers_used where file_id = ?");
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
         stmt.bindLong(1, fid);
         stmt.executeUpdateDelete();
         stmt.close();
@@ -357,10 +388,13 @@ public class MetaData {
         db.endTransaction();
         db.beginTransaction();
         //Update with new servers
-        for(Server srv : srvs) {
-            stmt = db.compileStatement("insert into servers_used (file_id, server_id) values (?, ?)");
+        for(ChunkMeta chunk : srvs) {
+            stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name) VALUES (?, ?, ?, ?)");
+            //maybe need to set physical id here too? or check if virtual id server is up? not sure
             stmt.bindLong(1, fid);
-            stmt.bindLong(2, srv.id);
+            stmt.bindLong(2, chunk.virtual);
+            stmt.bindLong(3, chunk.physical);
+            stmt.bindString(4, chunk.name);
             stmt.executeInsert();
             stmt.close();
         }

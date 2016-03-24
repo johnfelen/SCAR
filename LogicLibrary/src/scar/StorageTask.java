@@ -41,6 +41,8 @@ public class StorageTask implements Callable<Chunk>{
         return new Chunk(data,
                          chk.hash,
                          chk.ind,
+                         chk.virtual,
+                         chk.physical,
                          chk.server);
       else
         return null; //failed to get data
@@ -49,5 +51,4 @@ public class StorageTask implements Callable<Chunk>{
     return null;
   }
 }
-rvers, decrypt, apply rs, remove padding
   //TODO 4Ryan: Adjus

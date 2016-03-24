@@ -116,6 +116,8 @@ public class ServerList extends Fragment
 									args.getStringExtra("port"),
 									args.getByteArrayExtra("uname"),
 									args.getByteArrayExtra("pass"));
+			//mirror this part into public data base
+			//only need type host port
 		}
 	}
 
