@@ -2,6 +2,7 @@ package com.scar.android;
 
 import android.app.Activity;
 import android.util.Log;
+import scar.*;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -112,11 +113,12 @@ public class MetaData {
                 +"name TEXT,"
                 +"virtual_id INTEGER,"
                 +"physical_id INTEGER,"
-                +"chunk_id INTEGER,"
-                +"PRIMARY KEY(file_id)," //not sure whether to include virtual id or physical id or neither
+                +"chunk_id INTEGER," //chunk id
+                +"PRIMARY KEY(chunk_id)," //not sure whether to include virtual id or physical id or neither
                 +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
                 +"FOREIGN KEY(file_id) REFERENCES files(id))");
         /*
+        need this in different database
         db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
                 +"server_id INTEGER,"
                 +"file_id INTEGER,"
@@ -344,27 +346,38 @@ public class MetaData {
     }
 
     //instead supply filename and return chunks rename as GETCHUNKS
-    public Server[] getChunks(String fn) {
-        Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
+    public ChunkMeta[] getChunks(String fn) {
+        Cursor cur = db.rawQuery("SELECT id FROM files where name = ?", new String[]{ fn });
         cur.moveToFirst();
         if(!cur.isAfterLast())
         {
             int id = cur.getInt(cur.getColumnIndex("id"));
             cur.close();
 
-            //probably going to have to change this to mapping virtual id to physical?
-            cur = db.rawQuery("SELECT * " +
-                            "FROM servers" +
-                            "WHERE servers.id = chunks_private.physical_id AND chunks_private.virtual_id = " + id, null);
-            //made an edit above
-            return collectServers(cur);
+            cur = db.rawQuery("SELECT name, virtual_id, physical_id"
+                    +"FROM chunks_private"
+                    +"WHERE file_id = " + id, null);
+
+            ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
+            cur.moveToFirst();
+
+            int i = 0;
+            while(!cur.isAfterLast()) {
+                chunks[i++] = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                        (int)cur.getLong(cur.getColumnIndex("virtual_id")),
+                        (int)cur.getLong(cur.getColumnIndex("physical_id")));
+                cur.moveToNext();
+            }
+
+            cur.close();
+            return chunks;
         }
         else
             return null;
     }
 
     //not sure what to do with this method here. not even sure what its purpose is or what calls it
-    public void setServers(int fid, Server[] srvs) {
+    public void setChunks(int fid, ChunkMeta[] srvs) {
         db.beginTransaction();
         //Remove old servers
         SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
@@ -375,11 +388,13 @@ public class MetaData {
         db.endTransaction();
         db.beginTransaction();
         //Update with new servers
-        for(Server srv : srvs) {
-            stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id) VALUES (?, ?)");
-            //maybe need to set physical id here too?
+        for(ChunkMeta chunk : srvs) {
+            stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name) VALUES (?, ?, ?, ?)");
+            //maybe need to set physical id here too? or check if virtual id server is up? not sure
             stmt.bindLong(1, fid);
-            stmt.bindLong(2, srv.id);
+            stmt.bindLong(2, chunk.virtual);
+            stmt.bindLong(3, chunk.physical);
+            stmt.bindString(4, chunk.name);
             stmt.executeInsert();
             stmt.close();
         }

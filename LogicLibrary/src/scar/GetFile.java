@@ -56,7 +56,7 @@ public class GetFile {
             byte[] data = chk.data;
             data = hash.checkHMac(key, data);
             if(data != null) {
-              lst.add(new Chunk(data, chk.hash, chk.ind, chk.server));
+              lst.add(new Chunk(data, chk.hash, chk.ind, chk.virtual, chk.physical, chk.server));
             }
           }
         }
@@ -99,6 +99,7 @@ public class GetFile {
         if(meta >= 0) {
           futures.add(pool.submit(new StorageTask(servers[metas[meta].physical],
                                                   data[x],
+                                                  metas[meta],
                                                   name,
                                                   StorageTask.TYPE_GET)));
         }
@@ -111,7 +112,7 @@ public class GetFile {
   }
   
   // Idea: Do a round robin of the servers on the chunks
-  private Chunk[] distribute_chunks(byte[][] hc) {
+  private Chunk[] distribute_chunks(byte[][] hc, ChunkMeta[] cms) {
     ArrayList<Integer> tmp = new ArrayList<Integer>(n);
     Chunk[] chunks = new Chunk[n+StoreFile.added_garbage];
     int i, srv;
@@ -127,9 +128,12 @@ public class GetFile {
       final BigInteger num = new BigInteger(Hex.toHexString(hc[i]), 16);
       final int ind = num.mod(new BigInteger(Integer.toString(tmp.size()))).intValue();
       final String name = Hex.toHexString(new Hash().getHash(concate(fn.getBytes(), hc[i])));
+      int meta = lookupMeta(cms, name);
       chunks[i] = new Chunk(null,
                             hc[i],
                             tmp.remove(ind),
+                            cms[meta].virtual,
+                            cms[meta].physical,
                             srv);
       srv = (srv + 1) % servers.length;
     }
@@ -157,7 +161,7 @@ public class GetFile {
     //1. Compute HashChain
     Hash hash = new Hash();
     byte[][] hashArr = hash.hashchain(n+StoreFile.added_garbage, key);
-    Chunk[] chunk_data = distribute_chunks(hashArr);
+    Chunk[] chunk_data = distribute_chunks(hashArr, cms);
     
     int numOfServ = servers.length;
     ArrayList<Chunk> chunk = new ArrayList<Chunk>();

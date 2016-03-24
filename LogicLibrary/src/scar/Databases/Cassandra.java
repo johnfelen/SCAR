@@ -34,6 +34,11 @@ public class Cassandra implements IServer {
     return this.session;
   }
 
+  public int id()
+  {
+    return 0;
+  }
+
   public boolean getStatus() {
     try {
       //TODO: This needs a hostname, and this class needs a constructor

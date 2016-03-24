@@ -50,7 +50,7 @@ public class CreatePassword extends Activity {
             @Override
             public void onClick(View v) {
                 //Checks given password against MetaData
-                if (getPassword().length() >= 5) //TODO: change back to 32 after demo
+                if (getPassword().length() >= 1) //TODO: change back to 32 after demo
                     if (MetaData.load( CreatePassword.this, getPassword()) == null) {
                         //New Password
                         MetaData.create( CreatePassword.this, getPassword());

@@ -33,7 +33,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-
+import scar.*;
 import scar.IServer;
 import scar.RndKeyGen;
 import scar.StoreFile;
@@ -206,7 +206,7 @@ public class Store extends Fragment {
                                                 actualServers,
                                                 true); //TODO: change this once we have encrypt checkbox
 					//	run StoreFile with store function
-					store.store();
+					ChunkMeta chunks[] = store.store(); //store meta file from return
 
 
 					update(90);
@@ -214,7 +214,7 @@ public class Store extends Fragment {
 					if(Session.meta.getFile(serverFname) == null)
 						Session.meta.newFile(serverFname, key);
 					ScarFile f = Session.meta.getFile(serverFname);
-					Session.meta.setServers(f.id, currentServers);
+					Session.meta.setChunks(f.id, chunks); //change to
 					Session.meta.addLocalFile(f.id, getFilename());
 
 

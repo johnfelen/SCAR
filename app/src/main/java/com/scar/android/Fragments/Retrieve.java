@@ -28,7 +28,7 @@ import com.scar.android.Server;
 import com.scar.android.Session;
 
 import java.util.ArrayList;
-
+import scar.*;
 import scar.GetFile;
 import scar.IServer;
 
@@ -130,23 +130,10 @@ public class Retrieve extends Fragment {
                     IServer[] actualServers = null;
 					try {
 						//Gets the servers for the given filename
-						Server[] servers = Session.meta.getChunks(getFilename());
+						Server[] servers = Session.meta.getAllActiveServers();
+						ChunkMeta[] chunks = Session.meta.getChunks(getFilename());
 
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
-						if( servers == null || servers.length == 0 )
-						{
-							servers = Session.meta.getAllActiveServers();
-							servers = testServers(servers);
-						} else {
-							//Remove inactive servers
-							ArrayList<Server> tmp = new ArrayList<Server>();
-							for(Server srv : servers)
-								if(srv.status == MetaData.STATUS_ACTIVE)
-									tmp.add(srv);
-							servers = tmp.toArray(new Server[0]);
-						}
-
-
 						if(servers == null || servers.length == 0) {
 							//Not enough servers
 							update(-1);
@@ -166,14 +153,13 @@ public class Retrieve extends Fragment {
 								                         actualServers );
 
 						//Get the bytes[] back from get() via scar.GetFile instance
-						data = get.get(); //argument is chunk array
+						data = get.get(chunks); //argument is chunk array
 
 						update(90);
 						if(Session.meta.getFile(getFilename()) == null) {
 							//Add file to the meta if it wasn't already
 							Session.meta.newFile(getFilename(), key);
 							ScarFile f = Session.meta.getFile(getFilename());
-							Session.meta.setServers(f.id, servers);
 						}
 
 						//4. Goto line 89 and fill out the saving bytes[] to a file

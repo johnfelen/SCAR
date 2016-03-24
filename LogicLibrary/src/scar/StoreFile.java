@@ -8,7 +8,7 @@ import org.spongycastle.util.encoders.Hex;
 public class StoreFile {
   public static final int allowed_threads = 8;
   public static final int added_garbage = 50;
-  public static final int virtual_servers = 51;
+  public static final int virtual_servers = 51; //why are there 51 of these?
   
   private IServer servers[];
   private byte[] data;
@@ -87,7 +87,7 @@ public class StoreFile {
                             srv,
                             servers[srv % servers.length].id(),
                             srv % servers.length);
-      srv = (srv + 1) % virtual_servers
+      srv = (srv + 1) % virtual_servers;
     }
     
     return chunks;
