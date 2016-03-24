@@ -154,7 +154,11 @@ public class Retrieve extends Fragment {
 
 						//Get the bytes[] back from get() via scar.GetFile instance
 <<<<<<< HEAD
+<<<<<<< HEAD
 						data = get.get(chunks); //argument is chunk array
+=======
+						data = get.get();
+>>>>>>> parent of d73cd7b... Just Comments
 =======
 						data = get.get();
 >>>>>>> parent of d73cd7b... Just Comments
