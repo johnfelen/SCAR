@@ -172,10 +172,11 @@ public class Retrieve extends Fragment {
 						update(-1);
 					}
 
+					/*
                     if(actualServers == null)
                         for(IServer srv : actualServers)
                             srv.close();
-
+					*/
 				}
 			}.start();
 
