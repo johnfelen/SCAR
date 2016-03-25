@@ -104,10 +104,6 @@ public class MetaData {
                     +"id INTEGER,"
                     +"name TEXT,"
                     +"key BLOB,"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
                     +"PRIMARY KEY(id),"
                     +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
         //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
@@ -363,9 +359,7 @@ public class MetaData {
 
     //instead supply filename and return chunks rename as GETCHUNKS
     public ChunkMeta[] getChunks(String fn) {
-        Cursor cur = db.rawQuery("SELECT id FROM files where name = ?", new String[]{ fn });
 
-    public Server[] getServers(String fn) {
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
         cur.moveToFirst();
         if(!cur.isAfterLast())

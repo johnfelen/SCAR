@@ -29,6 +29,11 @@ public class DropBox implements scar.IServer {
         connected = false;
     }
 
+    public int id()
+    {
+        return 0;
+    }
+
     public void connect() {
         try {
             AppKeyPair keyPair = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -54,7 +59,7 @@ public class DropBox implements scar.IServer {
     }
 
     //using fn to store chucks in Dropbox
-    public void storeData(String fn, byte[] chunks) {
+    public boolean storeData(String fn, byte[] chunks) {
         if(client == null)
             connect();
         ByteArrayInputStream byteStream = new ByteArrayInputStream(chunks);
@@ -64,9 +69,9 @@ public class DropBox implements scar.IServer {
                 client.putFileOverwriteRequest("/" + fn, byteStream, chunks.length, null).upload();
             }
         } catch (Exception e) {
-            //return false;
+            return false;
         }
-        //return true;
+        return true;
     }
 
     public byte[] getData(String fn) {

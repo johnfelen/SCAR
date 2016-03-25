@@ -28,7 +28,7 @@ public class SQLiteStore implements scar.IServer{
 
     public boolean getStatus() { return true; }
 
-    public void storeData(String fn, byte[] data) {
+    public boolean storeData(String fn, byte[] data) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into files values (?, ?)");
         stmt.bindString(1, fn);
@@ -37,6 +37,13 @@ public class SQLiteStore implements scar.IServer{
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+
+        return true;
+    }
+
+    public int id()
+    {
+        return 0;
     }
 
     public byte[] getData(String fn) {
