@@ -99,7 +99,7 @@ public class MetaData {
                     +"username BLOB,"
                     +"password BLOB,"
                     +"PRIMARY KEY(id),"
-                    +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
+                    +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
@@ -120,16 +120,8 @@ public class MetaData {
         /*
         need this in different database
         db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
-=======
-=======
->>>>>>> parent of d73cd7b... Just Comments
-=======
->>>>>>> parent of d73cd7b... Just Comments
-=======
->>>>>>> parent of d73cd7b... Just Comments
                     +"PRIMARY KEY(id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
->>>>>>> parent of d73cd7b... Just Comments
                 +"server_id INTEGER,"
                 +"file_id INTEGER,"
                 +"PRIMARY KEY(server_id, file_id),"
@@ -216,8 +208,7 @@ public class MetaData {
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-
-        stmt = db.compileStatement("delete from servers_used");
+        stmt = db.compileStatement("delete from chunks_private");
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from files");
