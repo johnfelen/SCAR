@@ -107,6 +107,7 @@ public class MetaData {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     +"PRIMARY KEY(id),"
                     +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
         //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
@@ -124,6 +125,8 @@ public class MetaData {
         need this in different database
         db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
 =======
+=======
+>>>>>>> parent of d73cd7b... Just Comments
 =======
 >>>>>>> parent of d73cd7b... Just Comments
 =======
@@ -217,19 +220,8 @@ public class MetaData {
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        stmt = db.compileStatement("delete from chunks_private");
-=======
+
         stmt = db.compileStatement("delete from servers_used");
->>>>>>> parent of d73cd7b... Just Comments
-=======
-        stmt = db.compileStatement("delete from servers_used");
->>>>>>> parent of d73cd7b... Just Comments
-=======
-        stmt = db.compileStatement("delete from servers_used");
->>>>>>> parent of d73cd7b... Just Comments
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from files");
@@ -368,20 +360,13 @@ public class MetaData {
         return collectServers(cursor);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     //instead supply filename and return chunks rename as GETCHUNKS
     public ChunkMeta[] getChunks(String fn) {
         Cursor cur = db.rawQuery("SELECT id FROM files where name = ?", new String[]{ fn });
-=======
-=======
->>>>>>> parent of d73cd7b... Just Comments
-=======
->>>>>>> parent of d73cd7b... Just Comments
+
     public Server[] getServers(String fn) {
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
->>>>>>> parent of d73cd7b... Just Comments
         cur.moveToFirst();
         if(!cur.isAfterLast())
         {

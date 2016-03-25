@@ -153,20 +153,10 @@ public class Retrieve extends Fragment {
 								                         actualServers );
 
 						//Get the bytes[] back from get() via scar.GetFile instance
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-						data = get.get(chunks); //argument is chunk array
-=======
-						data = get.get();
->>>>>>> parent of d73cd7b... Just Comments
-=======
-						data = get.get();
->>>>>>> parent of d73cd7b... Just Comments
-=======
-						data = get.get();
->>>>>>> parent of d73cd7b... Just Comments
 
+						data = get.get(chunks); //argument is chunk array
+
+						//data = get.get();
 						update(90);
 						if(Session.meta.getFile(getFilename()) == null) {
 							//Add file to the meta if it wasn't already
