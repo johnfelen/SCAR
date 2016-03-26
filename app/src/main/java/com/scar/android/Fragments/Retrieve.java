@@ -47,7 +47,6 @@ public class Retrieve extends Fragment {
 	public static Retrieve newInstance(int num)
 	{
 		Retrieve fragment = new Retrieve();
-
 		// Supply num input as an argument.
 		Bundle args = new Bundle();
 		args.putInt("num", num);
@@ -139,6 +138,7 @@ public class Retrieve extends Fragment {
 							update(-1);
 							return;
 						}
+
 						actualServers = toActualServers(servers);
                         update(20);
 
@@ -172,11 +172,11 @@ public class Retrieve extends Fragment {
 						update(-1);
 					}
 
-					/*
-                    if(actualServers == null)
+
+                    if(actualServers != null)
                         for(IServer srv : actualServers)
                             srv.close();
-					*/
+
 				}
 			}.start();
 

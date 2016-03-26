@@ -99,7 +99,7 @@ public class MetaData {
                     +"username BLOB,"
                     +"password BLOB,"
                     +"PRIMARY KEY(id),"
-                    +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
+                    +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
@@ -114,7 +114,7 @@ public class MetaData {
                 +"virtual_id INTEGER,"
                 +"physical_id INTEGER,"
                 +"chunk_id INTEGER," //chunk id
-                +"PRIMARY KEY(chunk_id)," //not sure whether to include virtual id or physical id or neither
+                +"PRIMARY KEY(chunk_id),"
                 +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
                 +"FOREIGN KEY(file_id) REFERENCES files(id))");
         /*
@@ -355,11 +355,11 @@ public class MetaData {
         cur.moveToFirst();
         if(!cur.isAfterLast())
         {
-            int id = cur.getInt(cur.getColumnIndex("id"));
+            long id = cur.getInt(cur.getColumnIndex("id"));
             cur.close();
 
-            cur = db.rawQuery("SELECT name, virtual_id, physical_id"
-                    +"FROM chunks_private"
+            cur = db.rawQuery("SELECT name, virtual_id, physical_id "
+                    +"FROM chunks_private "
                     +"WHERE file_id = " + id, null);
 
             ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
