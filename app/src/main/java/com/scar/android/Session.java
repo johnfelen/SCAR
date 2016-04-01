@@ -2,6 +2,8 @@ package com.scar.android;
 
 import android.util.Log;
 
+import com.scar.android.Services.MetaDataB;
+
 import java.util.Date;
 
 /**
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 public class Session {
     public static MetaData meta;
+    public static MetaDataB metaBackground;
     public static byte[] password;
     public static boolean locked;
     public static long lockTime;

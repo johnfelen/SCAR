@@ -2,7 +2,10 @@ package com.scar.android.Activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.scar.android.MetaData;
 import com.android.scar.R;
+import com.scar.android.Services.Background;
 import com.scar.android.Session;
 
 import java.util.Date;
@@ -50,28 +54,24 @@ public class LoginActivity extends Activity
         login.setOnClickListener(new Button.OnClickListener() {
             @Override
 
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 System.out.println(Session.locked);
-                if(Session.locked) {
+                if (Session.locked) {
                     tries = 0;
                     long current = new Date().getTime();
                     long countStart = Session.lockTime;
                     long end = countStart + 300000; //5 minutes
                     long remaining = end - current;
-                    if(remaining < 0){
+                    if (remaining < 0) {
                         Session.unlock();
-                    }
-                    else {
+                    } else {
                         long minutes = remaining / 60000;
-                        int seconds = (int)((remaining % 60000) / 1000);
-                        if(minutes == 1){
+                        int seconds = (int) ((remaining % 60000) / 1000);
+                        if (minutes == 1) {
                             Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + minutes + " minute and " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
-                        }
-                        else if (minutes == 0){
+                        } else if (minutes == 0) {
                             Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + minutes + " minutes and " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
                         }
                         new CountDownTimer(remaining, 1000) {
@@ -88,26 +88,22 @@ public class LoginActivity extends Activity
                         }.start();
                     }
                 }
-                if(!Session.locked)
-                {
-                    MetaData meta = MetaData.load( LoginActivity.this, getPassword() );
-                    if(meta != null) {
+                if (!Session.locked) {
+                    MetaData meta = MetaData.load(LoginActivity.this, getPassword());
+                    if (meta != null) {
                         //If successful open session
                         Session.init(meta, getPassword().getBytes());
                         //Return from this activity
                         LoginActivity.this.finish();
-                    }
-                    else
-                    {
+                    } else {
                         tries++;
                         int remaining = 5 - tries;
-                        if(remaining == 1){
+                        if (remaining == 1) {
                             Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " try remaining.", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " tries remaining.", Toast.LENGTH_SHORT).show();
                         }
-                        if(tries > 3){
+                        if (tries > 3) {
                             Session.setLocked();
                         }
                     }
@@ -125,6 +121,7 @@ public class LoginActivity extends Activity
                 startActivity(intent);
             }
         });
+
 
     }
 

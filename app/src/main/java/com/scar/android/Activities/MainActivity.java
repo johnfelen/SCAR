@@ -1,15 +1,22 @@
 package com.scar.android.Activities;
 
 import android.app.ActionBar;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -17,12 +24,15 @@ import android.widget.Button;
 import android.widget.TabHost;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.scar.R;
 import com.scar.android.Fragments.Files;
 import com.scar.android.Fragments.Retrieve;
 import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
+import com.scar.android.Services.Background;
+import com.scar.android.Services.BackgroundReceiver;
 import com.scar.android.Session;
 
 import java.util.Date;
@@ -34,6 +44,8 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
     private boolean backgroundHasNotBeenSet = true;
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +98,31 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
+    private void onStartService()
+    {
+        Intent backgroundChecker = new Intent(this, BackgroundReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, backgroundChecker, 0);
+
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        int interval = 1000; //still need to figure out timer
+        //need to use sendOrderedBroadcast
+        //need to figureout how to send messages back to a scheduler thing
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+    }
+
+    // Define the callback for what to do when data is received
+    private BroadcastReceiver testReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            int resultCode = intent.getIntExtra("resultCode", RESULT_CANCELED);
+            if (resultCode == RESULT_OK)
+            {
+                //scheduler here
+            }
+        }
+    };
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter //allows sliding between main tabs
     {
@@ -127,7 +164,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         long currentTimeStamp = new Date().getTime();   //300000
-        System.out.println( backgroundStartTime );
+        System.out.println("background start time: " + backgroundStartTime );
         System.out.println( "Current: " + currentTimeStamp );
         //Check if Session is valid before continuing, 300000 is 5 minutes
 
@@ -142,6 +179,7 @@ public class MainActivity extends FragmentActivity {
         {
             backgroundHasNotBeenSet = true;
         }
+
     }
 
     protected void onPause()
@@ -152,6 +190,7 @@ public class MainActivity extends FragmentActivity {
             backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'background', may make false positive
             backgroundHasNotBeenSet = false;
         }
+
     }
 
     protected void onStop()
