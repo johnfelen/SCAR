@@ -116,8 +116,9 @@ public class ServerList extends Fragment
 									args.getStringExtra("port"),
 									args.getByteArrayExtra("uname"),
 									args.getByteArrayExtra("pass"));
-			//mirror this part into public data base
-			//only need type host port
+			Session.metaBackground.newServer(args.getIntExtra("type", 0),
+									args.getStringExtra("host"),
+									args.getStringExtra("port"));
 		}
 	}
 

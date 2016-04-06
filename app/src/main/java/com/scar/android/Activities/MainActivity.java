@@ -98,32 +98,6 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void onStartService()
-    {
-        Intent backgroundChecker = new Intent(this, BackgroundReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, backgroundChecker, 0);
-
-        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        int interval = 1000; //still need to figure out timer
-        //need to use sendOrderedBroadcast
-        //need to figureout how to send messages back to a scheduler thing
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
-    }
-
-    // Define the callback for what to do when data is received
-    private BroadcastReceiver testReceiver = new BroadcastReceiver()
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            int resultCode = intent.getIntExtra("resultCode", RESULT_CANCELED);
-            if (resultCode == RESULT_OK)
-            {
-                //scheduler here
-            }
-        }
-    };
-
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter //allows sliding between main tabs
     {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
@@ -163,12 +137,14 @@ public class MainActivity extends FragmentActivity {
 
     protected void onResume() {
         super.onResume();
+        //access database for this stuff below
         long currentTimeStamp = new Date().getTime();   //300000
         System.out.println("background start time: " + backgroundStartTime );
         System.out.println( "Current: " + currentTimeStamp );
         //Check if Session is valid before continuing, 300000 is 5 minutes
 
-        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() ) {
+        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() )
+        {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
             Session.clear();
             backgroundHasNotBeenSet = true;

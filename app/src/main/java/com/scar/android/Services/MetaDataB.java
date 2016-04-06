@@ -9,13 +9,11 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
-import com.scar.android.Session;
 
 import java.io.File;
 
 import scar.ChunkMeta;
-import scar.DerivedKeyGen;
-import scar.Encryption;
+
 
 /**
  * Created by Spencer on 3/29/2016.
@@ -39,8 +37,7 @@ public class MetaDataB extends SQLiteOpenHelper{
     public MetaDataB(Context con, String dbnm) {
         super(con, dbnm, null, 1);
         dbname = dbnm;
-    }    //dont know how to get ths string
-        //Setup tables if needed
+    }
 
     public void onUpgrade (SQLiteDatabase db, int oldVersion, int newVersion)
     {
@@ -71,22 +68,6 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     }
 
-    /* Deletes all the meta databases
-     *
-     */
-
-    /*  Load a previously created database based off
-     *  your password given at login
-     *
-     *  Return null if no database found for given key
-     */
-
-    /* Load a new database with the key being
-     * the password you created at login
-     *
-     * Note call load(key) before this to ensure a db doesn't already
-     *  exist with the given key
-     */
 
     // Puts the database back into a state of initial creation
     public void clean() {
@@ -141,7 +122,8 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     //get all chunks
 
-    public Server[] getAllServerInfo() {
+    public Server[] getAllServerInfo()
+    {
         Cursor cur = db.rawQuery("select * from servers", null);
         return collectServers(cur);
     }
@@ -149,24 +131,14 @@ public class MetaDataB extends SQLiteOpenHelper{
     //instead supply filename and return chunks rename as GETCHUNKS
 
     //not sure what to do with this method here. not even sure what its purpose is or what calls it
-    public void setChunks(int fid, ChunkMeta[] srvs) {
+    public void setChunks(ChunkMeta[] srvs) {
         db.beginTransaction();
-        //Remove old servers
-        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
-        stmt.bindLong(1, fid);
-        stmt.executeUpdateDelete();
-        stmt.close();
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.beginTransaction();
-        //Update with new servers
+        //Update with new chunks
         for(ChunkMeta chunk : srvs) {
-            stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name) VALUES (?, ?, ?, ?)");
-            //maybe need to set physical id here too? or check if virtual id server is up? not sure
-            stmt.bindLong(1, fid);
-            stmt.bindLong(2, chunk.virtual);
-            stmt.bindLong(3, chunk.physical);
-            stmt.bindString(4, chunk.name);
+            SQLiteStatement stmt = db.compileStatement("INSERT INTO chunks_public(virtual_id, physical_id, name) VALUES (?, ?, ?)");
+            stmt.bindLong(1, chunk.virtual);
+            stmt.bindLong(2, chunk.physical);
+            stmt.bindString(3, chunk.name);
             stmt.executeInsert();
             stmt.close();
         }
@@ -174,16 +146,14 @@ public class MetaDataB extends SQLiteOpenHelper{
         db.endTransaction();
     }
 
-    public void newServer(int type, String label, String host, String port) {
+    public void newServer(int type, String host, String port) {
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, status, label, hostname, port) values ((select max(id)+1 from servers), ?, ?, ?, ? , ?)");
+        SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, hostname, port) values ((select max(id)+1 from servers), ?, ? , ?)");
         stmt.bindLong(1, type);
-        stmt.bindLong(2, STATUS_ACTIVE);
-        stmt.bindString(3, label);
         if(host != null)
-            stmt.bindString(4, host);
+            stmt.bindString(2, host);
         if(port != null)
-            stmt.bindString(5, port);
+            stmt.bindString(3, port);
 
         stmt.executeInsert();
         stmt.close();

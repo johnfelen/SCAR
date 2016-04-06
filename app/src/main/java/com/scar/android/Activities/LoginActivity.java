@@ -46,6 +46,7 @@ public class LoginActivity extends Activity
 
         // Init the MetaData db
         MetaData.init(this);
+        //open data base here!
 
         Button
                 login = (Button)findViewById(R.id.login),
