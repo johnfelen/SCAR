@@ -59,11 +59,17 @@ public class Background extends IntentService
             {
                 //send notification and handle it somewhere
             }
-            //need to loop through all chunks and see if the chunk virtual == physical
-            //if not, see if virtual server exists
+
             //if it does, check and see if it is in chunk meta (maybe check this first tbh)
             //set threshold of maybe like 25% needing relocation before sending notification
             //then maybe look into dead server notification (should be kinda easy to add i think)
+            try
+            {
+                Thread.sleep(3000000); //5 minutes
+            }catch(InterruptedException e)
+            {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }

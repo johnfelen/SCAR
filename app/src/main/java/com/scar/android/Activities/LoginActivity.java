@@ -47,6 +47,7 @@ public class LoginActivity extends Activity
         // Init the MetaData db
         MetaData.init(this);
         //open data base here!
+        Session.makeLock(getApplicationContext());
 
         Button
                 login = (Button)findViewById(R.id.login),
@@ -56,13 +57,9 @@ public class LoginActivity extends Activity
             @Override
 
             public void onClick(View v) {
-                System.out.println(Session.locked);
-                if (Session.locked) {
+                if (Session.isLocked()) {
                     tries = 0;
-                    long current = new Date().getTime();
-                    long countStart = Session.lockTime;
-                    long end = countStart + 300000; //5 minutes
-                    long remaining = end - current;
+                    long remaining = Session.remaining();
                     if (remaining < 0) {
                         Session.unlock();
                     } else {
@@ -89,7 +86,7 @@ public class LoginActivity extends Activity
                         }.start();
                     }
                 }
-                if (!Session.locked) {
+                if (!Session.isLocked()) {
                     MetaData meta = MetaData.load(LoginActivity.this, getPassword());
                     if (meta != null) {
                         //If successful open session

@@ -1,5 +1,7 @@
 package com.scar.android;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.scar.android.Services.MetaDataB;
@@ -15,8 +17,8 @@ public class Session
     public static MetaData meta;
     public static MetaDataB metaBackground;
     public static byte[] password;
-    public static boolean locked;
-    public static long lockTime;
+    public static Lock lock;
+
 
     public static void init(MetaData data, byte[] pas)
     {
@@ -24,14 +26,28 @@ public class Session
         password = pas;
     }
 
+    public static void makeLock(Context con)
+    {
+        lock = new Lock(con, "locker");
+    }
+
     public static void setLocked(){
-        locked = true;
-        lockTime = new Date().getTime();
+        lock.setLock();
+    }
+
+    public static long remaining()
+    {
+        return 300000 - lock.elapsed();
+    }
+
+    public static boolean isLocked()
+    {
+        return lock.isLocked();
     }
 
     public static void unlock()
     {
-        locked = false;
+        lock.unlock();
     }
     public static void clear() {
         if(meta!=null)
