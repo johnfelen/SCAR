@@ -54,7 +54,7 @@ public class MetaDataB extends SQLiteOpenHelper{
                 +"hostname TEXT,"
                 +"port TEXT,"
                 +"PRIMARY KEY(id),"
-                +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
+                +"FOREIGN KEY(id) REFERENCES chunks_public(physical_id))");
 
         //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
         //separate database for scheduler without some of the fields.
@@ -75,10 +75,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-        stmt = db.compileStatement("delete from chunks_private");
-        stmt.execute();
-        stmt.close();
-        stmt = db.compileStatement("delete from files");
+        stmt = db.compileStatement("delete from chunks_public");
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from servers");
@@ -98,6 +95,26 @@ public class MetaDataB extends SQLiteOpenHelper{
         return db != null && dbname != null;
     }
 
+    public ChunkMeta[] getChunks()
+    {
+        Cursor cur = db.rawQuery("SELECT name, virtual_id, physical_id "
+                +"FROM chunks_private", null);
+
+        ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
+        cur.moveToFirst();
+
+        int i = 0;
+        while(!cur.isAfterLast())
+        {
+            chunks[i++] = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                    (int)cur.getLong(cur.getColumnIndex("virtual_id")),
+                    (int)cur.getLong(cur.getColumnIndex("physical_id")));
+            cur.moveToNext();
+        }
+
+        cur.close();
+        return chunks;
+    }
 
     //not sure what to do about this method since we do not have username/password
     private Server[] collectServers(Cursor cur) {
