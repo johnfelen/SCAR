@@ -215,7 +215,7 @@ public class Store extends Fragment {
 						Session.meta.newFile(serverFname, key);
 					ScarFile f = Session.meta.getFile(serverFname);
 					Session.meta.setChunks(f.id, chunks);
-					Session.metaBackground.setChunks(chunks);
+					//Session.metaBackground.setChunks(chunks);
 					Session.meta.addLocalFile(f.id, getFilename());
 
 					update(100); //completed successfully

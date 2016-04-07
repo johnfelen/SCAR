@@ -31,7 +31,6 @@ public class MetaDataB extends SQLiteOpenHelper{
     STATUS_ACTIVE = 0,
             STATUS_DISABLE = 1;
 
-    private SQLiteDatabase db;
     private final String dbname;
 
     public MetaDataB(Context con, String dbnm) {
@@ -45,7 +44,6 @@ public class MetaDataB extends SQLiteOpenHelper{
     }
     public void onCreate(SQLiteDatabase db){
 
-                this.db = db;
                 db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
                 +"id INTEGER,"
                 +"status INTEGER,"
@@ -71,6 +69,7 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     // Puts the database back into a state of initial creation
     public void clean() {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
@@ -85,18 +84,21 @@ public class MetaDataB extends SQLiteOpenHelper{
         db.endTransaction();
     }
 
+    /*
     public void close() {
         db.close();
     }
-
+    */
     //Ensures the MetaData is still valid
+    /*
     public boolean valid()
     {
         return db != null && dbname != null;
     }
-
+    */
     public ChunkMeta[] getChunks()
     {
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("SELECT name, virtual_id, physical_id "
                 +"FROM chunks_private", null);
 
@@ -141,6 +143,7 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     public Server[] getAllServerInfo()
     {
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("select * from servers", null);
         return collectServers(cur);
     }
@@ -149,6 +152,7 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     //not sure what to do with this method here. not even sure what its purpose is or what calls it
     public void setChunks(ChunkMeta[] srvs) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         //Update with new chunks
         for(ChunkMeta chunk : srvs) {
@@ -164,6 +168,7 @@ public class MetaDataB extends SQLiteOpenHelper{
     }
 
     public void newServer(int type, String host, String port) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, hostname, port) values ((select max(id)+1 from servers), ?, ? , ?)");
         stmt.bindLong(1, type);
@@ -183,6 +188,7 @@ public class MetaDataB extends SQLiteOpenHelper{
     }
 
     public void updateServer(int id, int type, int status, String label, String host, String port) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update servers set type = ?, status = ?, label = ?, hostname = ?, port = ? where id = ?");
         stmt.bindLong(1, type);
