@@ -96,6 +96,9 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
+
+        Intent backgrounder = new Intent(this, Background.class);
+        startService(backgrounder);
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter //allows sliding between main tabs

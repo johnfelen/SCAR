@@ -57,12 +57,11 @@ public class MetaDataB extends SQLiteOpenHelper{
         //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
         //separate database for scheduler without some of the fields.
         db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
-                +"file_id INTEGER,"
                 +"virtual_id INTEGER,"
                 +"physical_id INTEGER,"
                 +"chunk_id INTEGER," //chunk id
                 +"PRIMARY KEY(chunk_id),"
-                +"FOREIGN KEY(physical_id) REFERENCES servers(id)");
+                +"FOREIGN KEY(physical_id) REFERENCES servers(id))");
 
     }
 
@@ -99,8 +98,8 @@ public class MetaDataB extends SQLiteOpenHelper{
     public ChunkMeta[] getChunks()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cur = db.rawQuery("SELECT name, virtual_id, physical_id "
-                +"FROM chunks_private", null);
+        Cursor cur = db.rawQuery("SELECT virtual_id, physical_id "
+                +"FROM chunks_public", null);
 
         ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
         cur.moveToFirst();
@@ -108,7 +107,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         int i = 0;
         while(!cur.isAfterLast())
         {
-            chunks[i++] = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+            chunks[i++] = new ChunkMeta("empty",
                     (int)cur.getLong(cur.getColumnIndex("virtual_id")),
                     (int)cur.getLong(cur.getColumnIndex("physical_id")));
             cur.moveToNext();
@@ -156,10 +155,9 @@ public class MetaDataB extends SQLiteOpenHelper{
         db.beginTransaction();
         //Update with new chunks
         for(ChunkMeta chunk : srvs) {
-            SQLiteStatement stmt = db.compileStatement("INSERT INTO chunks_public(virtual_id, physical_id, name) VALUES (?, ?, ?)");
+            SQLiteStatement stmt = db.compileStatement("INSERT INTO chunks_public(virtual_id, physical_id) VALUES (?, ?)");
             stmt.bindLong(1, chunk.virtual);
             stmt.bindLong(2, chunk.physical);
-            stmt.bindString(3, chunk.name);
             stmt.executeInsert();
             stmt.close();
         }

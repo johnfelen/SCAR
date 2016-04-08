@@ -59,6 +59,9 @@
             android:name="com.scar.android.Activities.ModifyServer"
             android:label="@string/ms_app" >
         </activity>
+
+        <service android:name="com.scar.android.Services.Background" />
+
     </application>
 
 </manifest>
