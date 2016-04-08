@@ -74,6 +74,19 @@ public class DropBox implements scar.IServer {
         return true;
     }
 
+    public boolean deleteFile(String file)
+    {
+        try{
+            client.delete(file);
+        }catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
     public byte[] getData(String fn) {
         if(client == null)
             connect();

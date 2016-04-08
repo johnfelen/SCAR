@@ -54,7 +54,7 @@ public class Background extends Service
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
-                Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
                 Session.metaBackground = meta;
 
                 ChunkMeta[] allChunks = meta.getChunks();
@@ -76,12 +76,12 @@ public class Background extends Service
                     }
                 }
 
-                if(relocate.size() < threshold)
+                if(relocate.size() > threshold)
                 {
                     Notify();
                 }
 
-                handler.postDelayed(runnable, 10000);
+                handler.postDelayed(runnable, 300000);
             }
         };
 

@@ -75,7 +75,14 @@ public class MetaFile extends Activity {
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //change the way to get the file to be similar to open's way of getting it
-                        //String file = (String) parent.getItemAtPosition(position);
+                        String file = (String) parent.getItemAtPosition(position);
+                        Log.d("ass", "onClick: " + getIntent().getStringExtra("nameOfFile"));
+
+                        //delete file here
+
+
+
+                        /*
                         //File f = new File(Uri.parse(file).toString());
                         File f = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
                         f.delete();

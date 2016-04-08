@@ -44,8 +44,6 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
     private boolean backgroundHasNotBeenSet = true;
-    private PendingIntent pendingIntent;
-    private AlarmManager manager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +139,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         //access database for this stuff below
-        long currentTimeStamp = new Date().getTime();   //300000
+        long currentTimeStamp = new Date().getTime();
         System.out.println("background start time: " + backgroundStartTime );
         System.out.println( "Current: " + currentTimeStamp );
         //Check if Session is valid before continuing, 300000 is 5 minutes
