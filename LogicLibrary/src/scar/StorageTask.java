@@ -7,6 +7,7 @@ public class StorageTask implements Callable<Chunk>{
   public static final int
     TYPE_STORE = 0,
     TYPE_GET = 1;
+    TYPE_DELETE = 2;
 
   private final IServer srv;
   private final Chunk chk;
@@ -35,6 +36,10 @@ public class StorageTask implements Callable<Chunk>{
       else
         meta.uploaded = false;
       break;
+    case TYPE_DELETE:
+      svr.deleteFile(nm);
+      break;
+
     case TYPE_GET:
       byte[] data = srv.getData(nm);
       if(data != null)
