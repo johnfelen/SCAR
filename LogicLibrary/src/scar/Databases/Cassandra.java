@@ -68,6 +68,12 @@ public class Cassandra implements IServer {
     }
   }
 
+  public boolean deleteFile(String file)
+  {
+    // TODO: 4/8/2016 fill in this method to delete files  
+    return false;
+  }
+
   //close connections
   public void close(){
     session.close();

@@ -81,7 +81,7 @@ public class Background extends Service
                     Notify();
                 }
 
-                handler.postDelayed(runnable, 300000);
+                handler.postDelayed(runnable, 30000000);
             }
         };
 

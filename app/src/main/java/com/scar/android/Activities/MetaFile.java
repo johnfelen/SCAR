@@ -32,6 +32,10 @@ import com.scar.android.Session;
 import java.io.File;
 import java.io.IOException;
 
+import scar.ChunkMeta;
+import scar.DeleteFile;
+import scar.IServer;
+
 /**
  * Created by John on 7/27/2015.
  */
@@ -75,13 +79,24 @@ public class MetaFile extends Activity {
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //change the way to get the file to be similar to open's way of getting it
-                        String file = (String) parent.getItemAtPosition(position);
-                        Log.d("ass", "onClick: " + getIntent().getStringExtra("nameOfFile"));
+                        String file = getIntent().getStringExtra("nameOfFile");
+                        byte[] key = Session.meta.getFileKey(file);
 
-                        //delete file here
+                        Server[] servers = Session.meta.getAllActiveServers();
+                        IServer actual[] = toActualServers(servers);
+                        ChunkMeta[] chunks = Session.meta.getChunks(file);
 
 
+                        DeleteFile deleter = new DeleteFile(file, key, actual, 100);
+                        try{
+                            deleter.delete(chunks);
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
 
+                        Log.d("azz", "onClick: DONE!");
+                        Session.meta.deleteFile(file);
                         /*
                         //File f = new File(Uri.parse(file).toString());
                         File f = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
@@ -192,5 +207,15 @@ public class MetaFile extends Activity {
                         MediaStore.Files.FileColumns.DATA + "=?", new String[]{absolutePath});
             }
         }
+    }
+
+    private IServer[] toActualServers(Server srvs[]){
+        IServer[] ret = new IServer[srvs.length];
+        int i = 0;
+
+        for(Server srv : srvs)
+            ret[i++] = srv.getActual(this);
+
+        return ret;
     }
 }

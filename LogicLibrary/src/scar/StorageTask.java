@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 public class StorageTask implements Callable<Chunk>{
   public static final int
     TYPE_STORE = 0,
-    TYPE_GET = 1;
+    TYPE_GET = 1,
     TYPE_DELETE = 2;
 
   private final IServer srv;
@@ -37,7 +37,10 @@ public class StorageTask implements Callable<Chunk>{
         meta.uploaded = false;
       break;
     case TYPE_DELETE:
-      svr.deleteFile(nm);
+      if(srv.deleteFile(nm))
+      {
+        meta.uploaded = false;
+      }
       break;
 
     case TYPE_GET:

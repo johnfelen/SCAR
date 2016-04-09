@@ -32,6 +32,12 @@ public class LocalStore implements IServer {
     return true;
   }
 
+  public boolean deleteFile(String file)
+  {
+    // TODO: 4/8/2016 fill in this method to delete filess
+    return false;
+  }
+
   public void close() {} 
   
   public byte[] getData(String fn) {

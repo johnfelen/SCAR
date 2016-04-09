@@ -41,6 +41,11 @@ public class SQLiteStore implements scar.IServer{
         return true;
     }
 
+    public boolean deleteFile(String file)
+    {
+        return false;
+    }
+
     public int id()
     {
         return 0;
