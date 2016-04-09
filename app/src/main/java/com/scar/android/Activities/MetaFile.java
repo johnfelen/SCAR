@@ -95,8 +95,9 @@ public class MetaFile extends Activity {
                             e.printStackTrace();
                         }
 
-                        Log.d("azz", "onClick: DONE!");
                         Session.meta.deleteFile(file);
+                        //TODO sync up public data base 
+
                         /*
                         //File f = new File(Uri.parse(file).toString());
                         File f = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
