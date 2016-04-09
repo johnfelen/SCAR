@@ -11,6 +11,7 @@ import com.scar.android.ScarFile;
 import com.scar.android.Server;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import scar.ChunkMeta;
 
@@ -95,6 +96,22 @@ public class MetaDataB extends SQLiteOpenHelper{
         return db != null && dbname != null;
     }
     */
+
+    public void deleteFile(ArrayList<Integer> chunkIds)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        for(int i = 0; i < chunkIds.size(); i++)
+        {
+            SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_public WHERE chunk_id = ?");
+            stmt.bindLong(1, chunkIds.get(i));
+            stmt.executeUpdateDelete();
+            stmt.close();
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     public ChunkMeta[] getChunks()
     {
         SQLiteDatabase db = this.getWritableDatabase();

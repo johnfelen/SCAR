@@ -121,7 +121,7 @@ public class Store extends Fragment {
 		store_btn.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (getFilename().equals("")) {
+				if (getServerFilename().length() == 0) {
 					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give your file a name.");
@@ -131,7 +131,22 @@ public class Store extends Fragment {
 							dialog.dismiss();
 						}
 					});
-				} else {
+					newDialog.show();
+				}
+				else if(getFilename().length() == 0)
+				{
+					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this.getActivity());
+					newDialog.setTitle("Alert!");
+					newDialog.setMessage("You forgot to choose a file.");
+					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					});
+					newDialog.show();
+				}
+				else {
 					storeFile();
 				}
 			}

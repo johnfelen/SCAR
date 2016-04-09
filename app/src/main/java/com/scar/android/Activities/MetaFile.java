@@ -31,6 +31,7 @@ import com.scar.android.Session;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import scar.ChunkMeta;
 import scar.DeleteFile;
@@ -73,7 +74,7 @@ public class MetaFile extends Activity {
                 final AdapterView<?> parent = _parent;
                 final int position = _position;
                 AlertDialog.Builder newDialog = new AlertDialog.Builder(MetaFile.this);
-                newDialog.setTitle("What action would you like to perform?");
+                newDialog.setTitle("Would you like to delete this file?");
 
                 //delete local filepath
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -95,8 +96,9 @@ public class MetaFile extends Activity {
                             e.printStackTrace();
                         }
 
-                        Session.meta.deleteFile(file);
-                        //TODO sync up public data base 
+                        ArrayList<Integer> chunkIds = Session.meta.deleteFile(file);
+                        System.out.println(chunkIds);
+                        Session.metaBackground.deleteFile(chunkIds);
 
                         /*
                         //File f = new File(Uri.parse(file).toString());
@@ -132,6 +134,7 @@ public class MetaFile extends Activity {
                             }
                         });
 
+                /*
                 //opens the file
                 newDialog.setNeutralButton("Open", new DialogInterface.OnClickListener() {
                     @Override
@@ -142,6 +145,7 @@ public class MetaFile extends Activity {
                         startActivity( intent );    //starts gallary activity with local path Uri
                     }
                 });
+                */
 
                 newDialog.show();
             }

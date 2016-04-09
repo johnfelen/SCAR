@@ -11,6 +11,8 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import scar.DerivedKeyGen;
 import scar.Encryption;
@@ -448,7 +450,7 @@ public class MetaData {
         db.endTransaction();
     }
 
-    public void deleteFile(String filename)
+    public ArrayList<Integer> deleteFile(String filename)
     {
         db.beginTransaction();
         Cursor cur = db.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{filename});
@@ -461,6 +463,16 @@ public class MetaData {
         stmt.executeUpdateDelete();
         stmt.close();
 
+        cur = db.rawQuery("SELECT chunk_id FROM chunks_private WHERE chunk_id = " + fid, null);
+        cur.moveToFirst();
+        ArrayList<Integer> chunkHolder = new ArrayList<Integer>();
+        while(!cur.isAfterLast())
+        {
+            chunkHolder.add(cur.getInt(cur.getColumnIndex("chunk_id")));
+            cur.moveToNext();
+        }
+        cur.close();
+
         stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
         stmt.bindLong(1, fid);
         stmt.executeUpdateDelete();
@@ -468,6 +480,7 @@ public class MetaData {
         db.setTransactionSuccessful();
         db.endTransaction();
 
+       return chunkHolder;
     }
 
     public void removeLocalFile(int fid, String local) {
