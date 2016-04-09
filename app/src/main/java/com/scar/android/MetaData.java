@@ -117,17 +117,7 @@ public class MetaData {
                 +"PRIMARY KEY(chunk_id),"
                 +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
                 +"FOREIGN KEY(file_id) REFERENCES files(id))");
-        /*
-        need this in different database
-        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
-                    +"PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
-                +"server_id INTEGER,"
-                +"file_id INTEGER,"
-                +"PRIMARY KEY(server_id, file_id),"
-                +"FOREIGN KEY(server_id) REFERENCES server(id),"
-                +"FOREIGN KEY(file_id) REFERENCES file(id))");
-         */
+
         db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
                 + "file_id INTEGER,"
                 + "localpath TEXT,"
@@ -456,6 +446,28 @@ public class MetaData {
         cur.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    public void deleteFile(String filename)
+    {
+        db.beginTransaction();
+        Cursor cur = db.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{filename});
+        cur.moveToFirst();
+        int fid = cur.getInt(cur.getColumnIndex("id"));
+        cur.close();
+
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM files WHERE id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+
+        stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
     }
 
     public void removeLocalFile(int fid, String local) {
