@@ -3,6 +3,7 @@ package com.scar.android.Activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,8 +24,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.scar.R;
+import com.scar.android.FileSaveUtil;
+import com.scar.android.MetaData;
 import com.scar.android.ScarFile;
 import com.scar.android.Server;
 import com.scar.android.Session;
@@ -42,6 +46,7 @@ import scar.IServer;
  */
 public class MetaFile extends Activity {
     ScarFile selected = null;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -79,50 +84,7 @@ public class MetaFile extends Activity {
                 //delete local filepath
                 newDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //change the way to get the file to be similar to open's way of getting it
-                        String file = getIntent().getStringExtra("nameOfFile");
-                        byte[] key = Session.meta.getFileKey(file);
-
-                        Server[] servers = Session.meta.getAllActiveServers();
-                        IServer actual[] = toActualServers(servers);
-                        ChunkMeta[] chunks = Session.meta.getChunks(file);
-
-
-                        DeleteFile deleter = new DeleteFile(file, key, actual, 100);
-                        try{
-                            deleter.delete(chunks);
-                        }catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                        ArrayList<Integer> chunkIds = Session.meta.deleteFile(file);
-                        System.out.println(chunkIds);
-                        Session.metaBackground.deleteFile(chunkIds);
-
-                        /*
-                        //File f = new File(Uri.parse(file).toString());
-                        File f = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
-                        f.delete();
-                        Session.meta.removeLocalFile(selected.id, f.toString());
-                        selected = Session.meta.getFile(selected.getFilename());
-                        MetaFile.this.refreshFileList();
-
-                        //1st option is only this one line of code, is very smilar to the open line of code
-                        getContentResolver().delete(Uri.fromFile(f), null, null);    //scans the cache
-
-                        //2nd option will go to a method below
-                        //deleteFileFromMediaStore(getContentResolver(), f); //should delete from media store, I have the Uri set to internal, but it may be external depending on where its saved
-
-                        /*3rd option, the first argument this, is not working because it is not context, may work but last resort because it must be fixed
-                        MediaScannerConnection.scanFile(this, new String[] { Environment.getExternalStorageDirectory().toString() }, null, new MediaScannerConnection.OnScanCompletedListener() {
-                            public void onScanCompleted(String path, Uri uri)
-                            {
-                                Log.i("ExternalStorage", "Scanned " + path + ":");
-                                Log.i("ExternalStorage", "-> uri=" + uri);
-                            }
-                        });*/
-
+                        delete();
                     }
                 });
                 newDialog.setNegativeButton("Close",
@@ -134,22 +96,82 @@ public class MetaFile extends Activity {
                             }
                         });
 
-                /*
-                //opens the file
-                newDialog.setNeutralButton("Open", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        File file = new File( (String) parent.getItemAtPosition(position) );    //gets the file at the filepath
-                        intent.setDataAndType( Uri.fromFile( file ), "image/*" );
-                        startActivity( intent );    //starts gallary activity with local path Uri
-                    }
-                });
-                */
-
                 newDialog.show();
             }
 
+            public void delete()
+            {
+                progressDialog = new ProgressDialog(MetaFile.this);
+                progressDialog.setTitle("Retrieve File");
+                progressDialog.setMessage("Working");
+                progressDialog.setIndeterminate(false);
+                progressDialog.setCancelable(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setMax(100);
+                progressDialog.setProgress(0);
+                progressDialog.show();
+
+                new Thread() {
+                    public void update(final int per) {
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                updateProgress(per);
+                            }
+                        });
+                    }
+
+                    public void run() {
+                        String file = getIntent().getStringExtra("nameOfFile");
+                        byte[] key = Session.meta.getFileKey(file);
+                        Server[] servers = Session.meta.getAllActiveServers();
+                        IServer actual[] = toActualServers(servers);
+                        ChunkMeta[] chunks = Session.meta.getChunks(file);
+                        update(20);
+
+                        DeleteFile deleter = new DeleteFile(file, key, actual, 100);
+                        try {
+                            deleter.delete(chunks);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            update(-1);
+                        }
+
+                        update(80);
+                        ArrayList<Integer> chunkIds = Session.meta.deleteFile(file);
+                        Session.metaBackground.deleteFile(chunkIds);
+                        update(100);
+                    }
+                }.start();
+            }
+
+            public void updateProgress(int what) {
+                AlertDialog.Builder newDialog = new AlertDialog.Builder(MetaFile.this);
+                if(what == -1) {
+                    progressDialog.setProgress(0);
+                    progressDialog.dismiss();
+                    newDialog.setTitle("Failed to delete file");
+                    newDialog.setMessage("The file has failed to be delete");
+                    newDialog.setNegativeButton("Close",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    newDialog.show();
+                } else if(what<100)
+                {
+                    progressDialog.setProgress(what);
+                }
+                else
+                {
+                    progressDialog.setProgress(100);
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "File successfully deleted!", Toast.LENGTH_SHORT).show();
+                    MetaFile.this.finish();
+                }
+            }
             public void onNothingSelected(AdapterView<?> parent) {
 
             }

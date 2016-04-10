@@ -104,7 +104,6 @@ public class Retrieve extends Fragment {
 
 	public void retrieveFile()
 	{
-		
 			progressDialog = new ProgressDialog(this.getActivity());
 			progressDialog.setTitle("Retrieve File");
 			progressDialog.setMessage("Working");
@@ -131,7 +130,6 @@ public class Retrieve extends Fragment {
 						//Gets the servers for the given filename
 						Server[] servers = Session.meta.getAllActiveServers();
 						ChunkMeta[] chunks = Session.meta.getChunks(getFilename());
-						Log.d("azz", "run: name of file: " + getFilename());
 
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
 						if(servers == null || servers.length == 0) {
@@ -201,7 +199,7 @@ public class Retrieve extends Fragment {
 		getDoc.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (getFilename().equals("")) {
+				if (getFilename().length() == 0) {
 					AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give the file name.");

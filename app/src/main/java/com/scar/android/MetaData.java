@@ -463,7 +463,7 @@ public class MetaData {
         stmt.executeUpdateDelete();
         stmt.close();
 
-        cur = db.rawQuery("SELECT chunk_id FROM chunks_private WHERE chunk_id = " + fid, null);
+        cur = db.rawQuery("SELECT chunk_id FROM chunks_private WHERE file_id = " + fid, null);
         cur.moveToFirst();
         ArrayList<Integer> chunkHolder = new ArrayList<Integer>();
         while(!cur.isAfterLast())

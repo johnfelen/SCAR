@@ -200,6 +200,8 @@ public class MainActivity extends FragmentActivity {
         else if(item.getItemId() == R.id.action_clean) {
             //TODO: remove when no longer needed for testing
             Session.meta.clean();
+            if(Session.metaBackground !=null)
+            Session.metaBackground.clean();
             return true;
         }
 
