@@ -10,8 +10,13 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -25,6 +30,7 @@ import com.scar.android.Session;
 import java.util.HashSet;
 
 import scar.ChunkMeta;
+import scar.ChunkMetaPub;
 
 /**
  * Created by Spencer on 3/30/2016.
@@ -36,6 +42,7 @@ public class Background extends Service
         super();
     }
     public MetaDataB meta;
+    public Intent intent;
 
     public IBinder onBind(Intent intent)
     {
@@ -45,11 +52,14 @@ public class Background extends Service
     public Context context = this;
     public Handler handler = null;
     public static Runnable runnable = null;
+    private Messenger messageHandler;
 
     public void onCreate()
     {
         super.onCreate();
         meta = new MetaDataB(this, "PublicDatabase");
+        Bundle extras = intent.getExtras();
+        messageHandler = (Messenger) extras.get("MESSENGER");
 
         handler = new Handler();
         runnable = new Runnable() {
@@ -57,15 +67,15 @@ public class Background extends Service
                 //Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
                 Session.metaBackground = meta;
 
-                ChunkMeta[] allChunks = meta.getChunks();
+                ChunkMetaPub[] allChunks = meta.getChunks();
                 Server[] allServers = meta.getAllServerInfo();
-                HashSet<ChunkMeta> relocate = new HashSet<ChunkMeta>();
+                HashSet<ChunkMetaPub> relocate = new HashSet<ChunkMetaPub>();
                 int numServers = allServers.length;
                 int threshold = Integer.MAX_VALUE;
 
                 for(int i = 0; i < allChunks.length; i++)
                 {
-                    ChunkMeta current = allChunks[i];
+                    ChunkMetaPub current = allChunks[i];
                     if(relocate.contains(current))
                     {
                         continue;
@@ -79,6 +89,7 @@ public class Background extends Service
                 if(relocate.size() > threshold)
                 {
                     Notify();
+                    sendMessage(relocate);
                 }
 
                 handler.postDelayed(runnable, 30000000); //basically disabling background runner
@@ -91,6 +102,17 @@ public class Background extends Service
 
     }
 
+    public void sendMessage(HashSet<ChunkMetaPub> chunks)
+    {
+        Message message = Message.obtain();
+        message.obj = chunks;
+
+        try {
+            messageHandler.send(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void Notify()
     {
@@ -139,6 +161,7 @@ public class Background extends Service
 
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        this.intent = intent;
         return START_STICKY;
     }
 

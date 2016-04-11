@@ -179,36 +179,6 @@ public class MetaFile extends Activity {
 
         //sets the serverlist listview in metafile
         lst = (ListView) findViewById( R.id.server_list );
-
-        /*
-        lst.setAdapter(new ArrayAdapter<Server>(this, R.layout.server_item, null){ //Session.meta.getChunks(nameOfFile)) {
-            public View getView(int position, View view, ViewGroup parent) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View ret = inflater.inflate(R.layout.server_item, parent, false);
-
-                TextView name = (TextView) ret.findViewById(R.id.si_name);
-                ImageView stat = (ImageView) ret.findViewById(R.id.si_status);
-
-                Server srv = getItem(position);
-                name.setText(srv.label.toCharArray(), 0, srv.label.length());
-                switch (srv.getStatus(MetaFile.this)) {
-                    case Server.ONLINE:
-                        stat.setImageResource(android.R.drawable.button_onoff_indicator_on);
-                        break;
-                    case Server.OFFLINE:
-                        stat.setImageResource(android.R.drawable.button_onoff_indicator_off);
-                        break;
-                    case Server.DISABLED:
-                        stat.setImageResource(android.R.drawable.ic_delete);
-                        break;
-                }
-
-
-                return ret;
-            }
-        });
-        lst.setClickable(false);
-    */
     }
 
     public void refreshFileList() {

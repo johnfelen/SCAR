@@ -398,6 +398,33 @@ public class MetaData {
         db.endTransaction();
     }
 
+    public ChunkMeta relocate(ChunkMetaPub chunk)
+    {
+        db.beginTransaction();
+        Cursor cur = db.rawQuery("SELECT * FROM chunks_private WHERE chunk_id = " + chunk.chunkID, null);
+        cur.moveToFirst();
+
+        String name = cur.getString(cur.getColumnIndex("name"));
+        ChunkMeta relocated = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                                        cur.getColumnIndex("virtual"),
+                                        cur.getColumnIndex("virtual"));
+       cur.close();
+
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_public WHERE name = ?");
+        stmt.bindLong(1, name);
+        stmt.executeUpdateDelete();
+        stmt.close();
+
+        stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        return relocated;
+    }
+
     public void newFile(String fn, byte[] key) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ?, ?)");

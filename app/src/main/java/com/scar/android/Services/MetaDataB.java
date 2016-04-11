@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import scar.ChunkMeta;
+import scar.ChunkMetaPub;
 
 
 /**
@@ -60,7 +61,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         db.execSQL("CREATE TABLE IF NOT EXISTS chunks_public ("
                 +"virtual_id INTEGER,"
                 +"physical_id INTEGER,"
-                +"chunk_id INTEGER," //chunk id
+                +"chunk_id INTEGER,"
                 +"PRIMARY KEY(chunk_id),"
                 +"FOREIGN KEY(physical_id) REFERENCES servers(id))");
 
@@ -112,19 +113,19 @@ public class MetaDataB extends SQLiteOpenHelper{
         db.endTransaction();
     }
 
-    public ChunkMeta[] getChunks()
+    public ChunkMetaPub[] getChunks()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cur = db.rawQuery("SELECT virtual_id, physical_id "
+        Cursor cur = db.rawQuery("SELECT * "
                 +"FROM chunks_public", null);
 
-        ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
+        ChunkMetaPub[] chunks = new ChunkMetaPub[cur.getCount()];
         cur.moveToFirst();
 
         int i = 0;
         while(!cur.isAfterLast())
         {
-            chunks[i++] = new ChunkMeta("empty",
+            chunks[i++] = new ChunkMetaPub(cur.getColumnIndex("chunk_id"),
                     (int)cur.getLong(cur.getColumnIndex("virtual_id")),
                     (int)cur.getLong(cur.getColumnIndex("physical_id")));
             cur.moveToNext();

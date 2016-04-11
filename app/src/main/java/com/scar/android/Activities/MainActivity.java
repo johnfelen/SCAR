@@ -11,6 +11,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +38,11 @@ import com.scar.android.Services.BackgroundReceiver;
 import com.scar.android.Session;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import scar.ChunkMeta;
+import scar.ChunkMetaPub;
 
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;
@@ -44,6 +51,7 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
     private boolean backgroundHasNotBeenSet = true;
+    public static Handler messageHandler = new MessageHandler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +104,7 @@ public class MainActivity extends FragmentActivity {
         });
 
         Intent backgrounder = new Intent(this, Background.class);
+        backgrounder.putExtra("MESSENGER", new Messenger(messageHandler));
         startService(backgrounder);
     }
 
@@ -214,4 +223,21 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onOptionsItemSelected(item);
 	}
+
+    public static class MessageHandler extends Handler
+    {
+        @Override
+        public void handleMessage(Message message)
+        {
+            HashSet<ChunkMetaPub> chunks = (HashSet<ChunkMetaPub>) message.obj;
+            Iterator iterator = chunks.iterator();
+            while(iterator.hasNext())
+            {
+                //add progress bar probs
+                //relocate
+            }
+
+        }
+    }
+
 }
