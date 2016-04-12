@@ -1,6 +1,7 @@
 package com.scar.android.Activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -33,6 +34,7 @@ import com.scar.android.Fragments.Files;
 import com.scar.android.Fragments.Retrieve;
 import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
+import com.scar.android.Server;
 import com.scar.android.Services.Background;
 import com.scar.android.Services.BackgroundReceiver;
 import com.scar.android.Session;
@@ -43,6 +45,7 @@ import java.util.Iterator;
 
 import scar.ChunkMeta;
 import scar.ChunkMetaPub;
+import scar.IServer;
 
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;
@@ -230,14 +233,9 @@ public class MainActivity extends FragmentActivity {
         public void handleMessage(Message message)
         {
             HashSet<ChunkMetaPub> chunks = (HashSet<ChunkMetaPub>) message.obj;
-            Iterator iterator = chunks.iterator();
-            while(iterator.hasNext())
-            {
-                //add progress bar probs
-                //relocate
-            }
-
         }
+
     }
+
 
 }

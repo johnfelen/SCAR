@@ -404,19 +404,24 @@ public class MetaData {
         Cursor cur = db.rawQuery("SELECT * FROM chunks_private WHERE chunk_id = " + chunk.chunkID, null);
         cur.moveToFirst();
 
-        String name = cur.getString(cur.getColumnIndex("name"));
+        int fid = cur.getColumnIndex("file_id");
+        int cID = cur.getColumnIndex("chunk_id");
         ChunkMeta relocated = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
                                         cur.getColumnIndex("virtual"),
                                         cur.getColumnIndex("virtual"));
        cur.close();
 
-        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_public WHERE name = ?");
-        stmt.bindLong(1, name);
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE name = ?");
+        stmt.bindString(1, relocated.name);
         stmt.executeUpdateDelete();
         stmt.close();
 
-        stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
+        stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name, chunk_id) VALUES (?, ?, ?, ?, ?)");
         stmt.bindLong(1, fid);
+        stmt.bindLong(2, relocated.virtual);
+        stmt.bindLong(3, relocated.physical);
+        stmt.bindString(4, relocated.name);
+        stmt.bindLong(5, cID);
         stmt.executeUpdateDelete();
         stmt.close();
         db.setTransactionSuccessful();

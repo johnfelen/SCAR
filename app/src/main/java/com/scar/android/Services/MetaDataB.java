@@ -135,6 +135,25 @@ public class MetaDataB extends SQLiteOpenHelper{
         return chunks;
     }
 
+    public void relocate(ChunkMetaPub chunk)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_public WHERE chunk_id = ?");
+        stmt.bindLong(1, chunk.chunkID);
+        stmt.executeUpdateDelete();
+        stmt.close();
+
+        stmt = db.compileStatement("INSERT INTO chunks_private(virtual_id, physical_id, chunk_id) VALUES (?, ?, ?)");
+        stmt.bindLong(1, chunk.virtual);
+        stmt.bindLong(2, chunk.virtual);
+        stmt.bindLong(3, chunk.chunkID);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     //not sure what to do about this method since we do not have username/password
     private Server[] collectServers(Cursor cur) {
         Server servers[] = new Server[cur.getCount()];
