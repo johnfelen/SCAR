@@ -3,9 +3,12 @@ package com.scar.android.Activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -54,12 +57,12 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
     private boolean backgroundHasNotBeenSet = true;
-    public static Handler messageHandler = new MessageHandler();
+    public Activity act = this;
+    public Handler messageHandler = new MessageHandler(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         final ActionBar actionBar = getActionBar();
@@ -153,7 +156,7 @@ public class MainActivity extends FragmentActivity {
         //access database for this stuff below
         long currentTimeStamp = new Date().getTime();
         System.out.println("background start time: " + backgroundStartTime );
-        System.out.println( "Current: " + currentTimeStamp );
+        System.out.println("Current: " + currentTimeStamp);
         //Check if Session is valid before continuing, 300000 is 5 minutes
 
         if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() )
@@ -230,12 +233,118 @@ public class MainActivity extends FragmentActivity {
     public static class MessageHandler extends Handler
     {
         @Override
-        public void handleMessage(Message message)
-        {
+        public void handleMessage(Message message) {
             HashSet<ChunkMetaPub> chunks = (HashSet<ChunkMetaPub>) message.obj;
+            relocateChunks(chunks);
+        }
+        Activity act = null;
+        public MessageHandler(Activity act)
+        {
+           this.act = act;
         }
 
-    }
+            private ProgressDialog progressDialog;
+            public void relocateChunks(final HashSet<ChunkMetaPub> chunks)
+            {
+                progressDialog = new ProgressDialog(act);
+                progressDialog.setTitle("Relocating Chunks");
+                progressDialog.setMessage("Working");
+                progressDialog.setIndeterminate(false);
+                progressDialog.setCancelable(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setMax(100);
+                progressDialog.setProgress(0);
+                progressDialog.show();
+                new Thread()
+                {
+                    public void update(final int per) {
+                        act.runOnUiThread(new Runnable() {
+                            public void run() {
+                                updateProgress(per);
+                            }
+                        });
+                    }
 
+                    public void run() {
+                        double total = chunks.size();
+                        Iterator iterator = chunks.iterator();
+                        Server[] servers = Session.meta.getAllActiveServers();
+
+                        if (servers == null || servers.length == 0)
+                        {
+                            update(-1);
+                        }
+
+                        IServer[] actualServers = toActualServers(servers);
+                        update(10);
+                        double count = 0;
+                        while (iterator.hasNext())
+                        {
+                            ChunkMetaPub current = (ChunkMetaPub) iterator.next();
+                            double percentage = count / total;
+                            update((int) percentage);
+                            if (actualServers.length > current.virtual)
+                            {
+
+                                IServer used = actualServers[current.physical];
+
+                                ChunkMeta changed = Session.meta.relocate(current);
+                                Session.metaBackground.relocate(current);
+                                byte[] data = used.getData(changed.name);
+
+                                used.deleteFile(changed.name);
+
+                                IServer destination = actualServers[current.virtual];
+                                destination.storeData(changed.name, data);
+                            }
+
+                        }
+                        update(100);
+                    }
+                }.start();
+
+            }
+        private IServer[] toActualServers(Server srvs[])
+        {
+            IServer[] ret = new IServer[srvs.length];
+            int i = 0;
+
+            for(Server srv : srvs)
+            {
+                ret[i++] = srv.getActual(act);
+            }
+
+
+            return ret;
+        }
+
+
+        public void updateProgress(int what) {
+            AlertDialog.Builder newDialog = new AlertDialog.Builder(act);
+            if(what == -1) {
+                progressDialog.setProgress(0);
+                progressDialog.dismiss();
+                newDialog.setTitle("Failed to relocate all chunk");
+                newDialog.setMessage("The chunks have failed to be moved");
+                newDialog.setNegativeButton("Close",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                newDialog.show();
+
+            } else if(what<100)
+            {
+                progressDialog.setProgress(what);
+            }
+            else
+            {
+                progressDialog.setProgress(100);
+                progressDialog.dismiss();
+            }
+        }
+    }
 
 }
