@@ -57,8 +57,13 @@ public class Background extends Service
     public void onCreate()
     {
         super.onCreate();
+        intent = new Intent(this, Background.class);
+        if(intent == null)
+        Log.d("TAG", "MESSENGER inent is null! ");
         meta = new MetaDataB(this, "PublicDatabase");
         Bundle extras = intent.getExtras();
+        if(extras == null)
+            Log.d("TAG", "MESSENGER extras is null! ");
         messageHandler = (Messenger) extras.get("MESSENGER");
 
         handler = new Handler();
