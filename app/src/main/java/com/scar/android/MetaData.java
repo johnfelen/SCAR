@@ -14,6 +14,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+
 import scar.DerivedKeyGen;
 import scar.Encryption;
 import scar.IServer;
@@ -89,19 +90,21 @@ public class MetaData {
     public MetaData(Activity act, String dbnm, String key) {
         dbname = dbnm;
         File dbf = act.getDatabasePath(dbname);
-        db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+        setDB newDB=new setDB(act,dbf,key);
+        db=newDB.getDb();
+        //db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
         //Setup tables if needed
         db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
-                    +"id INTEGER,"
-                    +"status INTEGER,"
-                    +"type INTEGER,"
-                    +"label TEXT,"
-                    +"hostname TEXT,"
-                    +"port TEXT,"
-                    +"username BLOB,"
-                    +"password BLOB,"
-                    +"PRIMARY KEY(id),"
-                    +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
+                +"id INTEGER,"
+                +"status INTEGER,"
+                +"type INTEGER,"
+                +"label TEXT,"
+                +"hostname TEXT,"
+                +"port TEXT,"
+                +"username BLOB,"
+                +"password BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
@@ -126,7 +129,10 @@ public class MetaData {
                 + "PRIMARY KEY(file_id, localpath),"
                 + "FOREIGN KEY(file_id) REFERENCES file(id))");
     }
-
+    //public SQLiteDatabase setDB(Activity act,File DBName,String key)
+    //{
+    //    return SQLiteDatabase.openDatabase(DBName.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+    //}
     /* sets up sqlcipher to work properly
      */
     public static void init(Activity act) {
@@ -408,8 +414,8 @@ public class MetaData {
         int cID = cur.getColumnIndex("chunk_id");
         ChunkMeta relocated = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
                                         cur.getColumnIndex("virtual"),
-                                        cur.getColumnIndex("virtual"));
-       cur.close();
+                cur.getColumnIndex("virtual"));
+        cur.close();
 
         SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE name = ?");
         stmt.bindString(1, relocated.name);

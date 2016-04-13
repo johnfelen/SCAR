@@ -64,6 +64,31 @@ public class ServerTests {
         assertEquals(newServer.pass,secondByte);
     }
 
+    @Test
+    public void serverBundleTest()
+    {
+        int one=1;
+        int two=2;
+        int three=3;
+        String first="Test1";
+        String second="Test2";
+        String third="Test3";
+        byte[] firstByte=new byte[20];
+        byte[] secondByte=new byte[20];
+
+        Server newServer=new Server(one,two,three,first,second,third,firstByte,secondByte);
+        Bundle newBundle=new Bundle(newServer.bundle());
+        Server bundleServer=new Server(newBundle);
+        assertEquals(newServer.id,one);
+        assertEquals(newServer.type, two);
+        assertEquals(newServer.status, three);
+        assertTrue(newServer.label.equals(first));
+        assertTrue(newServer.hostname.equals(second));
+        assertTrue(newServer.port.equals(third));
+        assertEquals(newServer.uname, firstByte);
+        assertEquals(newServer.pass,secondByte);
+    }
+
     /*@Test
     public void testServerStatus()
     {

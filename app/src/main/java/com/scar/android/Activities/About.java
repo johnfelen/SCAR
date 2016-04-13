@@ -17,7 +17,7 @@ public class About extends Activity {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-		setContentView(R.layout.about_layout);
+        setContentView(R.layout.about_layout);
 
         //change the color of the actionbar
         final ActionBar actionBar = getActionBar();
