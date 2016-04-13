@@ -2,14 +2,10 @@ package com.scar.android.Activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,16 +17,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.widget.Button;
-import android.widget.TabHost;
 import android.view.*;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.scar.R;
 import com.scar.android.Fragments.Files;
@@ -39,7 +30,6 @@ import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
 import com.scar.android.Server;
 import com.scar.android.Services.Background;
-import com.scar.android.Services.BackgroundReceiver;
 import com.scar.android.Session;
 
 import java.util.Date;
@@ -111,9 +101,7 @@ public class MainActivity extends FragmentActivity {
 
         Context con = getApplicationContext();
         Intent backgrounder = new Intent(con, Background.class);
-        //Bundle bund = new Messenger(messageHandler);
         backgrounder.putExtra("MESSENGER", new Messenger(messageHandler));
-        backgrounder.putExtra("dummy", "test");
         con.startService(backgrounder);
     }
 
@@ -320,7 +308,6 @@ public class MainActivity extends FragmentActivity {
 
             return ret;
         }
-
 
         public void updateProgress(int what) {
             AlertDialog.Builder newDialog = new AlertDialog.Builder(act);

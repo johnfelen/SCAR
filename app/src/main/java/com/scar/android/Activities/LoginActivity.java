@@ -72,25 +72,14 @@ public class LoginActivity extends Activity
                         } else {
                             Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + minutes + " minutes and " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
                         }
-                        new CountDownTimer(remaining, 1000) {
-                            public void onTick(long millisUntilFinished) {
-                                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-                                System.out.println("seconds remaining: " + millisUntilFinished / 1000);
-                            }
 
-                            public void onFinish() {
-                                //  mTextField.setText("done!");
-                                System.out.println("DONE!");
-                                Session.unlock();
-                            }
-                        }.start();
                     }
                 }
                 if (!Session.isLocked()) {
                     MetaData meta = MetaData.load(LoginActivity.this, getPassword());
                     if (meta != null) {
                         //If successful open session
-                        Session.init(meta, getPassword().getBytes());
+                        Session.init(meta, getPassword().getBytes(), LoginActivity.this);
                         //Return from this activity
                         LoginActivity.this.finish();
                     } else {
@@ -101,8 +90,9 @@ public class LoginActivity extends Activity
                         } else {
                             Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " tries remaining.", Toast.LENGTH_SHORT).show();
                         }
-                        if (tries > 3) {
+                        if (tries > 4) {
                             Session.setLocked();
+                            tries = 0;
                         }
                     }
                 }

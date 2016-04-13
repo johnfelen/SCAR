@@ -1,5 +1,6 @@
 package com.scar.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -20,10 +21,11 @@ public class Session
     public static Lock lock;
 
 
-    public static void init(MetaData data, byte[] pas)
+    public static void init(MetaData data, byte[] pas, Activity act)
     {
         meta = data;
         password = pas;
+        metaBackground = new MetaDataB(act, "PublicDatabase");
     }
 
     public static void makeLock(Context con)

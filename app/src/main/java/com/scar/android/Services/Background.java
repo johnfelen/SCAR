@@ -1,8 +1,6 @@
 package com.scar.android.Services;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,12 +13,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Parcel;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.android.scar.R;
 import com.scar.android.Activities.MainActivity;
@@ -29,7 +23,6 @@ import com.scar.android.Session;
 
 import java.util.HashSet;
 
-import scar.ChunkMeta;
 import scar.ChunkMetaPub;
 
 /**
@@ -53,38 +46,26 @@ public class Background extends Service
     public Handler handler = null;
     public static Runnable runnable = null;
     private Messenger messageHandler;
+    HashSet<ChunkMetaPub> relocate;
 
     public void onCreate()
     {
         super.onCreate();
-        intent = new Intent(this, Background.class);
-
         meta = new MetaDataB(this, "PublicDatabase");
 
-        String test = intent.getStringExtra("dummy");
-        Log.d("tag", "onCreate: " + test);
-        Bundle extras = intent.getExtras();
-        if(extras == null)
-        {
-            Log.d("TAG", "MESSENGER extras is null! ");
-        }
-        else
-        {
-            messageHandler = (Messenger) extras.get("MESSENGER");
-        }
-
+        relocate = new HashSet<ChunkMetaPub>();
 
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
-                //Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
                 Session.metaBackground = meta;
 
                 ChunkMetaPub[] allChunks = meta.getChunks();
                 Server[] allServers = meta.getAllServerInfo();
-                HashSet<ChunkMetaPub> relocate = new HashSet<ChunkMetaPub>();
+
                 int numServers = allServers.length;
-                int threshold = Integer.MAX_VALUE;
+                //relocate when a quarter of the chunks can be relocated
+                double threshold = 0.25 * allChunks.length;
 
                 for(int i = 0; i < allChunks.length; i++)
                 {
@@ -103,16 +84,12 @@ public class Background extends Service
                 {
                     Notify();
                     sendMessage(relocate);
+                    relocate = new HashSet<ChunkMetaPub>();
                 }
 
-                handler.postDelayed(runnable, 30000000); //basically disabling background runner
+                handler.postDelayed(runnable, 3600000); //runs every hour
             }
         };
-
-        handler.postDelayed(runnable, 15000);
-
-
-
     }
 
     public void sendMessage(HashSet<ChunkMetaPub> chunks)
@@ -130,9 +107,8 @@ public class Background extends Service
     public void Notify()
     {
         Intent resultIntent = new Intent(context, MainActivity.class);
-        //sendAlert();
 
-        //when notification is clicked user is sent to main activitys
+        //when notification is clicked user is sent to main activity
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
@@ -145,7 +121,7 @@ public class Background extends Service
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(69, mBuilder.build());
+        mNotificationManager.notify(1, mBuilder.build());
     }
 
     public void onDestroy()
@@ -153,28 +129,12 @@ public class Background extends Service
         meta.close();
     }
 
-    public void sendAlert()
-    {
-        new AlertDialog.Builder(context)
-                .setTitle("Delete entry")
-                .setMessage("Are you sure you want to delete this entry?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // continue with delete
-                    }
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         this.intent = intent;
+        Bundle extras = intent.getExtras();
+        messageHandler = (Messenger) extras.get("MESSENGER");
+
         return START_STICKY;
     }
 
@@ -185,8 +145,4 @@ public class Background extends Service
                     .setContentTitle("Scar Files")
                     .setContentText("You have Scar files that need relocating. Please log in and take care of this")
                     .setPriority(2);
-
-
-
-
 }

@@ -45,7 +45,6 @@ public class MetaDataB extends SQLiteOpenHelper{
 
     }
     public void onCreate(SQLiteDatabase db){
-
                 db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
                 +"id INTEGER,"
                 +"status INTEGER,"
@@ -72,10 +71,7 @@ public class MetaDataB extends SQLiteOpenHelper{
     public void clean() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("delete from local_files");
-        stmt.execute();
-        stmt.close();
-        stmt = db.compileStatement("delete from chunks_public");
+        SQLiteStatement stmt = db.compileStatement("delete from chunks_public");
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from servers");
@@ -83,20 +79,8 @@ public class MetaDataB extends SQLiteOpenHelper{
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
-    }
-
-    /*
-    public void close() {
         db.close();
     }
-    */
-    //Ensures the MetaData is still valid
-    /*
-    public boolean valid()
-    {
-        return db != null && dbname != null;
-    }
-    */
 
     public void deleteFile(ArrayList<Integer> chunkIds)
     {
@@ -111,6 +95,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         }
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 
     public ChunkMetaPub[] getChunks()
@@ -132,6 +117,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         }
 
         cur.close();
+        db.close();
         return chunks;
     }
 
@@ -152,6 +138,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 
     //not sure what to do about this method since we do not have username/password
@@ -181,6 +168,7 @@ public class MetaDataB extends SQLiteOpenHelper{
     {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("select * from servers", null);
+        db.close();
         return collectServers(cur);
     }
 
@@ -200,6 +188,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         }
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 
     public void newServer(int type, String host, String port) {
@@ -216,6 +205,7 @@ public class MetaDataB extends SQLiteOpenHelper{
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 
     public void updateServer(Server srv) {
@@ -239,5 +229,6 @@ public class MetaDataB extends SQLiteOpenHelper{
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+        db.close();
     }
 }
