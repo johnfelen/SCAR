@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.android.scar.R;
 import com.scar.android.MetaData;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 // Activity for handling password creation
 // Activity Flow:
 //  Main -> Login -> CreatePassword
@@ -28,8 +31,8 @@ public class CreatePassword extends Activity {
         actionBar.setTitle("SCAR");
 
         Button create = (Button)findViewById(R.id.cp_create),
-               generate =(Button) findViewById(R.id.cp_generate),
-               cancel = (Button)findViewById(R.id.cp_cancel);
+                generate =(Button) findViewById(R.id.cp_generate),
+                cancel = (Button)findViewById(R.id.cp_cancel);
 
         cancel.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -50,7 +53,8 @@ public class CreatePassword extends Activity {
             @Override
             public void onClick(View v) {
                 //Checks given password against MetaData
-                if (getPassword().length() >= 1) //TODO: change back to 32 after demo
+                String checker = checkPassword(getPassword());
+                if(checker.equals(""))
                     if (MetaData.load( CreatePassword.this, getPassword()) == null) {
                         //New Password
                         MetaData.create( CreatePassword.this, getPassword());
@@ -61,7 +65,7 @@ public class CreatePassword extends Activity {
                         Toast.makeText(getApplicationContext(), "The password already exists", Toast.LENGTH_SHORT).show();
                     }
                 else
-                    Toast.makeText(getApplicationContext(), "The password must be at least 32 characters long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), checker, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -69,5 +73,41 @@ public class CreatePassword extends Activity {
 
     private String getPassword() {
         return ((EditText)findViewById(R.id.cp_pass)).getText().toString();
+    }
+
+    private String checkPassword(String password)
+    {
+        String returnString = "";
+        String pattern = "!|@|$|\\%|\\^|\\&|\\*|";
+        String lowerCase = "[a-z]";
+        String upperCase = "[A-Z]";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(password);
+        if(password.length() < 12)
+        {
+            returnString.concat("Your password must be at least 12 characters. ");
+        }
+        if(!m.find())
+        {
+            returnString.concat("Your password must contain at least one of the following symbols: +" +
+                    "!, @, $, %, ^, &, or *. ");
+        }
+
+        r = Pattern.compile((lowerCase));
+        m = r.matcher(password);
+        if(!m.find())
+        {
+            returnString.concat("Your password must contain a lower case letter. ");
+        }
+
+        r = Pattern.compile(upperCase);
+        m = r.matcher(password);
+        if(!m.find())
+        {
+            returnString.concat("Your password must contain an upper case letter. ");
+        }
+
+        return returnString;
+
     }
 }
