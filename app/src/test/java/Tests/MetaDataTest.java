@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Luke on 4/12/2016.
  */
-public class RemoveTest {
+public class MetaDataTest {
 
     //@Mock
     Activity act=Mockito.mock(Activity.class);
@@ -75,15 +75,37 @@ public class RemoveTest {
         when(mockDB.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{dbname})).thenReturn(mockCursor);
         when(mockDB.rawQuery("select * from local_files where file_id = " + k + " and localpath = ?",
                 new String[]{dbname})).thenReturn(mockCursor);
+
     }
 
     //Ensures MetaData is created and valid
     @Test
-    public void testMeatCreate()
+    public void testMetaCreate()
     {
-
         newMeta= new MetaData(act,dbname,key,newDB);
         assertTrue(newMeta.valid());
     }
 
+    //NOT SURE IF THIS IS CORRECT!!!!!
+    //THOUGHT THAT THIS SHOULD MAKE THE VALID STATEMENT RETURN FALSE
+    //WHEN .close IS CALLED
+    @Test
+    public void testMetaDataClear()
+    {
+        newMeta= new MetaData(act,dbname,key,newDB);
+        assertTrue(newMeta.valid());
+        newMeta.close();
+        assertTrue(newMeta.valid());
+    }
+
+    //ensures that if a null string is entered into the metadata dbname
+    //that it is not valid
+    @Test
+    public void testMetaDataNotValid()
+    {
+        String failure = null;
+        newMeta= new MetaData(act,failure,key,newDB);
+        assertFalse(newMeta.valid());
+
+    }
 }

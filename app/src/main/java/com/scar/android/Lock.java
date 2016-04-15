@@ -16,6 +16,7 @@ public class Lock extends SQLiteOpenHelper {
 
     private final String dbname;
 
+
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS lock ("
