@@ -129,6 +129,49 @@ public class MetaData {
                 + "PRIMARY KEY(file_id, localpath),"
                 + "FOREIGN KEY(file_id) REFERENCES file(id))");
     }
+
+    public MetaData(Activity act, String dbnm, String key,setDB newDB) {
+        dbname = dbnm;
+        File dbf = act.getDatabasePath(dbname);
+        //newDB=new setDB(act,dbf,key);
+        db=newDB.getDb();
+        //db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+        //Setup tables if needed
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
+                +"id INTEGER,"
+                +"status INTEGER,"
+                +"type INTEGER,"
+                +"label TEXT,"
+                +"hostname TEXT,"
+                +"port TEXT,"
+                +"username BLOB,"
+                +"password BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS files ("
+                +"id INTEGER,"
+                +"name TEXT,"
+                +"key BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
+        //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
+        //separate database for scheduler without some of the fields.
+        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_private ("
+                +"file_id INTEGER,"
+                +"name TEXT,"
+                +"virtual_id INTEGER,"
+                +"physical_id INTEGER,"
+                +"chunk_id INTEGER," //chunk id
+                +"PRIMARY KEY(chunk_id),"
+                +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
+                +"FOREIGN KEY(file_id) REFERENCES files(id))");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
+                + "file_id INTEGER,"
+                + "localpath TEXT,"
+                + "PRIMARY KEY(file_id, localpath),"
+                + "FOREIGN KEY(file_id) REFERENCES file(id))");
+    }
     //public SQLiteDatabase setDB(Activity act,File DBName,String key)
     //{
     //    return SQLiteDatabase.openDatabase(DBName.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);

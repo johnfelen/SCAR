@@ -55,6 +55,9 @@ public class RemoveTest {
     //@Mock
     setDB newDB=Mockito.mock(setDB.class);
 
+    @Mock
+    int k;
+
     String key="123456";
     String dbname="DataBase";
 
@@ -68,13 +71,19 @@ public class RemoveTest {
         when(mockDB.compileStatement("delete from local_files where file_id = ? and localpath = ?")).thenReturn(mockStatement);
         when(mockDB.rawQuery("select * from local_files where file_id = " + fid + " and localpath = ?",
                 new String[]{local})).thenReturn(mockCursor);
+        when(mockDB.rawQuery("select * from servers where status = " + 0, null)).thenReturn(mockCursor);
+        when(mockDB.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{dbname})).thenReturn(mockCursor);
+        when(mockDB.rawQuery("select * from local_files where file_id = " + k + " and localpath = ?",
+                new String[]{dbname})).thenReturn(mockCursor);
     }
 
+    //Ensures MetaData is created and valid
     @Test
-    public void testRemove()
+    public void testMeatCreate()
     {
-        //newMeta= new MetaData(act,dbname,key);
-        assertEquals(1,1);
+
+        newMeta= new MetaData(act,dbname,key,newDB);
+        assertTrue(newMeta.valid());
     }
 
 }
