@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.scar.android.Lock;
 import com.scar.android.Server;
 import com.scar.android.Session;
+import com.scar.android.setDB;
 
 import net.sqlcipher.database.SQLiteOpenHelper;
 
@@ -17,7 +18,10 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 //import org.junit.Test;
+import java.io.File;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,17 +33,57 @@ public class ServerTests {
     @Mock
     Context context;
 
+    //android.database.sqlite.SQLiteDatabase
     @Mock
     SQLiteOpenHelper sql;
 
     @Mock
-    SQLiteDatabase mockDB;
+    net.sqlcipher.database.SQLiteDatabase mockDB=Mockito.mock(net.sqlcipher.database.SQLiteDatabase.class);
+
+    @Mock
+    net.sqlcipher.Cursor mockCursor;
 
     @Mock
     Cursor curs;
 
     @Mock
-    Activity mockActivity;
+    Activity act;
+
+    File mockFile= Mockito.mock(File.class);
+
+    @Mock
+    int k;
+    //@Mock
+    setDB newDB=Mockito.mock(setDB.class);
+
+    @Mock
+    int fid;
+
+    net.sqlcipher.database.SQLiteStatement mockStatement=Mockito.mock(net.sqlcipher.database.SQLiteStatement.class);
+
+    @Mock
+    String local;
+
+    String key="123456";
+    String dbname="DataBase";
+
+    @Before
+    public void setup()
+    {
+        //newMeta= new MetaData(act,dbname,key);
+        //when(act.getDatabasePath(dbname)).thenReturn(mockFile);
+        when(newDB.getDb()).thenReturn(mockDB);
+        when(mockDB.compileStatement("delete from local_files where file_id = ? and localpath = ?")).thenReturn(mockStatement);
+        when(mockDB.rawQuery("select * from local_files where file_id = " + fid + " and localpath = ?",
+                new String[]{local})).thenReturn(mockCursor);
+        when(mockDB.rawQuery("select * from servers where status = " + 0, null)).thenReturn(mockCursor);
+        when(mockDB.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{dbname})).thenReturn(mockCursor);
+        when(mockDB.rawQuery("select * from local_files where file_id = " + k + " and localpath = ?",
+                new String[]{dbname})).thenReturn(mockCursor);
+
+    }
+
+
 
     @Test
     public void testServerInitializingManual()
@@ -102,7 +146,7 @@ public class ServerTests {
         byte[] secondByte=new byte[20];
 
         Server newServer=new Server(one,two,three,first,second,third,firstByte,secondByte);
-        int online=newServer.getStatus(mockActivity);
+        int online=newServer.getStatus(act);
         assertEquals(online,1);
     }*/
 
