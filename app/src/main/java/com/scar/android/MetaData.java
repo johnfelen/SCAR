@@ -130,6 +130,7 @@ public class MetaData {
                 + "FOREIGN KEY(file_id) REFERENCES file(id))");
     }
 
+    //constructor just used for unit testing
     public MetaData(Activity act, String dbnm, String key,setDB newDB) {
         dbname = dbnm;
         File dbf = act.getDatabasePath(dbname);

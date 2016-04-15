@@ -47,6 +47,7 @@ public class Background extends Service
     public static Runnable runnable = null;
     private Messenger messageHandler;
     HashSet<ChunkMetaPub> relocate;
+    public boolean chunksReady = false;
 
     public void onCreate()
     {
@@ -83,8 +84,12 @@ public class Background extends Service
                 if(relocate.size() > threshold)
                 {
                     Notify();
-                    sendMessage(relocate);
-                    relocate = new HashSet<ChunkMetaPub>();
+                    if (Session.valid())
+                    {
+                        sendMessage(relocate);
+                        relocate = new HashSet<ChunkMetaPub>();
+                        chunksReady = false;
+                    }
                 }
 
                 handler.postDelayed(runnable, 3600000); //runs every hour
@@ -132,8 +137,17 @@ public class Background extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         this.intent = intent;
-        Bundle extras = intent.getExtras();
-        messageHandler = (Messenger) extras.get("MESSENGER");
+        if(Session.valid())
+        {
+            Bundle extras = intent.getExtras();
+            messageHandler = (Messenger) extras.get("MESSENGER");
+            if(chunksReady)
+            {
+                sendMessage(relocate);
+                relocate = new HashSet<ChunkMetaPub>();
+                chunksReady = false;
+            }
+        }
 
         return START_STICKY;
     }

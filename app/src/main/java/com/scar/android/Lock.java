@@ -55,7 +55,6 @@ public class Lock extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         if(db == null)
         {
-            Log.d("fuck", "isLocked: DB IS NULL");
             return false;
         }
         Cursor cur = db.rawQuery("select status from lock", null);

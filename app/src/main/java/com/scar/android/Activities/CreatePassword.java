@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,18 +79,19 @@ public class CreatePassword extends Activity {
     private String checkPassword(String password)
     {
         String returnString = "";
-        String pattern = "!|@|$|\\%|\\^|\\&|\\*|";
+        String pattern = "!|@|\\$|%|\\^|&|\\*";
         String lowerCase = "[a-z]";
         String upperCase = "[A-Z]";
+        String numbers = "[0-9]";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(password);
         if(password.length() < 12)
         {
-            returnString.concat("Your password must be at least 12 characters. ");
+            returnString = returnString.concat("Your password must be at least 12 characters. ");
         }
         if(!m.find())
         {
-            returnString.concat("Your password must contain at least one of the following symbols: +" +
+            returnString = returnString.concat("Your password must contain at least one of the following symbols: +" +
                     "!, @, $, %, ^, &, or *. ");
         }
 
@@ -97,17 +99,22 @@ public class CreatePassword extends Activity {
         m = r.matcher(password);
         if(!m.find())
         {
-            returnString.concat("Your password must contain a lower case letter. ");
+            returnString = returnString.concat("Your password must contain a lower case letter. ");
         }
 
         r = Pattern.compile(upperCase);
         m = r.matcher(password);
         if(!m.find())
         {
-            returnString.concat("Your password must contain an upper case letter. ");
+            returnString = returnString.concat("Your password must contain an upper case letter. ");
         }
 
+        r = Pattern.compile(numbers);
+        m = r.matcher(password);
+        if(!m.find())
+        {
+            returnString = returnString.concat("Your password must contain a digit 0-9. ");
+        }
         return returnString;
-
     }
 }
