@@ -22,7 +22,17 @@ public class ScarFileTest {
         assertTrue(tester.equals(name));
     }
 
-    public void setLocalPathsTest()
+    @Test
+    public void ScarIDTest()
+    {
+        int id=1;
+        String name="Scar";
+        ScarFile newScar=new ScarFile(id,name);
+        assertTrue(newScar.id==(id));
+    }
+
+    @Test
+    public void getLocalPathsTest()
     {
         String tester1="s";
         String tester2="New";
