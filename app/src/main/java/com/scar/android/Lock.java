@@ -15,7 +15,7 @@ import java.util.Date;
 public class Lock extends SQLiteOpenHelper {
 
     private final String dbname;
-
+    public final int timer=300000;
 
     public void onCreate(SQLiteDatabase db) {
 
@@ -73,7 +73,7 @@ public class Lock extends SQLiteOpenHelper {
         else
         {
             long timeElapsed = elapsed();
-            if(timeElapsed < 300000) //5 minutes
+            if(timeElapsed < timer) //5 minutes
             {
                 return true;
             }

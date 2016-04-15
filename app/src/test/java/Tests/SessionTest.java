@@ -98,6 +98,7 @@ public class SessionTest {
         assertFalse(Session.valid());
     }
 
+    //Makes sure that after the lock is made it is not locked automatically
     @Test
     public void sessionSetLockTest()
     {
@@ -105,7 +106,18 @@ public class SessionTest {
         byte[] password={1,0,1,0,1,0,2,0,3};
         Session.init(newMeta, password, act);
         Session.makeLock(mockContext);
+        assertFalse(Session.isLocked());
+    }
 
+    //Ensures that the timer is set to be 5 minutes
+    @Test
+    public void sessionTestLock()
+    {
+        newMeta= new MetaData(act,dbname,key,newDB);
+        byte[] password={1,0,1,0,1,0,2,0,3};
+        Session.init(newMeta, password, act);
+        Session.makeLock(mockContext);
+        assertEquals(Session.lock.timer,300000);
     }
 
 }
