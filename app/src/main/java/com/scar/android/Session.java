@@ -33,7 +33,8 @@ public class Session
         lock = new Lock(con, "locker");
     }
 
-    public static void setLocked(){
+    public static void setLocked()
+    {
         lock.setLock();
     }
 
@@ -45,6 +46,16 @@ public class Session
     public static boolean isLocked()
     {
         return lock.isLocked();
+    }
+
+    public static int getTries()
+    {
+        return lock.getTries();
+    }
+
+    public static void setTries(int tries)
+    {
+        lock.setTries(tries);
     }
 
     public static void unlock()

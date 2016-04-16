@@ -19,9 +19,10 @@ public class Lock extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS lock ("
-                +"status INTEGER, "
-                +"timeLocked INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS locks ("
+                + "status INTEGER, "
+                + "tries INTEGER,"
+                + "timeLocked INTEGER)");
     }
 
     @Override
@@ -38,17 +39,52 @@ public class Lock extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("delete from lock");
+        SQLiteStatement stmt = db.compileStatement("delete from locks");
         stmt.execute();
         stmt.close();
 
-        stmt = db.compileStatement("INSERT INTO lock(status, timeLocked) VALUES (1, ?)");
+        stmt = db.compileStatement("INSERT INTO locks(status, timeLocked, tries) VALUES (1, ?, ?)");
         stmt.bindLong(1, new Date().getTime());
+        stmt.bindLong(2, 0);
         stmt.executeInsert();
         stmt.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
 
+    public void setTries(int tries)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        SQLiteStatement stmt = db.compileStatement("delete from locks");
+        stmt.execute();
+        stmt.close();
+
+        stmt = db.compileStatement("INSERT INTO locks(status, tries) VALUES (1, ?)");
+        stmt.bindLong(1, tries);
+        stmt.execute();
+        stmt.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public int getTries()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        onCreate(db);
+        db = this.getWritableDatabase();
+
+        Cursor cur = db.rawQuery("select tries from locks", null);
+        if(cur == null || cur.getCount() == 0)
+        {
+            return 0;
+        }
+
+        cur.moveToFirst();
+        int tries = cur.getInt(cur.getColumnIndex("tries"));
+        cur.close();
+        return tries;
     }
 
     public boolean isLocked()
@@ -58,7 +94,7 @@ public class Lock extends SQLiteOpenHelper {
         {
             return false;
         }
-        Cursor cur = db.rawQuery("select status from lock", null);
+        Cursor cur = db.rawQuery("select status from locks", null);
         if(cur == null || cur.getCount() == 0)
         {
             return false;
@@ -89,7 +125,7 @@ public class Lock extends SQLiteOpenHelper {
     public long elapsed()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cur = db.rawQuery("select timeLocked from lock", null);
+        Cursor cur = db.rawQuery("select timeLocked from locks", null);
         if(cur == null)
         {
             return 0;
@@ -104,9 +140,14 @@ public class Lock extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
-        SQLiteStatement stmt = db.compileStatement("delete from lock");
+        SQLiteStatement stmt = db.compileStatement("delete from locks");
         stmt.execute();
         stmt.close();
+
+        stmt = db.compileStatement("INSERT INTO locks(status, tries) VALUES(1, 0)");
+        stmt.execute();
+        stmt.close();
+
         db.setTransactionSuccessful();
         db.endTransaction();
     }

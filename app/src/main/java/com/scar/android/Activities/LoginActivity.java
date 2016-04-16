@@ -2,31 +2,21 @@ package com.scar.android.Activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.scar.android.MetaData;
 import com.android.scar.R;
-import com.scar.android.Services.Background;
 import com.scar.android.Session;
-
-import java.util.Date;
 
 // Activity for handling login
 // Activity Flow:
@@ -48,6 +38,7 @@ public class LoginActivity extends Activity
         MetaData.init(this);
         //open data base here!
         Session.makeLock(getApplicationContext());
+        tries = Session.getTries();
 
         Button
                 login = (Button)findViewById(R.id.login),
@@ -60,7 +51,7 @@ public class LoginActivity extends Activity
                 if (Session.isLocked()) {
                     tries = 0;
                     long remaining = Session.remaining();
-                    if (remaining < 0) {
+                    if (remaining <= 0) {
                         Session.unlock();
                     } else {
                         long minutes = remaining / 60000;
@@ -75,7 +66,8 @@ public class LoginActivity extends Activity
 
                     }
                 }
-                if (!Session.isLocked()) {
+                if (!Session.isLocked())
+                {
                     MetaData meta = MetaData.load(LoginActivity.this, getPassword());
                     if (meta != null) {
                         //If successful open session
@@ -83,7 +75,7 @@ public class LoginActivity extends Activity
                         //Return from this activity
                         LoginActivity.this.finish();
                     } else {
-                        tries++;
+                        Session.setTries(++tries);
                         int remaining = 5 - tries;
                         if (remaining == 1) {
                             Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " try remaining.", Toast.LENGTH_SHORT).show();

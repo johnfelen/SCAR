@@ -39,7 +39,7 @@
  	<string name = "retrieve_pass">Enter Document Retrieval Password:</string>
 
     <string name="createpass">Create Password</string>
-    <string name="createpass_hint">A password must be at least 32 characters long.</string>
+    <string name="createpass_hint">A password must be at least 12 characters, contain a symbol !,@,$,%,^, or *, contain an uppercase letter, a lower case letter, and a digit.</string>
     <string name="createpassbutton">CREATE</string>
     <string name="generatepassbutton">GENERATE RANDOM PASSWORD</string>
     <string name="cancelbutton">CANCEL</string>

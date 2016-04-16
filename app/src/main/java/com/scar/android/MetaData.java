@@ -389,8 +389,6 @@ public class MetaData {
         return collectServers(cursor);
     }
 
-
-    //instead supply filename and return chunks rename as GETCHUNKS
     public ChunkMeta[] getChunks(String fn) {
 
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
