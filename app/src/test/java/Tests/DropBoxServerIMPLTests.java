@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Luke on 4/17/2016.
  */
-public class DropBoxTests {
+public class DropBoxServerIMPLTests {
 
     @Mock
     File file;
@@ -53,7 +53,7 @@ public class DropBoxTests {
         DropBox newDropBox= new DropBox("Test");
         String filename="Testing";
         //newDropBox.connect();
-        assertFalse(newDropBox.storeData(filename,data));
+        assertFalse(newDropBox.storeData(filename, data));
 
     }
 
