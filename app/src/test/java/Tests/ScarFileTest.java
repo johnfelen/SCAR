@@ -12,6 +12,10 @@ import static org.junit.Assert.*;
  * Created by Luke on 4/15/2016.
  */
 public class ScarFileTest {
+
+    ArrayList<String> tester=new ArrayList<String>();
+
+    //Makes sure that the scarTest is created
     @Test
     public void ScarTest()
     {
@@ -22,6 +26,8 @@ public class ScarFileTest {
         assertTrue(tester.equals(name));
     }
 
+
+    //Ensures that the ID passed in is the ID that is returned
     @Test
     public void ScarIDTest()
     {
@@ -31,33 +37,21 @@ public class ScarFileTest {
         assertTrue(newScar.id==(id));
     }
 
+    //Test to ensure that all the paths passed in are there
     @Test
     public void getLocalPathsTest()
     {
-        String tester1="s";
-        String tester2="New";
-        String tester3="Brand";
+        for(int i=0;i<500;++i)
+        {
+            tester.add(Integer.toString(i));
+        }
         int id=1;
         String name="Scar";
         ScarFile newScar=new ScarFile(id,name);
-        newScar.addLocal(tester1);
-        newScar.addLocal(tester2);
-        newScar.addLocal(tester3);
         ArrayList<String> scarArray=newScar.getLocalpaths();
         for(int i=0;i<scarArray.size();++i)
         {
-            if(i==0)
-            {
-                assertTrue(scarArray.get(i).equals(tester1));
-            }
-            else if(i==1)
-            {
-                assertTrue(scarArray.get(i).equals(tester2));
-            }
-            else if(i==2)
-            {
-                assertTrue(scarArray.get(i).equals(tester3));
-            }
+            assertTrue(scarArray.get(i).equals(tester.get(i)));
         }
 
     }
