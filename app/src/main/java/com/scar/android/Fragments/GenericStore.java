@@ -18,7 +18,7 @@ public class GenericStore extends Fragment implements StoreFrag {
     }
 
     public void onStart() {
-        //super.onStart();
+        super.onStart();
         Bundle bun = getArguments();
         type = bun.getInt("type");
         setLabel(bun.getString("lbl"));
