@@ -76,7 +76,14 @@ public class Store extends Fragment {
 			progressDialog.dismiss();
 			Toast.makeText(getActivity().getApplicationContext(), "An error has occurred during file upload", Toast.LENGTH_LONG).show();
 			reset();
-		} else if(what<100) {
+		}
+		else if(what == -2)
+		{
+			progressDialog.dismiss();
+			Toast.makeText(getActivity().getApplicationContext(), "You do not have any servers online.", Toast.LENGTH_LONG).show();
+			reset();
+		}
+		else if(what<100) {
 			progressDialog.setProgress(what);
 		} else {
 			progressDialog.setProgress(100);
@@ -202,8 +209,8 @@ public class Store extends Fragment {
 					Server[] currentServers = Session.meta.getAllActiveServers();
 					currentServers = testServers(currentServers);
 					if(currentServers == null || currentServers.length == 0) {
-						//Not enough servers
-						update(-1);
+						//No servers
+						update(-2);
 						return;
 					}
 					actualServers = toActualServers(currentServers);
