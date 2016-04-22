@@ -76,7 +76,25 @@ public class Retrieve extends Fragment {
                     });
             newDialog.show();
             reset();
-        } else if(what<100)
+        }
+		else if(what == -2)
+		{
+			progressDialog.setProgress(0);
+			progressDialog.dismiss();
+			newDialog.setTitle("Failed to retrieve file");
+			newDialog.setMessage("No servers are connected");
+			newDialog.setNegativeButton("Close",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+											int which) {
+							dialog.dismiss();
+						}
+					});
+			newDialog.show();
+			reset();
+		}
+		else if(what<100)
         {
             progressDialog.setProgress(what);
         }
@@ -134,7 +152,7 @@ public class Retrieve extends Fragment {
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
 						if(servers == null || servers.length == 0) {
 							//Not enough servers
-							update(-1);
+							update(-2);
 							return;
 						}
 
