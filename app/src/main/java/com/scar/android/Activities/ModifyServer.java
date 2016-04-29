@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.android.scar.R;
+import com.scar.android.Fragments.BoxStore;
 import com.scar.android.Fragments.DropBoxStore;
 import com.scar.android.Fragments.GenericStore;
 import com.scar.android.Fragments.SQLiteStore;
@@ -112,7 +113,7 @@ public class ModifyServer extends FragmentActivity {
                 break;
             case MetaData.TYPE_GDRIVE_STORE:
                 //TODO: change this later
-                frag = new GenericStore();
+                frag = new BoxStore();
                 break;
             case MetaData.TYPE_DROPBOX_STORE:
                 frag = new DropBoxStore();

@@ -80,6 +80,7 @@ public class MetaData {
         //TYPE_LOCALFILE_STORE = 3,
         TYPE_DROPBOX_STORE = 3,
         TYPE_GDRIVE_STORE = 4,
+        TYPE_BOX_STORE = 5,
 
         STATUS_ACTIVE = 0,
         STATUS_DISABLE = 1;

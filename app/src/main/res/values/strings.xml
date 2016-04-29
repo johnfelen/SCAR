@@ -59,6 +59,7 @@
         <item>SQLite</item>
         <item>DropBox</item>
         <item>Google Drive</item>
+        <item>Box</item>
     </string-array>
     <string name="asl_servers">Server Type:</string>
     <string name="asl_label">Name:</string>
