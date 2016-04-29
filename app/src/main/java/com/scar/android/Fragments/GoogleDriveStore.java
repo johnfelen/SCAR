@@ -23,13 +23,11 @@ public class GoogleDriveStore extends Fragment implements StoreFrag, GoogleApiCl
     private int type;
     GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
-    private final String id_token;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //setup google sign-in
         GoogleSignInOptions gso= new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(id_token)
                 .requestEmail()
                 .build();
 
