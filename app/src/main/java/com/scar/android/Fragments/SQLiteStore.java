@@ -37,7 +37,7 @@ public class SQLiteStore extends Fragment implements StoreFrag{
         return ((EditText)getActivity().findViewById(R.id.as_label)).getText().toString();
     }
 
-    public String getHostName() {
+    public String getHost() {
         return ((EditText)getActivity().findViewById(R.id.as_dbname)).getText().toString();
     }
 

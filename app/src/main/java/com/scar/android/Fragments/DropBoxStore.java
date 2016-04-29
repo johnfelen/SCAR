@@ -78,7 +78,7 @@ public class DropBoxStore extends Fragment implements StoreFrag{
         return ((EditText)getActivity().findViewById(R.id.as_token)).getText().toString();
     }
 
-    public String getHostName() { return null;}
+    public String getHost() { return null;}
     public String getPort() { return null; }
     public byte[] getUsername() { return null; }
     public byte[] getPassword() { return null; }

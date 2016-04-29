@@ -37,8 +37,7 @@ public class GenericStore extends Fragment implements StoreFrag {
         return ((EditText)getActivity().findViewById(R.id.as_label)).getText().toString();
     }
 
-    @Override
-    public String getHostName() {
+    public String getHost() {
         return ((EditText)getActivity().findViewById(R.id.as_host)).getText().toString();
     }
 
