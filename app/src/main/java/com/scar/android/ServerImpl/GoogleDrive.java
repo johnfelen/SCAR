@@ -4,13 +4,10 @@ package com.scar.android.ServerImpl;
  * Created by Chris on 4/20/2016.
  */
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 
 public class GoogleDrive implements scar.IServer{
     public static final String APP_KEY="";
     public static final String APP_SECRET="";
-    private GoogleApiClient mGoogleApiClient;
 
     public void connect(){
 

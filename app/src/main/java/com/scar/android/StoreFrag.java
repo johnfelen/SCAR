@@ -4,7 +4,7 @@ package com.scar.android;
 public interface StoreFrag {
     int getType();
     String getLabel();
-    String getHost();
+    String getHostName();
     String getPort();
     byte[] getUsername();
     byte[] getPassword();

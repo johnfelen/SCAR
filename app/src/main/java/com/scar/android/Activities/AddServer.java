@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import com.android.scar.R;
 import com.scar.android.Fragments.DropBoxStore;
 import com.scar.android.Fragments.GenericStore;
+import com.scar.android.Fragments.GoogleDriveStore;
 import com.scar.android.Fragments.SQLiteStore;
 import com.scar.android.MetaData;
 import com.scar.android.StoreFrag;
@@ -50,7 +51,7 @@ public class AddServer extends FragmentActivity {
                 Intent ret = new Intent();
                 ret.putExtra("type", frag.getType());
                 ret.putExtra("lbl", frag.getLabel());
-                ret.putExtra("host", frag.getHost());
+                ret.putExtra("host", frag.getHostName());
                 ret.putExtra("port", frag.getPort());
                 ret.putExtra("uname", frag.getUsername());
                 ret.putExtra("pass", frag.getPassword());
@@ -86,7 +87,7 @@ public class AddServer extends FragmentActivity {
                 break;
             case MetaData.TYPE_GDRIVE_STORE:
                 //TODO: change this later, this will likely be a clone of DropBoxStore
-                frag = new GenericStore();
+                frag = new GoogleDriveStore();
                 break;
             case MetaData.TYPE_DROPBOX_STORE:
                 frag = new DropBoxStore();

@@ -51,7 +51,7 @@ public class ModifyServer extends FragmentActivity {
         update.setOnClickListener(new Button.OnClickListener() {
             public void onClick (View arg) {
                 srv.label = frag.getLabel();
-                srv.hostname = frag.getHost();
+                srv.hostname = frag.getHostName();
                 srv.port = frag.getPort();
                 srv.uname = frag.getUsername();
                 srv.pass = frag.getPassword();
