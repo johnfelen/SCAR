@@ -27,7 +27,9 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.box:box-android-sdk:3.0.3'
-    compile 'com.box:box-java-sdk:2.1.1'
+    compile ('com.box:box-java-sdk:2.1.1'){
+        exclude group: 'org.bouncycastle'
+    }
     compile files('libs/core-1.52.0.0.jar')
     compile files('libs/sqlcipher.jar')
     compile files('libs/scar-logic.jar')

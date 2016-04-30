@@ -118,6 +118,9 @@ public class ModifyServer extends FragmentActivity {
             case MetaData.TYPE_DROPBOX_STORE:
                 frag = new DropBoxStore();
                 break;
+            case MetaData.TYPE_BOX_STORE:
+                frag = new BoxStore();
+                break;
         }
         ((Fragment) frag).setArguments(srv.bundle());
         getSupportFragmentManager().beginTransaction().replace(R.id.ms_content, (Fragment)frag).commit();

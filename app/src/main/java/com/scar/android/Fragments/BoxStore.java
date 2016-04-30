@@ -55,11 +55,18 @@ public class BoxStore extends Fragment implements StoreFrag, BoxAuthentication.A
     private void initialize(){
         mSession = new BoxSession(getActivity());
         mSession.authenticate();
+        if(mSession.isEnabledBoxAppAuthentication()){
+            Toast.makeText(getActivity(),"Auth get!!", Toast.LENGTH_LONG).show();
+            setLabel(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).accessToken());
+            setHost(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).refreshToken());
+        }
     }
 
     @Override
     public void onRefreshed(BoxAuthentication.BoxAuthenticationInfo info) {
-
+        Toast.makeText(getActivity(),"Auth get!!", Toast.LENGTH_LONG).show();
+        setLabel(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).accessToken());
+        setHost(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).refreshToken());//
     }
 
     @Override

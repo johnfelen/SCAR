@@ -81,7 +81,7 @@ public class Box implements scar.IServer {
 
     @Override
     public int id() {
-        return 0;
+        return 5;
     }
 
     @Override
@@ -95,7 +95,9 @@ public class Box implements scar.IServer {
 
     @Override
     public void close() {
-        api.setExpires(0);
+        if(api!=null){
+            api.setExpires(1);
+        }
 
     }
 }
