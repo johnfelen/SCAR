@@ -6,14 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.scar.R;
 import com.box.androidsdk.content.BoxConfig;
 import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxSession;
+import com.scar.android.MetaData;
 import com.scar.android.StoreFrag;
 
-public class BoxStore extends Fragment implements StoreFrag {
+public class BoxStore extends Fragment implements StoreFrag, BoxAuthentication.AuthListener {
     private int type;
     BoxSession mSession = null;
 
@@ -54,6 +57,28 @@ public class BoxStore extends Fragment implements StoreFrag {
         mSession.authenticate();
     }
 
+    @Override
+    public void onRefreshed(BoxAuthentication.BoxAuthenticationInfo info) {
+
+    }
+
+    @Override
+    public void onAuthCreated(BoxAuthentication.BoxAuthenticationInfo info){
+        Toast.makeText(getActivity(),"Auth get!!", Toast.LENGTH_LONG).show();
+        setLabel(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).accessToken());
+        setHost(BoxAuthentication.getInstance().getAuthInfo(mSession.getUserId(),getActivity()).refreshToken());//
+    }
+
+    @Override
+    public void onAuthFailure(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
+        Toast.makeText(getActivity(),"Auth failure!!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLoggedOut(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
+
+    }
+
     /*
     public void onResume(){
         super.onResume();
@@ -69,17 +94,17 @@ public class BoxStore extends Fragment implements StoreFrag {
 
     @Override
     public int getType() {
-        return 0;
+        return MetaData.TYPE_BOX_STORE;
     }
 
     @Override
     public String getLabel() {
-        return null;
+        return ((EditText)getActivity().findViewById(R.id.box_tok)).getText().toString();
     }
 
     @Override
     public String getHost() {
-        return null;
+        return ((EditText)getActivity().findViewById(R.id.refresh_tok)).getText().toString();
     }
 
     @Override
@@ -99,12 +124,16 @@ public class BoxStore extends Fragment implements StoreFrag {
 
     @Override
     public void setLabel(String a) {
+        if(a!=null){
+            ((EditText)getActivity().findViewById(R.id.box_tok)).setText(a.toCharArray(),0,a.length());
+        }
 
     }
 
     @Override
     public void setHost(String a) {
-
+        if(a!=null)
+        ((EditText)getActivity().findViewById(R.id.refresh_tok)).setText(a.toCharArray(),0,a.length());
     }
 
     @Override

@@ -18,4 +18,17 @@
         android:text="Sign into Box"
         android:id="@+id/box_signin"
         android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/box_tok"
+        android:enabled="false"
+        android:focusable="false" />
+    <EditText
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/refresh_tok"
+        android:enabled="false"
+        android:focusable="false" />
 </LinearLayout>

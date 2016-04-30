@@ -3,6 +3,7 @@ package com.scar.android;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.scar.android.ServerImpl.Box;
 import com.scar.android.ServerImpl.DropBox;
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -73,6 +74,8 @@ public class Server {
             case MetaData.TYPE_DROPBOX_STORE:
                 srv = new DropBox(label);
                 break;
+            case MetaData.TYPE_BOX_STORE:
+                srv= new Box(label,hostname);
         }
         return srv;
     }
