@@ -4,9 +4,17 @@ import com.box.androidsdk.content.BoxApi;
 import com.box.androidsdk.content.BoxConfig;
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.auth.BoxAuthentication;
+import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.content.models.BoxUser;
 import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxFile;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 /**
  * Created by Chris on 4/29/2016.
@@ -35,16 +43,39 @@ public class Box implements scar.IServer {
 
     @Override
     public boolean storeData(String s, byte[] bytes) {
+        if(api!=null){
+            connect();
+
+            com.box.sdk.BoxFolder folder = com.box.sdk.BoxFolder.getRootFolder(api);
+            ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
+
+            BoxFile newfile = new BoxFile(api,s);
+            newfile.uploadVersion(byteStream);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean deleteFile(String s) {
+        if(api!=null){
+            connect();
+            BoxFile delfile = new BoxFile(api,s);
+            delfile.delete();
+            return true;
+        }
         return false;
     }
 
     @Override
     public byte[] getData(String s) {
+        if (api != null) {
+            ByteArrayOutputStream dl = new ByteArrayOutputStream();
+            BoxFile file = new BoxFile(api,s);
+            file.download(dl);
+            return dl.toByteArray();
+        }
+
         return new byte[0];
     }
 
@@ -55,7 +86,11 @@ public class Box implements scar.IServer {
 
     @Override
     public boolean getStatus() {
-        return false;
+        if(api!=null) {
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
