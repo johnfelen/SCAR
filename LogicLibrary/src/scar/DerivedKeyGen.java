@@ -1,3 +1,7 @@
+/**
+ * DerivedKeyGen is a wrapper class for Spongy Castles PKCS5S2 (PBKDF2) to generated
+ * keys derived from a password with a random salt.
+ */
 package scar;
 
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
@@ -6,16 +10,29 @@ import org.spongycastle.crypto.params.KeyParameter;
 
 //Used to generate keys from other keys
 public class DerivedKeyGen {
+  /**
+   * Salt size as number of bytes
+   */
   public static final int SALT_SIZE = 32;
+  /**
+   * Default number of iterations to run the PBKDF2 algorithm
+   */
   public static final int DEFAULT_ITER = 64000;
 
   private PKCS5S2ParametersGenerator gen;
-  
+    
+  /**
+     Initialize the PKCS5S2 generator
+  */
   public DerivedKeyGen() {
     gen = new PKCS5S2ParametersGenerator(new SHA256Digest());
   }
 
-  /* Generates a new derived key from our given key
+  /** Generates a new derived key from our given key, salt, and desired keysize
+   * @param key - original key 
+   * @param salt - generated salt for this key
+   * @param keysize - desired keysize in bytes
+   * @return a derived key of size keysize
    */
   public byte[] generateKey(byte[] key, byte[] salt, int keysize) {
     byte[] pack = generateKeyPackage(key, salt, keysize);
@@ -24,13 +41,17 @@ public class DerivedKeyGen {
     return gkey;
   }
 
-  /* Generates a new derived key from our given key 
+  /** Generates a new derived key from our given key 
    * Returns the key + generated salt
    *   ____________________
    *  | n-byte Salt        |
    *  |--------------------|
    *  | m-byte derived key |
    *  |____________________|
+   * @param key - original key 
+   * @param salt - generated salt for this key, if null a random one will be generated
+   * @param keysize - desired keysize in bytes
+   * @return A byte[] of the format specified above
    */
   public byte[] generateKeyPackage(byte[] key, byte[] salt, int keysize) {
     if(salt == null) {
@@ -47,6 +68,18 @@ public class DerivedKeyGen {
     return pack;
   }
 
+
+  /** Generates a new derived key from our given key 
+   * Returns the key + generated salt
+   *   ____________________
+   *  | n-byte Salt        |
+   *  |--------------------|
+   *  | m-byte derived key |
+   *  |____________________|
+   * @param key - original key 
+   * @param keysize - desired keysize in bytes
+   * @return A byte[] of the format specified above
+   */
   public byte[] generateKeyPackage(byte[] key, int keysize) {
     return generateKeyPackage(key, null, keysize);
   }

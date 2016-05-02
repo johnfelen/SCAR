@@ -1,3 +1,7 @@
+/**
+ * A series of old tests to test the functionality of LogicLibrary
+ * Some of these tests are outdated and not used anymore
+ */
 package scar;
 
 import org.spongycastle.util.encoders.Hex;

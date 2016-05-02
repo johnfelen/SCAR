@@ -1,3 +1,7 @@
+/**
+ * Encryption handles both the encryption and decryption of files in the SCAR system
+ * this is done via Spongy Castle using AES-GCM 256
+ */
 package scar;
 
 import java.lang.reflect.*;
@@ -8,18 +12,30 @@ import org.spongycastle.crypto.params.AEADParameters;
 
 public class Encryption
 {
+  /**
+   * IV length in bytes
+   */
   private static final int IV_LEN = 16;
+  /**
+   * MAC length in bytes
+   */
   private static final int MAC_SIZE = 16;
-  
-  //key => 32 bytes
-  //Output Format:
-  //  _________________
-  // | 16-byte IV      |
-  // |-----------------|
-  // | encrypted data  |
-  // |-----------------|
-  // | 16-byte MAC     |
-  // |_________________|
+
+  /**
+   * encrypts the given plainText with our key via AES-GCM
+   * key => 32 bytes
+   * Output Format:
+   *  _________________
+   * | 16-byte IV      |
+   * |-----------------|
+   * | encrypted data  |
+   * |-----------------|
+   * | 16-byte MAC     |
+   * |_________________|
+   * @param plainText - data to be encrypted
+   * @param key - the key for this encryption
+   * @return Binary data in the format specified above
+   */
   public byte[] encrypt( byte[] plainText, byte[] key )
   //wrapper function to encrypt
   {
@@ -43,6 +59,14 @@ public class Encryption
     return cipherText;
   }
 
+  /**
+   * Decrypts our encrypted data back into plaintext via our key
+   * via AES-GCM
+   *
+   * @param data - encrypted data
+   * @param key - key for this encrypted data
+   * @return The original plaintext given to @see Encryption#encrypt(byte[], byte[]) encrypt. This will return null if the GCM MAC check fails. 
+   */
   public byte[] decrypt( byte[] data, byte[] key )
   //wrapper function to decrypt
   {
@@ -61,6 +85,13 @@ public class Encryption
     return depad(paddedPlainText);    
   }
 
+  /**
+   * Generic execution of either encrypt or decrypt via AES-GCM
+   * @param data - input data
+   * @param key - key for this data
+   * @param IV - IV array for this data
+   * @param encrypt - true for encryption, false for decryption
+   */
   private byte[] performCrypto( byte[] data, byte[] key, byte[] IV, boolean encrypt )
   //this function will do the actual encryption and if encrypt is true then this functions encrypts,
   //false means to decrypt
@@ -93,6 +124,13 @@ public class Encryption
 
 
   //PKCS7 padding
+  /**
+   * Pads our input data to a multiple of the block size
+   * via PKCS7. The last byte in the new padded data will
+   * specify how much padding was added. 
+   * @param data - input data to be padded
+   * @return padded data array 
+   */
   private byte[] pad( byte[] data )
   //pads the data so it can be encrypted
   {
@@ -109,6 +147,11 @@ public class Encryption
     return ndat;
   }
 
+  /**
+   * Depads our input data based off how much padding was added
+   * @param data - padded input data
+   * @return original unpadded data
+   */
   private byte[] depad( byte[] data )
   //depads the data so it can be decrypted
   {

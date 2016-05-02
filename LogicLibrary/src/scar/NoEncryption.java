@@ -1,3 +1,7 @@
+/**
+ * Encryption method if no encryption on the file is desired
+ * The methods here make no changes to the input data
+ */
 package scar;
 
 

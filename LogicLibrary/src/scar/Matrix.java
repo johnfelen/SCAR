@@ -1,14 +1,28 @@
+/**
+ * Colleciton of Matrix operations needed for @see RS RS to work
+ * All operations are done in a @see GaloisField GaloisField with 2^8 elements
+ */
 package scar;
 
 public class Matrix {
   private static GaloisField field = GaloisField.getInstance();
   private int[][] matrix;
-  
+
+  /**
+   * Initialize a matrix of zeros of size rows by cols
+   * @param rows number of rows
+   * @param cols number of columns
+   */
   public Matrix(int rows, int cols) {
     //Create matrix into a [rows][cols] all to 0
     matrix = new int[rows][cols];
   }
 
+  /**
+   * Initialize a copy of another matrix in the form of a 
+   * 2d byte array
+   * @param data matrix to make copy of
+   */
   public Matrix(int[][] data) {
     //Initialize matrix based on data given [data.length][data[0].length]
     matrix = new int[data.length][data[0].length];
@@ -18,6 +32,11 @@ public class Matrix {
         matrix[i][j] = (data[i][j] & 0x000000FF);
   }
 
+  /**
+   * Generates the identity matrix of a specified size
+   * @param n number or rows/columns
+   * @return Identity matrix of size NxN 
+   */
   public static Matrix identity(int n) {
     //Make a N x N identity matrix
     //Identity = (1 0 0 ... 0_n
@@ -44,12 +63,19 @@ public class Matrix {
     return newMat;
   }
 
+  /**
+   * Makes a clone of the current matrix
+   * @return a clone of this matrix
+   */
   public Matrix clone() {
     //Returns a _copy_ Matrix of this matrix
     Matrix temp = new Matrix(this.getData());
     return temp;
   }
 
+  /**
+   * @return this matrix's data in a 2d byte-array
+   */
   public int[][] getData() {
     //Return a copy of the matrix data
     int[][] temp = new int [rows()][cols()];
@@ -61,21 +87,41 @@ public class Matrix {
     return temp;
   }
 
+  /**
+   * Set a specified cell in a matrix
+   * @param row given row
+   * @param col given column
+   * @param val new value for [row][col]
+   */
   public void setCell(int row, int col, int val) {
     //Sets the cell at [row][col] to val
     this.matrix[row][col] = val;
   }
 
+  /**
+   * @param row given row
+   * @param col given column
+   * @return returns the cell at a given row and column
+   */
   public int cell(int row, int col) {
     //returns val at [row][col]
     return this.matrix[row][col];
   }
 
+  /**
+   * @param row given row
+   * @return a row vector for the given row from this matrix
+   */
   public int[] row(int row) {
     //returns the row @ [row][]
     return this.matrix[row];
   }
 
+  /**
+   * Swaps two rows in this matrix
+   * @param r1 first row to swap
+   * @param r2 second row to swap with r1
+   */
   public void swapRows(int r1, int r2) {
     //Swap row r1 into r2 and r2 into r1
     int[] temp = this.matrix[r1];
@@ -87,6 +133,11 @@ public class Matrix {
   public int cols() { return matrix[0].length; }
 
   //Matrix Operations
+  /**
+   * Multiplies two matrices together via matrix multiplication
+   * @param other Other matrix to multiply against
+   * @return the result of this matrix multipled by other
+   */
   public Matrix multiply(Matrix other) {
     //Multiply this matrix against another matrix
     //Algoritm:
@@ -118,6 +169,10 @@ public class Matrix {
     return new Matrix(c);
   }
 
+  /**
+   * @return the inverse of the current matrix via Gauss-Jordan Elimination
+   * @throws InvalidInputException if no inverse can be found
+   */
   public Matrix inverse() throws InvalidInputException {
     //Returns the inverse of this matrix via Gauss-Jordan Elimination (US | ID) -> (ID | US^-1)
     // Only works if rows = cols (ie: square matrix)

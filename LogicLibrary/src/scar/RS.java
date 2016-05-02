@@ -1,3 +1,7 @@
+/**
+ * RS handles the RS algorithm for encoding our data into chunks
+ * and decoding chunks back into a single data stream
+ */
 package scar;
 
 
@@ -5,8 +9,14 @@ public class RS {
   private static GaloisField field = GaloisField.getInstance();
   static final long PRIME = 257;
 
-  //See: Figure 22, page 82 from ROMR: Robust Multicast Routing In Mobile Ad-HOC Networks 
-  // for more details
+  /**
+   * Makes the encoding matrix for RS
+   * See: Figure 22, page 82 from ROMR: Robust Multicast Routing In Mobile Ad-HOC Networks 
+   *  for more details
+   * @param k k
+   * @param n n
+   * @return the encoding matrix
+   */
   public Matrix makeEncodingMatrix(final int k, final int n) {
     int a[][], b[][], e[][];
     int i,j;
@@ -55,7 +65,13 @@ public class RS {
     
     return new Matrix(e);
   }
-  
+
+  /**
+   * Transforms a data byte array into a K x chunk_len matrix
+   * @param data data byte array
+   * @param k k
+   * @return k x chunk_len matrix
+   */
   //Transforms a byte array into a K x Size Matrix
   public Matrix makeDataMatrix(byte[] data, int k) {
     int size = data.length / k;
@@ -71,6 +87,11 @@ public class RS {
     return new Matrix(a);
   }
 
+  /**
+   * Transforms a matrix into a 2d-byte array
+   * @param m input matrix
+   * @return a 2d byte array representation of the matrix
+   */
   //Tranforms Rows x Cols matrix into byte[Rows][Cols]
   public byte[][] matrixTo2DBytes(Matrix m) {
     int 
@@ -90,6 +111,11 @@ public class RS {
     return data;
   }
 
+  /**
+   * Transforms a matrix into a single data stream
+   * @param m input matrix
+   * @return a 1d byte array representation of the matrix
+   */ 
   //Tranforms Rows x Cols matrix into byte[Rows*Cols]
   public byte[] matrixToBytes(Matrix m) {
     int 
@@ -109,6 +135,11 @@ public class RS {
     return data;
   }
 
+
+  /**
+   * Reverses the order of the matrix rows
+   * @param m input matrix
+   */
   //Reverses the order of the matrix rows
   // 1 -> n
   //...
@@ -120,6 +151,13 @@ public class RS {
     }
   }
 
+  /**
+   * Given a seleciton of rows makes a new matrix with only
+   * those rows in it, in the original order found
+   * @param m input matrix
+   * @param rows_ids array of rows to select from
+   * @return new matrix with only rows from m that were in rows_ids
+   */
   //Creates a new matrix made up of rows selects from an existing matrix
   public Matrix selectRowsFromMatrix(Matrix m, int row_ids[]) {
     int v[][] = new int[row_ids.length][];
@@ -131,7 +169,13 @@ public class RS {
     
     return new Matrix(v);
   }
-  
+
+  /**
+   * Transforms an array of chunks into a matrix
+   * @param chunks our input chunks
+   * @param k k
+   * @param A matrix of the chunk data
+   */
   //Make a matrix from k chunks of data
   public Matrix makeMatrixFromChunks(Chunk chunks[], int k) {
     int a[][] = new int[k][chunks[0].data.length];
@@ -145,6 +189,14 @@ public class RS {
     return new Matrix(a);
   }
 
+  /**
+   * Perfoms the encoding process of RS
+   * EncodedChunks = EncodeMatrix * DataMatrix
+   * @param data input data byte array
+   * @param k k
+   * @param n n
+   * @return our n x chunk_len encoded chunks
+   */
   //Algorithm: EncodedChunks = EncodeMatrix * DataMatrix
   public byte[][] encode(byte[] data, int k, int n) { 
     Matrix encoder = makeEncodingMatrix(k,n);
@@ -155,15 +207,21 @@ public class RS {
     return matrixTo2DBytes(ret); 
   }
 
-  
-  ///Algorithm: 
-  // 1. Take K chunks in order of their index
-  // 2. Make Encoding matrix [encode]
-  // 3. Select the rows in Encoding that correspond to our K chunks
-  // 4. Make K chunks into Matrix [data]
-  // 5. reverse encode and data
-  // 6. multiply encode and data 
-  // 7. convert result to byte array
+
+  /**
+   * Algorithm: 
+   * 1. Take K chunks in order of their index
+   * 2. Make Encoding matrix [encode]
+   * 3. Select the rows in Encoding that correspond to our K chunks
+   * 4. Make K chunks into Matrix [data]
+   * 5. reverse encode and data
+   * 6. multiply encode and data 
+   * 7. convert result to byte array
+   * @param chunks input chunk array
+   * @param k k
+   * @param n n
+   * @return original byte array fed into encode.
+   */
   public byte[] decode(Chunk[] chunks, int k, int n) {
     int i, rows[];
     

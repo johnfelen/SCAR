@@ -1,3 +1,7 @@
+/**
+ * Wrapper for Spongy Castles SP800SecureRandom method for generating
+ * a random sequence of bytes
+ */
 package scar;
 
 import org.spongycastle.crypto.prng.*;
@@ -12,8 +16,15 @@ public class RndKeyGen {
     SP800SecureRandomBuilder rndbuild = new SP800SecureRandomBuilder();
     rnd = rndbuild.buildHMAC(new HMac(new SHA256Digest()), null, false);
   }
-  
+
+  /**
+   * generates a byte array with 'bytes' random bytes in it
+   * @param bytes number of random bytes desired
+   * @return array of random bytes generated
+   */
   public byte[] genBytes(int bytes) {
+    //TODO: This can fail if bytes is too high
+    // need to come up with method to get around that
     byte[] ret = new byte[bytes];
     rnd.nextBytes(ret);
     return ret;

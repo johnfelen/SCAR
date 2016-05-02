@@ -1,3 +1,7 @@
+/**
+ * Standard interface for servers to download/upload chunks to.
+ * All servers givne to GetFile/StoreFile must implement this interface
+ */
 package scar;
 
 //Abstract away the actual storage server implementation/driver.

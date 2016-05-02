@@ -1,3 +1,8 @@
+/**
+ * Chunk stores all the data and information related to a chunk during GetFile/StoreFile
+ * for use in Downloading/Uploading the chunk itself and for reassembly information
+ * during RS decode
+ */
 package scar;
   
 //Only used for decoding to give indices for blocks given

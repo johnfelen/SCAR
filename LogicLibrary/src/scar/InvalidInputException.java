@@ -1,3 +1,6 @@
+/**
+ * Generic exception for invalid inputs into LogicLibrary
+ */
 package scar;
 
 //Used on the front end to help distinguish issues

@@ -1,3 +1,6 @@
+/**
+ * StoreFile has the combined logic to take a file and store it across our servers in chunk form
+ */
 package scar;
 
 import java.util.*;
@@ -6,8 +9,18 @@ import java.math.*;
 import org.spongycastle.util.encoders.Hex;
 
 public class StoreFile {
+  /**
+   * maximum number of threads in our java threadpool for uploading tasks
+   */
   public static final int allowed_threads = 8;
+  /**
+   * number of garbage chunks added
+   */
   public static final int added_garbage = 50;
+  /**
+   * maximum number of virtual servers, meant to be higher than 
+   * the number of physical servers for a typical user
+   */
   public static final int virtual_servers = 51;
   
   private IServer servers[];
@@ -22,6 +35,16 @@ public class StoreFile {
     enc;
   private byte[] key;
 
+  /**
+   * Intialize the StoreFile request 
+   * @param data original data to be stored
+   * @param fn filename
+   * @param password key
+   * @param k k
+   * @param n n
+   * @param srvs all known sevrers in the system
+   * @param enc whether or not to encrypt before doing RS
+   */
   public StoreFile(byte[] data, String fn, byte[] password,
                    int k, int n, IServer srvs[],
                    boolean enc) {
@@ -35,7 +58,13 @@ public class StoreFile {
     this.enc = enc;
   }
 
-  //Encode 'val' into 'arr' starting at location 'n'
+  /**
+   * Encode 'val' into 'arr' starting at location 'n'
+   * Value is taken as a 4-byte int
+   * @param arr byte array
+   * @param n offset
+   * @param val value to insert
+   */
   public void eint(byte[] arr, int n, int val) {
     arr[n]   = (byte)((val & 0x000000FF) >> 0);
     arr[n+1] = (byte)((val & 0x0000FF00) >> 8);
@@ -43,6 +72,12 @@ public class StoreFile {
     arr[n+3] = (byte)((val & 0xFF000000) >> 24);
   }
 
+  /**
+   * Concatenates two byte arrays together
+   * @param a first input array
+   * @param b second input array
+   * @return concatenated byte array of a b
+   */
   public byte[] concate(byte[] a, byte[] b) {
     //Returns [a1,...,a_n,b1,...,b_n]
     byte[] ret = new byte[a.length+b.length];
@@ -51,6 +86,11 @@ public class StoreFile {
     return ret;
   }
 
+  /**
+   * generates and inserts garbage chunks into our
+   * chunk array to confuse attackers
+   * @param good our good valid chunks
+   */
   private byte[][] add_garbage(byte[][] good) {
     RndKeyGen rnd = new RndKeyGen();
     byte[][] bad = new byte[good.length+added_garbage][];
@@ -63,7 +103,19 @@ public class StoreFile {
     return bad;
   }
 
-  // Idea: Do a round robin of the servers on the chunks
+  
+  /**
+   * Genererates the distribution of chunks given the hashchain
+   * Basic Algorithm
+   *  1. make a list of chunk ids
+   *  2. pick from this list with removal via current hash in hashchain
+   *  3. assign this chunk to the current virtual server
+   *  4. increment to next virtual server modulo the maximum virtual servers
+   * Basically a round robin distribution of chunks given by the hashchain as far as what
+   * chunk goes to what server
+   * @param hc hashchain
+   * @return array of chunks with their server information set and indexing set
+   */
   private Chunk[] distribute_chunks(byte[][] chunk_data, byte[][] hc) {
     ArrayList<Integer> id = new ArrayList<Integer>(chunk_data.length);
     ArrayList<byte[]> tmp = new ArrayList<byte[]>(chunk_data.length);
@@ -94,6 +146,19 @@ public class StoreFile {
   }
   
   // Prepare data for RS, Apply RS, Apply Encryption, Store blocks properly
+  /**
+   * Actual combined logic to take a file from a byte array and store it as chunks across the servers
+   * we gave as input
+   * The flow of this is as followed:
+   *  1. Encrypt our input data if desired
+   *  2. Pad the encrypted data for RS
+   *  3. Perform RS on the data to get our N chunks
+   *  4. Compute the hashchain for the N chunks
+   *  5. Compute the distribution of chunks to servers
+   *  6. Shuffle the chunks
+   *  7. Execute the uploads of the chunks to their servers
+   * @return An array of chunk meta corresponding to all the chunks we uploaded
+   */ 
   public ChunkMeta[] store(){
     //1. Encrypt the data
     //Output format:
