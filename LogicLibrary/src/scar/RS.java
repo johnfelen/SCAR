@@ -1,16 +1,16 @@
+package scar;
+
+
 /**
  * RS handles the RS algorithm for encoding our data into chunks
  * and decoding chunks back into a single data stream
  */
-package scar;
-
-
 public class RS {
   private static GaloisField field = GaloisField.getInstance();
   static final long PRIME = 257;
 
   /**
-   * Makes the encoding matrix for RS
+   * Makes the encoding matrix for RS<br>
    * See: Figure 22, page 82 from ROMR: Robust Multicast Routing In Mobile Ad-HOC Networks 
    *  for more details
    * @param k k
@@ -155,7 +155,7 @@ public class RS {
    * Given a seleciton of rows makes a new matrix with only
    * those rows in it, in the original order found
    * @param m input matrix
-   * @param rows_ids array of rows to select from
+   * @param row_ids array of rows to select from
    * @return new matrix with only rows from m that were in rows_ids
    */
   //Creates a new matrix made up of rows selects from an existing matrix
@@ -174,7 +174,7 @@ public class RS {
    * Transforms an array of chunks into a matrix
    * @param chunks our input chunks
    * @param k k
-   * @param A matrix of the chunk data
+   * @return matrix representation of our chunks 
    */
   //Make a matrix from k chunks of data
   public Matrix makeMatrixFromChunks(Chunk chunks[], int k) {
@@ -209,14 +209,14 @@ public class RS {
 
 
   /**
-   * Algorithm: 
-   * 1. Take K chunks in order of their index
-   * 2. Make Encoding matrix [encode]
-   * 3. Select the rows in Encoding that correspond to our K chunks
-   * 4. Make K chunks into Matrix [data]
-   * 5. reverse encode and data
-   * 6. multiply encode and data 
-   * 7. convert result to byte array
+   * Algorithm: <br>
+   * 1. Take K chunks in order of their index<br>
+   * 2. Make Encoding matrix [encode]<br>
+   * 3. Select the rows in Encoding that correspond to our K chunks<br>
+   * 4. Make K chunks into Matrix [data]<br>
+   * 5. reverse encode and data<br>
+   * 6. multiply encode and data <br>
+   * 7. convert result to byte array<br>
    * @param chunks input chunk array
    * @param k k
    * @param n n

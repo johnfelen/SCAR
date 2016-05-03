@@ -1,10 +1,3 @@
-/**
- * Hash contains any hash-related functionality to the application
- * this includes:
- *  - hashchainning
- *  - generating HMACs
- *  - verifying HMACs
- */
 package scar;
 
 import java.security.MessageDigest;
@@ -15,6 +8,13 @@ import org.spongycastle.crypto.params.KeyParameter;
 import java.util.ArrayList;
 
 
+/**
+ * Hash contains any hash-related functionality to the application
+ * this includes:
+ *  - hashchainning
+ *  - generating HMACs
+ *  - verifying HMACs
+ */
 public class Hash {
   private GeneralDigest digest;
   private HMac hmac;
@@ -58,12 +58,12 @@ public class Hash {
   }
 
   /**
-   * Input Data format:
-   *   _______________________
-   *  | n-byte HMAC           |
-   *  |-----------------------|
-   *  |  Data...              |
-   *  |_______________________|
+   * Input Data format:<br>
+   *   _______________________<br>
+   *  | n-byte HMAC           |<br>
+   *  |-----------------------|<br>
+   *  |  Data...              |<br>
+   *  |_______________________|<br>
    * Removes the expected n-byte HMAC, computes HMAC of Data
    * and verifies it against what we expected.
    * Returns null if corrupted, otherwise the data itself

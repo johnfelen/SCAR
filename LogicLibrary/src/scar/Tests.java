@@ -1,13 +1,13 @@
-/**
- * A series of old tests to test the functionality of LogicLibrary
- * Some of these tests are outdated and not used anymore
- */
 package scar;
 
 import org.spongycastle.util.encoders.Hex;
 import java.util.*;
 import java.io.*;
 
+/**
+ * A series of old tests to test the functionality of LogicLibrary
+ * Some of these tests are outdated and not used anymore
+ */
 public class Tests {
   private static GaloisField field = GaloisField.getInstance();
   public static void createfile(String fn, byte[] data) {

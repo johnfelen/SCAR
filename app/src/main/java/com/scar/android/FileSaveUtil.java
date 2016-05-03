@@ -8,8 +8,8 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 
-/* helper class for saving files
- *
+/**
+ * helper class for saving files
  */
 public class FileSaveUtil implements MediaScannerConnection.MediaScannerConnectionClient {
     private final String name;

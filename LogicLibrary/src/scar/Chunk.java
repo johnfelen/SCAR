@@ -1,13 +1,14 @@
-/**
- * Chunk stores all the data and information related to a chunk during GetFile/StoreFile
- * for use in Downloading/Uploading the chunk itself and for reassembly information
- * during RS decode
- */
 package scar;
   
 //Only used for decoding to give indices for blocks given
 //These would be created during the process of retrieving data
 //from servers based on their position in the HashChain
+
+/**
+ * Chunk stores all the data and information related to a chunk during GetFile/StoreFile
+ * for use in Downloading/Uploading the chunk itself and for reassembly information
+ * during RS decode
+ */
 public class Chunk {
   public final byte[] data;
   public final byte[] hash;

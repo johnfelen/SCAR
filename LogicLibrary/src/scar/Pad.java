@@ -1,9 +1,9 @@
-/**
- * Pad handles how to pad data in various ways and to unpad that same data
- */
 package scar;
 
 
+/**
+ * Pad handles how to pad data in various ways and to unpad that same data
+ */
 public class Pad {
   //Prepends 'data' array with 'n' bytes, only defined for n > 0
   /**

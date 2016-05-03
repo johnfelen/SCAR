@@ -1,7 +1,3 @@
-/**
- * GetFile contains the combined logic for Retrival of a file given the filename, key
- * and set of servers associated with it
- */
 package scar;
 
 import java.math.*;
@@ -9,6 +5,12 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.spongycastle.util.encoders.Hex;
 
+/**
+ * GetFile contains the combined logic for Retrival of a file given the filename, key
+ * and set of servers associated with it
+ * An overview of the process can be seen:
+ * <img src="../../get.png" alt="get-flow">
+ */
 public class GetFile {
   private String
     fn;
@@ -25,7 +27,7 @@ public class GetFile {
    * @param password key
    * @param k k
    * @param n n
-   * @param srcs All known servers
+   * @param srvs All known servers
    */
   public GetFile(String fn, byte[] password, int k, int n, IServer srvs[]) {
     this.fn = fn;
@@ -39,7 +41,7 @@ public class GetFile {
   /**
    * Decodes a 4-byte int from a byte array at an offset 'start'
    * @param data input byte array
-   * @parma start offset
+   * @param start offset
    * @return 4-byte int from the position data[start] to data[start+3]
    */
   public int dint(byte[] data, int start) {
@@ -65,9 +67,9 @@ public class GetFile {
   }
 
   /**
-   * Scans our download futures to see if any are finished, if so:
-   *  1. remove its future
-   *  2. get the chunk from the download associated with it and add to our list of chunks
+   * Scans our download futures to see if any are finished, if so:<br>
+   *  1. remove its future<br>
+   *  2. get the chunk from the download associated with it and add to our list of chunks<br>
    *
    * @param futures list of chunk futures waiting to complete download
    * @param lst list of known chunks
@@ -159,11 +161,11 @@ public class GetFile {
 
   /**
    * Genererates the distribution of chunks given the hashchain
-   * Basic Algorithm
-   *  1. make a list of chunk ids
-   *  2. pick from this list with removal via current hash in hashchain
-   *  3. assign this chunk to the current virtual server
-   *  4. increment to next virtual server modulo the maximum virtual servers
+   * Basic Algorithm:<br>
+   *  1. make a list of chunk ids<br>
+   *  2. pick from this list with removal via current hash in hashchain<br>
+   *  3. assign this chunk to the current virtual server<br>
+   *  4. increment to next virtual server modulo the maximum virtual servers<br>
    * Basically a round robin distribution of chunks given by the hashchain as far as what
    * chunk goes to what server
    * @param hc hashchain
@@ -213,16 +215,17 @@ public class GetFile {
   //               Chunk.ind[i] = i
   /**
    * get contains the brains for getting a file from the servers back to its original form if possible
-   * The flow of this is as followed:
-   *  1. Generate hashchain
-   *  2. Generate chunk distribution via hashchain
-   *  3. Fetch atleast k chunks
-   *  4. If we have enough chunks, decode is via RS
-   *  5. remove RS padding
-   *  6. decrypt the data
-   *  7. return the original data
+   * The flow of this is as followed:<br>
+   *  1. Generate hashchain<br>
+   *  2. Generate chunk distribution via hashchain<br>
+   *  3. Fetch atleast k chunks<br>
+   *  4. If we have enough chunks, decode is via RS<br>
+   *  5. remove RS padding<br>
+   *  6. decrypt the data<br>
+   *  7. return the original data<br>
    * @param cms Known chunk metas
    * @return original file data byte array if possible, otherwise, nul
+   * @throws Exception on any major IO failure
    */ 
   public byte[] get(final ChunkMeta cms[]) throws Exception {
     //1. Compute HashChain

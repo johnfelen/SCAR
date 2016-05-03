@@ -1,6 +1,3 @@
-/**
- * StoreFile has the combined logic to take a file and store it across our servers in chunk form
- */
 package scar;
 
 import java.util.*;
@@ -8,6 +5,11 @@ import java.util.concurrent.*;
 import java.math.*;
 import org.spongycastle.util.encoders.Hex;
 
+/**
+ * StoreFile has the combined logic to take a file and store it across our servers in chunk form
+ * An overview of the process can be seen:
+ * <img src="../../store.png" alt="store-flow">
+ */
 public class StoreFile {
   /**
    * maximum number of threads in our java threadpool for uploading tasks
@@ -106,11 +108,11 @@ public class StoreFile {
   
   /**
    * Genererates the distribution of chunks given the hashchain
-   * Basic Algorithm
-   *  1. make a list of chunk ids
-   *  2. pick from this list with removal via current hash in hashchain
-   *  3. assign this chunk to the current virtual server
-   *  4. increment to next virtual server modulo the maximum virtual servers
+   * Basic Algorithm<br>
+   *  1. make a list of chunk ids<br>
+   *  2. pick from this list with removal via current hash in hashchain<br>
+   *  3. assign this chunk to the current virtual server<br>
+   *  4. increment to next virtual server modulo the maximum virtual servers<br>
    * Basically a round robin distribution of chunks given by the hashchain as far as what
    * chunk goes to what server
    * @param hc hashchain
@@ -139,7 +141,7 @@ public class StoreFile {
                             srv,
                             servers[srv % servers.length].id(),
                             srv % servers.length);
-      srv = (srv + 1) % virtual_servers
+      srv = (srv + 1) % virtual_servers;
     }
     
     return chunks;
@@ -149,14 +151,14 @@ public class StoreFile {
   /**
    * Actual combined logic to take a file from a byte array and store it as chunks across the servers
    * we gave as input
-   * The flow of this is as followed:
-   *  1. Encrypt our input data if desired
-   *  2. Pad the encrypted data for RS
-   *  3. Perform RS on the data to get our N chunks
-   *  4. Compute the hashchain for the N chunks
-   *  5. Compute the distribution of chunks to servers
-   *  6. Shuffle the chunks
-   *  7. Execute the uploads of the chunks to their servers
+   * The flow of this is as followed:<br>
+   *  1. Encrypt our input data if desired<br>
+   *  2. Pad the encrypted data for RS<br>
+   *  3. Perform RS on the data to get our N chunks<br>
+   *  4. Compute the hashchain for the N chunks<br>
+   *  5. Compute the distribution of chunks to servers<br>
+   *  6. Shuffle the chunks<br>
+   *  7. Execute the uploads of the chunks to their servers<br>
    * @return An array of chunk meta corresponding to all the chunks we uploaded
    */ 
   public ChunkMeta[] store(){

@@ -1,9 +1,9 @@
+package scar;
+
 /**
  * Colleciton of Matrix operations needed for @see RS RS to work
  * All operations are done in a @see GaloisField GaloisField with 2^8 elements
  */
-package scar;
-
 public class Matrix {
   private static GaloisField field = GaloisField.getInstance();
   private int[][] matrix;

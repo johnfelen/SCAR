@@ -1,11 +1,11 @@
-/**
- * Handles actual uploading and downloading of a chunk to a server
- */
 package scar;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+/**
+ * Handles actual uploading and downloading of a chunk to a server
+ */
 public class StorageTask implements Callable<Chunk>{
   /**
    * Types of the task that can be done
@@ -38,11 +38,11 @@ public class StorageTask implements Callable<Chunk>{
 
   /**
    * Performs this storage task 
-   * General algorithm:
-   *  1. sleep for random period of time between 50ms-1050ms
-   *  2. perform the upload/download
-   *  3.1. If TYPE_STORE, set whether the upload was successful or not  
-   *  3.2. return the chunk if successful, only matters for TYPE_GET
+   * General algorithm:<br>
+   *  1. sleep for random period of time between 50ms-1050ms<br>
+   *  2. perform the upload/download<br>
+   *  3.1. If TYPE_STORE, set whether the upload was successful or not  <br>
+   *  3.2. return the chunk if successful, only matters for TYPE_GET<br>
    * @return The chunk downloaded in the case of a TYPE_GET. Return for a TYPE_STORE is meaningless. 
    */
   public Chunk call() {

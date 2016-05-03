@@ -1,14 +1,14 @@
-/**
- * DerivedKeyGen is a wrapper class for Spongy Castles PKCS5S2 (PBKDF2) to generated
- * keys derived from a password with a random salt.
- */
 package scar;
 
 import org.spongycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.KeyParameter;
 
-//Used to generate keys from other keys
+
+/**
+ * DerivedKeyGen is a wrapper class for Spongy Castles PKCS5S2 (PBKDF2) to generated
+ * keys derived from a password with a random salt.
+ */
 public class DerivedKeyGen {
   /**
    * Salt size as number of bytes
@@ -29,9 +29,9 @@ public class DerivedKeyGen {
   }
 
   /** Generates a new derived key from our given key, salt, and desired keysize
-   * @param key - original key 
-   * @param salt - generated salt for this key
-   * @param keysize - desired keysize in bytes
+   * @param key original key 
+   * @param salt  generated salt for this key
+   * @param keysize  desired keysize in bytes
    * @return a derived key of size keysize
    */
   public byte[] generateKey(byte[] key, byte[] salt, int keysize) {
@@ -42,15 +42,15 @@ public class DerivedKeyGen {
   }
 
   /** Generates a new derived key from our given key 
-   * Returns the key + generated salt
-   *   ____________________
-   *  | n-byte Salt        |
-   *  |--------------------|
-   *  | m-byte derived key |
-   *  |____________________|
-   * @param key - original key 
-   * @param salt - generated salt for this key, if null a random one will be generated
-   * @param keysize - desired keysize in bytes
+   * Returns the key + generated salt<br>
+   *   ____________________<br>
+   *  | n-byte Salt        |<br>
+   *  |--------------------|<br>
+   *  | m-byte derived key |<br>
+   *  |____________________|<br>
+   * @param key  original key 
+   * @param salt  generated salt for this key, if null a random one will be generated
+   * @param keysize  desired keysize in bytes
    * @return A byte[] of the format specified above
    */
   public byte[] generateKeyPackage(byte[] key, byte[] salt, int keysize) {
@@ -70,14 +70,14 @@ public class DerivedKeyGen {
 
 
   /** Generates a new derived key from our given key 
-   * Returns the key + generated salt
-   *   ____________________
-   *  | n-byte Salt        |
-   *  |--------------------|
-   *  | m-byte derived key |
-   *  |____________________|
-   * @param key - original key 
-   * @param keysize - desired keysize in bytes
+   * Returns the key + generated salt<br>
+   *   ____________________<br>
+   *  | n-byte Salt        |<br>
+   *  |--------------------|<br>
+   *  | m-byte derived key |<br>
+   *  |____________________|<br>
+   * @param key  original key 
+   * @param keysize  desired keysize in bytes
    * @return A byte[] of the format specified above
    */
   public byte[] generateKeyPackage(byte[] key, int keysize) {

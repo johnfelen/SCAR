@@ -1,7 +1,3 @@
-/**
- * Wrapper for Spongy Castles SP800SecureRandom method for generating
- * a random sequence of bytes
- */
 package scar;
 
 import org.spongycastle.crypto.prng.*;
@@ -9,6 +5,11 @@ import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.macs.HMac;
 
 //Used to generate random bytes of various lengths based on keys as seed
+
+/**
+ * Wrapper for Spongy Castles SP800SecureRandom method for generating
+ * a random sequence of bytes
+ */
 public class RndKeyGen {
   SP800SecureRandom rnd;
   

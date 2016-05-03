@@ -1,10 +1,10 @@
-/**
- * Shuffle wrapper for shuffling an array via java Collections.shuffle
- */
 package scar;
 
 import java.util.*;
 
+/**
+ * Shuffle wrapper for shuffling an array via java Collections.shuffle
+ */
 public class Shuffle {
   //Shuffles our bytes, there's the possiblity we end up with a lot of overlap
   /**
