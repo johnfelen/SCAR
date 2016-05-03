@@ -16,12 +16,22 @@ public class FileSaveUtil implements MediaScannerConnection.MediaScannerConnecti
     private final String tag;
     private final byte[] data;
 
+  /**
+   * Initalize a File Save Request
+   * @param fname filename
+   * @param ty tag name
+   * @param data binary data of file
+   */
     public FileSaveUtil(String fname, String ty, byte[] data) {
         name = fname;
         tag = ty;
         this.data = data;
     }
 
+  /**
+   * Actually save the file we have here
+   * @param act Activity from app to allow saving of files
+   */
     public String save(Activity act) {
         File f = new File(Environment.getExternalStorageDirectory(), "SCAR");
         f.mkdirs();

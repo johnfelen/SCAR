@@ -2,8 +2,8 @@ package com.scar.android;
 
 import java.util.ArrayList;
 
-/* Class for holding information about a specific file stored/retrieved via SCAR
- *
+/**
+ * Class for holding information about a specific file stored/retrieved via SCAR
  */
 public class ScarFile {
     final public int id;

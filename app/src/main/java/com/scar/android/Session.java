@@ -13,12 +13,19 @@ public class Session {
         password = pas;
     }
 
+  /**
+   * Clears the current session
+   */
     public static void clear() {
         //meta.close();
         meta = null;
         password = null;
     }
 
+
+  /**
+   * Checks if current session is valid
+   */
     public static boolean valid() {
         return meta != null && meta.valid() && password != null;
     }

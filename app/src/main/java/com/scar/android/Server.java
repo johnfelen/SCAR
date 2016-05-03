@@ -10,7 +10,8 @@ import java.net.InetAddress;
 
 import scar.IServer;
 
-/* Contains all information about a specific server in the db
+/**
+ *  Contains all information about a specific server in the db
  */
 public class Server {
     public static final int ONLINE = 0, OFFLINE = 1, DISABLED = 2;
@@ -46,6 +47,10 @@ public class Server {
         return label;
     }
 
+  /**
+   * Get status of a server
+   * @param act App's activity to allow for pinging a server
+   */
     public int getStatus(Activity act) {
         if(status == MetaData.STATUS_DISABLE) return DISABLED;
         IServer srv = getActual(act);
@@ -60,6 +65,10 @@ public class Server {
         return ONLINE;
     }
 
+  /**
+   * Returns the actual server backing for this server for use in storing and retrival
+   * @param act App's activity to allow for this
+   */
     public IServer getActual(Activity act) {
         IServer srv = null;
         switch(type) {
@@ -77,6 +86,9 @@ public class Server {
         return srv;
     }
 
+  /**
+   * Capture all this server's information into a bundle for later use
+   */
     public Bundle bundle() {
         Bundle bun = new Bundle();
         bun.putString("host", hostname);
