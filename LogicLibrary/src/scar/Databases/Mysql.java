@@ -49,6 +49,12 @@ public class Mysql implements IServer {
 		}
   }
 
+	public boolean deleteFile(String file)
+	{
+		// TODO: 4/8/2016 fill in this method to delete files
+		return false;
+	}
+
   public boolean getStatus() {
     try {
       if(!InetAddress.getByName(dbserver).isReachable(30))

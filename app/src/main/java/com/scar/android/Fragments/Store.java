@@ -33,7 +33,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-
+import scar.*;
 import scar.IServer;
 import scar.RndKeyGen;
 import scar.StoreFile;
@@ -76,7 +76,14 @@ public class Store extends Fragment {
 			progressDialog.dismiss();
 			Toast.makeText(getActivity().getApplicationContext(), "An error has occurred during file upload", Toast.LENGTH_LONG).show();
 			reset();
-		} else if(what<100) {
+		}
+		else if(what == -2)
+		{
+			progressDialog.dismiss();
+			Toast.makeText(getActivity().getApplicationContext(), "You do not have any servers online.", Toast.LENGTH_LONG).show();
+			reset();
+		}
+		else if(what<100) {
 			progressDialog.setProgress(what);
 		} else {
 			progressDialog.setProgress(100);
@@ -121,7 +128,7 @@ public class Store extends Fragment {
 		store_btn.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (getFilename().equals("")) {
+				if (getServerFilename().length() == 0) {
 					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give your file a name.");
@@ -131,7 +138,22 @@ public class Store extends Fragment {
 							dialog.dismiss();
 						}
 					});
-				} else {
+					newDialog.show();
+				}
+				else if(getFilename().length() == 0)
+				{
+					AlertDialog.Builder newDialog = new AlertDialog.Builder(Store.this.getActivity());
+					newDialog.setTitle("Alert!");
+					newDialog.setMessage("You forgot to choose a file.");
+					newDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					});
+					newDialog.show();
+				}
+				else {
 					storeFile();
 				}
 			}
@@ -187,8 +209,8 @@ public class Store extends Fragment {
 					Server[] currentServers = Session.meta.getAllActiveServers();
 					currentServers = testServers(currentServers);
 					if(currentServers == null || currentServers.length == 0) {
-						//Not enough servers
-						update(-1);
+						//No servers
+						update(-2);
 						return;
 					}
 					actualServers = toActualServers(currentServers);
@@ -206,7 +228,7 @@ public class Store extends Fragment {
                                                 actualServers,
                                                 true); //TODO: change this once we have encrypt checkbox
 					//	run StoreFile with store function
-					store.store();
+					ChunkMeta chunks[] = store.store(); //store meta file from return
 
 
 					update(90);
@@ -214,9 +236,9 @@ public class Store extends Fragment {
 					if(Session.meta.getFile(serverFname) == null)
 						Session.meta.newFile(serverFname, key);
 					ScarFile f = Session.meta.getFile(serverFname);
-					Session.meta.setServers(f.id, currentServers);
+					Session.meta.setChunks(f.id, chunks);
+					Session.metaBackground.setChunks(chunks);
 					Session.meta.addLocalFile(f.id, getFilename());
-
 
 					update(100); //completed successfully
         		} catch (Exception e) {

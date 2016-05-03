@@ -34,6 +34,11 @@ public class Cassandra implements IServer {
     return this.session;
   }
 
+  public int id()
+  {
+    return 0;
+  }
+
   public boolean getStatus() {
     try {
       //TODO: This needs a hostname, and this class needs a constructor
@@ -61,6 +66,12 @@ public class Cassandra implements IServer {
       ex.printStackTrace();
       isConnected = false;
     }
+  }
+
+  public boolean deleteFile(String file)
+  {
+    // TODO: 4/8/2016 fill in this method to delete files  
+    return false;
   }
 
   //close connections

@@ -9,6 +9,7 @@ package scar;
  */
 public interface IServer {
   public boolean storeData(String fn, byte[] data);
+  public boolean deleteFile(String name);
   public byte[] getData(String fn);
   public int id();
   public boolean getStatus();

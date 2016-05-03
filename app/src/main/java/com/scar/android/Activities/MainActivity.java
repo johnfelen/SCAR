@@ -1,31 +1,44 @@
 package com.scar.android.Activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.widget.Button;
-import android.widget.TabHost;
 import android.view.*;
-import android.widget.TextView;
 
 import com.android.scar.R;
 import com.scar.android.Fragments.Files;
 import com.scar.android.Fragments.Retrieve;
 import com.scar.android.Fragments.ServerList;
 import com.scar.android.Fragments.Store;
+import com.scar.android.Server;
+import com.scar.android.Services.Background;
 import com.scar.android.Session;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import scar.ChunkMeta;
+import scar.ChunkMetaPub;
+import scar.IServer;
 
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;
@@ -34,11 +47,12 @@ public class MainActivity extends FragmentActivity {
     private PagerAdapter pagerAdapter;
     private long backgroundStartTime;   //will hold the timestamp of when the user puts the app in the background
     private boolean backgroundHasNotBeenSet = true;
+    public Activity act = this;
+    public Handler messageHandler = new MessageHandler(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         final ActionBar actionBar = getActionBar();
@@ -84,8 +98,12 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
-    }
 
+        Context con = getApplicationContext();
+        Intent backgrounder = new Intent(con, Background.class);
+        backgrounder.putExtra("MESSENGER", new Messenger(messageHandler));
+        //con.startService(backgrounder);
+    }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter //allows sliding between main tabs
     {
@@ -126,22 +144,25 @@ public class MainActivity extends FragmentActivity {
 
     protected void onResume() {
         super.onResume();
-        long currentTimeStamp = new Date().getTime();   //300000
-        System.out.println( backgroundStartTime );
-        System.out.println( "Current: " + currentTimeStamp );
+        //access database for this stuff below
+        long currentTimeStamp = new Date().getTime();
+        System.out.println("background start time: " + backgroundStartTime );
+        System.out.println("Current: " + currentTimeStamp);
         //Check if Session is valid before continuing, 300000 is 5 minutes
-        if (!Session.valid() || currentTimeStamp - backgroundStartTime > 300000 ) {
+
+        if ( currentTimeStamp - backgroundStartTime > 300000 || !Session.valid() )
+        {
             //Force user to Login first, MainActivity will go on Stop in the meantime.
             Session.clear();
             backgroundHasNotBeenSet = true;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-
         else    //incase the user stays on the app for 5 minutes to make sure that the timeout starts when the user actually goes into the backgorund
         {
             backgroundHasNotBeenSet = true;
         }
+
     }
 
     protected void onPause()
@@ -149,15 +170,17 @@ public class MainActivity extends FragmentActivity {
         super.onPause();
         if( backgroundHasNotBeenSet ) //will only set the background time once
         {
-            backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'backgorund', may make false positive
+            backgroundStartTime = new Date().getTime(); //get the time when the app goes into 'background', may make false positive
             backgroundHasNotBeenSet = false;
         }
+
     }
 
     protected void onStop()
     {
         super.onStop();
-        Session.clear();
+        //Session.clear(); //I believe this is a fix to the leaving main activity and requiring user to re log in. need
+        // to double check that this does not compromise the security of the app
     }
 
 
@@ -183,6 +206,8 @@ public class MainActivity extends FragmentActivity {
         else if(item.getItemId() == R.id.action_clean) {
             //TODO: remove when no longer needed for testing
             Session.meta.clean();
+            if(Session.metaBackground !=null)
+            Session.metaBackground.clean();
             return true;
         }
 
@@ -195,4 +220,121 @@ public class MainActivity extends FragmentActivity {
         }
         return super.onOptionsItemSelected(item);
 	}
+
+    public static class MessageHandler extends Handler
+    {
+        @Override
+        public void handleMessage(Message message) {
+            HashSet<ChunkMetaPub> chunks = (HashSet<ChunkMetaPub>) message.obj;
+            relocateChunks(chunks);
+        }
+        Activity act = null;
+        public MessageHandler(Activity act)
+        {
+           this.act = act;
+        }
+
+            private ProgressDialog progressDialog;
+            public void relocateChunks(final HashSet<ChunkMetaPub> chunks)
+            {
+                progressDialog = new ProgressDialog(act);
+                progressDialog.setTitle("Relocating Chunks");
+                progressDialog.setMessage("Working");
+                progressDialog.setIndeterminate(false);
+                progressDialog.setCancelable(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setMax(100);
+                progressDialog.setProgress(0);
+                progressDialog.show();
+                new Thread()
+                {
+                    public void update(final int per) {
+                        act.runOnUiThread(new Runnable() {
+                            public void run() {
+                                updateProgress(per);
+                            }
+                        });
+                    }
+
+                    public void run() {
+                        double total = chunks.size();
+                        Iterator iterator = chunks.iterator();
+                        Server[] servers = Session.meta.getAllActiveServers();
+
+                        if (servers == null || servers.length == 0)
+                        {
+                            update(-1);
+                        }
+
+                        IServer[] actualServers = toActualServers(servers);
+                        update(10);
+                        double count = 0;
+                        while (iterator.hasNext())
+                        {
+                            ChunkMetaPub current = (ChunkMetaPub) iterator.next();
+                            double percentage = count / total;
+                            update((int) percentage);
+                            if (actualServers.length > current.virtual)
+                            {
+
+                                IServer used = actualServers[current.physical];
+
+                                ChunkMeta changed = Session.meta.relocate(current);
+                                Session.metaBackground.relocate(current);
+                                byte[] data = used.getData(changed.name);
+
+                                used.deleteFile(changed.name);
+
+                                IServer destination = actualServers[current.virtual];
+                                destination.storeData(changed.name, data);
+                            }
+
+                        }
+                        update(100);
+                    }
+                }.start();
+
+            }
+        private IServer[] toActualServers(Server srvs[])
+        {
+            IServer[] ret = new IServer[srvs.length];
+            int i = 0;
+
+            for(Server srv : srvs)
+            {
+                ret[i++] = srv.getActual(act);
+            }
+
+
+            return ret;
+        }
+
+        public void updateProgress(int what) {
+            AlertDialog.Builder newDialog = new AlertDialog.Builder(act);
+            if(what == -1) {
+                progressDialog.setProgress(0);
+                progressDialog.dismiss();
+                newDialog.setTitle("Failed to relocate all chunk");
+                newDialog.setMessage("The chunks have failed to be moved");
+                newDialog.setNegativeButton("Close",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                newDialog.show();
+
+            } else if(what<100)
+            {
+                progressDialog.setProgress(what);
+            }
+            else
+            {
+                progressDialog.setProgress(100);
+                progressDialog.dismiss();
+            }
+        }
+    }
+
 }

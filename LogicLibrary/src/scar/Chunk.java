@@ -20,9 +20,9 @@ public class Chunk {
   public Chunk(final byte[] d, final byte[] h, final int i, final int v, final int p, final int srv) {
     data = d;
     hash = h;
+    ind = i;
     virtual = v;
     physical = p;
-    ind = i;
     server = srv;
   }
 }

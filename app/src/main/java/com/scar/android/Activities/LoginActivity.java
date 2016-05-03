@@ -2,8 +2,6 @@ package com.scar.android.Activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -14,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.scar.android.MetaData;
@@ -26,6 +23,7 @@ import com.scar.android.Session;
 //  Main -> Login
 public class LoginActivity extends Activity
 {
+    int tries = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +36,9 @@ public class LoginActivity extends Activity
 
         // Init the MetaData db
         MetaData.init(this);
+        //open data base here!
+        Session.makeLock(getApplicationContext());
+        tries = Session.getTries();
 
         Button
                 login = (Button)findViewById(R.id.login),
@@ -45,17 +46,50 @@ public class LoginActivity extends Activity
 
         login.setOnClickListener(new Button.OnClickListener() {
             @Override
+
             public void onClick(View v) {
-                //Try to find metadata for password
-                MetaData meta = MetaData.load( LoginActivity.this, getPassword() );
-                if(meta != null) {
-                    //If successful open session
-                    Session.init(meta, getPassword().getBytes());
-                    //Return from this activity
-                    LoginActivity.this.finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "The password is invalid", Toast.LENGTH_SHORT).show();
+                if (Session.isLocked()) {
+                    tries = 0;
+                    long remaining = Session.remaining();
+                    if (remaining <= 0) {
+                        Session.unlock();
+                    } else {
+                        long minutes = remaining / 60000;
+                        int seconds = (int) ((remaining % 60000) / 1000);
+                        if (minutes == 1) {
+                            Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + minutes + " minute and " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
+                        } else if (minutes == 0) {
+                            Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Your account is currently locked. You have " + minutes + " minutes and " + seconds + " seconds until the account will be unlocked.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
                 }
+                if (!Session.isLocked())
+                {
+                    MetaData meta = MetaData.load(LoginActivity.this, getPassword());
+                    if (meta != null) {
+                        //If successful open session
+                        Session.init(meta, getPassword().getBytes(), LoginActivity.this);
+                        //Return from this activity
+                        LoginActivity.this.finish();
+                    } else {
+                        Session.setTries(++tries);
+                        int remaining = 5 - tries;
+                        if (remaining == 1) {
+                            Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " try remaining.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "The password is invalid, you have " + remaining + " tries remaining.", Toast.LENGTH_SHORT).show();
+                        }
+                        if (tries > 4) {
+                            Session.setLocked();
+                            tries = 0;
+                        }
+                    }
+                }
+                //Try to find metadata for password
+
             }
         });
 
@@ -67,6 +101,7 @@ public class LoginActivity extends Activity
                 startActivity(intent);
             }
         });
+
 
     }
 

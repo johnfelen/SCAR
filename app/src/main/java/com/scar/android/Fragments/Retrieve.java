@@ -28,7 +28,7 @@ import com.scar.android.Server;
 import com.scar.android.Session;
 
 import java.util.ArrayList;
-
+import scar.*;
 import scar.GetFile;
 import scar.IServer;
 
@@ -47,7 +47,6 @@ public class Retrieve extends Fragment {
 	public static Retrieve newInstance(int num)
 	{
 		Retrieve fragment = new Retrieve();
-
 		// Supply num input as an argument.
 		Bundle args = new Bundle();
 		args.putInt("num", num);
@@ -77,7 +76,25 @@ public class Retrieve extends Fragment {
                     });
             newDialog.show();
             reset();
-        } else if(what<100)
+        }
+		else if(what == -2)
+		{
+			progressDialog.setProgress(0);
+			progressDialog.dismiss();
+			newDialog.setTitle("Failed to retrieve file");
+			newDialog.setMessage("No servers are connected");
+			newDialog.setNegativeButton("Close",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+											int which) {
+							dialog.dismiss();
+						}
+					});
+			newDialog.show();
+			reset();
+		}
+		else if(what<100)
         {
             progressDialog.setProgress(what);
         }
@@ -105,7 +122,6 @@ public class Retrieve extends Fragment {
 
 	public void retrieveFile()
 	{
-		
 			progressDialog = new ProgressDialog(this.getActivity());
 			progressDialog.setTitle("Retrieve File");
 			progressDialog.setMessage("Working");
@@ -130,28 +146,16 @@ public class Retrieve extends Fragment {
                     IServer[] actualServers = null;
 					try {
 						//Gets the servers for the given filename
-						Server[] servers = Session.meta.getServers(getFilename());
+						Server[] servers = Session.meta.getAllActiveServers();
+						ChunkMeta[] chunks = Session.meta.getChunks(getFilename());
 
 						// if no servers are found for the filename assume you use all servers instead (ie: file was not stored via this app; thus, not in our db)
-						if( servers == null || servers.length == 0 )
-						{
-							servers = Session.meta.getAllActiveServers();
-							servers = testServers(servers);
-						} else {
-							//Remove inactive servers
-							ArrayList<Server> tmp = new ArrayList<Server>();
-							for(Server srv : servers)
-								if(srv.status == MetaData.STATUS_ACTIVE)
-									tmp.add(srv);
-							servers = tmp.toArray(new Server[0]);
-						}
-
-
 						if(servers == null || servers.length == 0) {
 							//Not enough servers
-							update(-1);
+							update(-2);
 							return;
 						}
+
 						actualServers = toActualServers(servers);
                         update(20);
 
@@ -159,21 +163,22 @@ public class Retrieve extends Fragment {
 						//TODO: allow user to enter hash string of encryption key in case it's not stored on this device.
 						byte[] key = Session.meta.getFileKey(getFilename());
 						update(30);
-						GetFile get =  new scar.GetFile( getFilename(),
+						GetFile get =  new GetFile( getFilename(),
 								                         key,
 								                         50,
 								                         100,
 								                         actualServers );
 
 						//Get the bytes[] back from get() via scar.GetFile instance
-						data = get.get();
 
+						data = get.get(chunks); //argument is chunk array
+
+						//data = get.get();
 						update(90);
 						if(Session.meta.getFile(getFilename()) == null) {
 							//Add file to the meta if it wasn't already
 							Session.meta.newFile(getFilename(), key);
 							ScarFile f = Session.meta.getFile(getFilename());
-							Session.meta.setServers(f.id, servers);
 						}
 
 						//4. Goto line 89 and fill out the saving bytes[] to a file
@@ -184,7 +189,8 @@ public class Retrieve extends Fragment {
 						update(-1);
 					}
 
-                    if(actualServers == null)
+
+                    if(actualServers != null)
                         for(IServer srv : actualServers)
                             srv.close();
 
@@ -211,7 +217,7 @@ public class Retrieve extends Fragment {
 		getDoc.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (getFilename().equals("")) {
+				if (getFilename().length() == 0) {
 					AlertDialog.Builder newDialog = new AlertDialog.Builder(Retrieve.this.getActivity());
 					newDialog.setTitle("Alert!");
 					newDialog.setMessage("You forgot to give the file name.");

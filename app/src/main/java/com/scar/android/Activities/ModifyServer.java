@@ -56,6 +56,7 @@ public class ModifyServer extends FragmentActivity {
                 srv.uname = frag.getUsername();
                 srv.pass = frag.getPassword();
                 Session.meta.updateServer(srv);
+                Session.metaBackground.updateServer(srv);
                 finish(); //kill activity
             }
         });

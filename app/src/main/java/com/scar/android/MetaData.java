@@ -2,6 +2,7 @@ package com.scar.android;
 
 import android.app.Activity;
 import android.util.Log;
+import scar.*;
 
 import com.scar.android.ServerImpl.SQLiteStore;
 
@@ -10,6 +11,9 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 
 import scar.DerivedKeyGen;
 import scar.Encryption;
@@ -55,7 +59,7 @@ import scar.IServer;
  *                    that has been stored/recieved by this app
  *     getAllActiveServers() - Get all servers known to the app in a functional state
  *     getAllServersInfo() - Get all servers known to the app in a descriptive state
- *     getServers(filename) - Returns the servers used for the filename for receiving
+ *     getServers(filename) - Returns the servers used for the filename for receiving RENAMING TO GET CHUNKS!
  *     setServers(filename, srvs) - Sets the current filename to use the given servers
  *
  *     addLocalFile(fn, local) - Adds a local path for the given file
@@ -86,29 +90,39 @@ public class MetaData {
     public MetaData(Activity act, String dbnm, String key) {
         dbname = dbnm;
         File dbf = act.getDatabasePath(dbname);
-        db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+        setDB newDB=new setDB(act,dbf,key);
+        db=newDB.getDb();
+        //db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
         //Setup tables if needed
         db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
-                    +"id INTEGER,"
-                    +"status INTEGER,"
-                    +"type INTEGER,"
-                    +"label TEXT,"
-                    +"hostname TEXT,"
-                    +"port TEXT,"
-                    +"username BLOB,"
-                    +"password BLOB,"
-                    +"PRIMARY KEY(id))");
+                +"id INTEGER,"
+                +"status INTEGER,"
+                +"type INTEGER,"
+                +"label TEXT,"
+                +"hostname TEXT,"
+                +"port TEXT,"
+                +"username BLOB,"
+                +"password BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
         db.execSQL("CREATE TABLE IF NOT EXISTS files ("
                     +"id INTEGER,"
                     +"name TEXT,"
                     +"key BLOB,"
-                    +"PRIMARY KEY(id))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS servers_used ("
-                +"server_id INTEGER,"
+                    +"PRIMARY KEY(id),"
+                    +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
+        //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
+        //separate database for scheduler without some of the fields.
+        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_private ("
                 +"file_id INTEGER,"
-                +"PRIMARY KEY(server_id, file_id),"
-                +"FOREIGN KEY(server_id) REFERENCES server(id),"
-                +"FOREIGN KEY(file_id) REFERENCES file(id))");
+                +"name TEXT,"
+                +"virtual_id INTEGER,"
+                +"physical_id INTEGER,"
+                +"chunk_id INTEGER," //chunk id
+                +"PRIMARY KEY(chunk_id),"
+                +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
+                +"FOREIGN KEY(file_id) REFERENCES files(id))");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
                 + "file_id INTEGER,"
                 + "localpath TEXT,"
@@ -116,6 +130,53 @@ public class MetaData {
                 + "FOREIGN KEY(file_id) REFERENCES file(id))");
     }
 
+    //constructor just used for unit testing
+    public MetaData(Activity act, String dbnm, String key,setDB newDB) {
+        dbname = dbnm;
+        File dbf = act.getDatabasePath(dbname);
+        //newDB=new setDB(act,dbf,key);
+        db=newDB.getDb();
+        //db = SQLiteDatabase.openDatabase(dbf.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+        //Setup tables if needed
+        db.execSQL("CREATE TABLE IF NOT EXISTS servers ("
+                +"id INTEGER,"
+                +"status INTEGER,"
+                +"type INTEGER,"
+                +"label TEXT,"
+                +"hostname TEXT,"
+                +"port TEXT,"
+                +"username BLOB,"
+                +"password BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(physical_id))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS files ("
+                +"id INTEGER,"
+                +"name TEXT,"
+                +"key BLOB,"
+                +"PRIMARY KEY(id),"
+                +"FOREIGN KEY(id) REFERENCES chunks_private(file_id))");
+        //new table for chunks: file id, name, virtual id (int), physical id (int) points to server ID, chunk ID
+        //separate database for scheduler without some of the fields.
+        db.execSQL("CREATE TABLE IF NOT EXISTS chunks_private ("
+                +"file_id INTEGER,"
+                +"name TEXT,"
+                +"virtual_id INTEGER,"
+                +"physical_id INTEGER,"
+                +"chunk_id INTEGER," //chunk id
+                +"PRIMARY KEY(chunk_id),"
+                +"FOREIGN KEY(physical_id) REFERENCES servers(id),"
+                +"FOREIGN KEY(file_id) REFERENCES files(id))");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS local_files ("
+                + "file_id INTEGER,"
+                + "localpath TEXT,"
+                + "PRIMARY KEY(file_id, localpath),"
+                + "FOREIGN KEY(file_id) REFERENCES file(id))");
+    }
+    //public SQLiteDatabase setDB(Activity act,File DBName,String key)
+    //{
+    //    return SQLiteDatabase.openDatabase(DBName.getPath(), key, null, SQLiteDatabase.OPEN_READWRITE);
+    //}
     /* sets up sqlcipher to work properly
      */
     public static void init(Activity act) {
@@ -189,7 +250,7 @@ public class MetaData {
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
         stmt.close();
-        stmt = db.compileStatement("delete from servers_used");
+        stmt = db.compileStatement("delete from chunks_private");
         stmt.execute();
         stmt.close();
         stmt = db.compileStatement("delete from files");
@@ -207,7 +268,8 @@ public class MetaData {
     }
 
     //Ensures the MetaData is still valid
-    public boolean valid() {
+    public boolean valid()
+    {
         return db != null && dbname != null;
     }
 
@@ -327,24 +389,42 @@ public class MetaData {
         return collectServers(cursor);
     }
 
-    public Server[] getServers(String fn) {
+    public ChunkMeta[] getChunks(String fn) {
+
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
         cur.moveToFirst();
-        if(!cur.isAfterLast()) {
-            int id = cur.getInt(cur.getColumnIndex("id"));
+        if(!cur.isAfterLast())
+        {
+            long id = cur.getInt(cur.getColumnIndex("id"));
             cur.close();
-            cur = db.rawQuery("select * " +
-                            "from servers, servers_used " +
-                            "where servers.id = servers_used.server_id and servers_used.file_id = " + id, null);
-            return collectServers(cur);
-        } else
+
+            cur = db.rawQuery("SELECT name, virtual_id, physical_id "
+                    +"FROM chunks_private "
+                    +"WHERE file_id = " + id, null);
+
+            ChunkMeta[] chunks = new ChunkMeta[cur.getCount()];
+            cur.moveToFirst();
+
+            int i = 0;
+            while(!cur.isAfterLast()) {
+                chunks[i++] = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                        (int)cur.getLong(cur.getColumnIndex("virtual_id")),
+                        (int)cur.getLong(cur.getColumnIndex("physical_id")));
+                cur.moveToNext();
+            }
+
+            cur.close();
+            return chunks;
+        }
+        else
             return null;
     }
 
-    public void setServers(int fid, Server[] srvs) {
+    //not sure what to do with this method here. not even sure what its purpose is or what calls it
+    public void setChunks(int fid, ChunkMeta[] srvs) {
         db.beginTransaction();
         //Remove old servers
-        SQLiteStatement stmt = db.compileStatement("delete from servers_used where file_id = ?");
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
         stmt.bindLong(1, fid);
         stmt.executeUpdateDelete();
         stmt.close();
@@ -352,15 +432,50 @@ public class MetaData {
         db.endTransaction();
         db.beginTransaction();
         //Update with new servers
-        for(Server srv : srvs) {
-            stmt = db.compileStatement("insert into servers_used (file_id, server_id) values (?, ?)");
+        for(ChunkMeta chunk : srvs) {
+            stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name) VALUES (?, ?, ?, ?)");
+            //maybe need to set physical id here too? or check if virtual id server is up? not sure
             stmt.bindLong(1, fid);
-            stmt.bindLong(2, srv.id);
+            stmt.bindLong(2, chunk.virtual);
+            stmt.bindLong(3, chunk.physical);
+            stmt.bindString(4, chunk.name);
             stmt.executeInsert();
             stmt.close();
         }
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    public ChunkMeta relocate(ChunkMetaPub chunk)
+    {
+        db.beginTransaction();
+        Cursor cur = db.rawQuery("SELECT * FROM chunks_private WHERE chunk_id = " + chunk.chunkID, null);
+        cur.moveToFirst();
+
+        int fid = cur.getColumnIndex("file_id");
+        int cID = cur.getColumnIndex("chunk_id");
+        ChunkMeta relocated = new ChunkMeta(cur.getString(cur.getColumnIndex("name")),
+                                        cur.getColumnIndex("virtual"),
+                cur.getColumnIndex("virtual"));
+        cur.close();
+
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM chunks_private WHERE name = ?");
+        stmt.bindString(1, relocated.name);
+        stmt.executeUpdateDelete();
+        stmt.close();
+
+        stmt = db.compileStatement("INSERT INTO chunks_private(file_id, virtual_id, physical_id, name, chunk_id) VALUES (?, ?, ?, ?, ?)");
+        stmt.bindLong(1, fid);
+        stmt.bindLong(2, relocated.virtual);
+        stmt.bindLong(3, relocated.physical);
+        stmt.bindString(4, relocated.name);
+        stmt.bindLong(5, cID);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        return relocated;
     }
 
     public void newFile(String fn, byte[] key) {
@@ -413,6 +528,39 @@ public class MetaData {
         cur.close();
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    public ArrayList<Integer> deleteFile(String filename)
+    {
+        db.beginTransaction();
+        Cursor cur = db.rawQuery("SELECT id FROM files WHERE name = ?", new String[]{filename});
+        cur.moveToFirst();
+        int fid = cur.getInt(cur.getColumnIndex("id"));
+        cur.close();
+
+        SQLiteStatement stmt = db.compileStatement("DELETE FROM files WHERE id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+
+        cur = db.rawQuery("SELECT chunk_id FROM chunks_private WHERE file_id = " + fid, null);
+        cur.moveToFirst();
+        ArrayList<Integer> chunkHolder = new ArrayList<Integer>();
+        while(!cur.isAfterLast())
+        {
+            chunkHolder.add(cur.getInt(cur.getColumnIndex("chunk_id")));
+            cur.moveToNext();
+        }
+        cur.close();
+
+        stmt = db.compileStatement("DELETE FROM chunks_private WHERE file_id = ?");
+        stmt.bindLong(1, fid);
+        stmt.executeUpdateDelete();
+        stmt.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+       return chunkHolder;
     }
 
     public void removeLocalFile(int fid, String local) {

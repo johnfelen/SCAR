@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,12 +109,18 @@ public class ServerList extends Fragment
 	public void onActivityResult(int requestCode, int resultCode, Intent args) {
 		//Get our data back from AddServer Activity when it's done
 		if(resultCode == AddServer.SUCCESS && args != null) {
+			//Log.d("SCAR", "Yo, meta is " + Session.meta.toString());
 			Session.meta.newServer(args.getIntExtra("type", 0),
 								   args.getStringExtra("lbl"),
 									args.getStringExtra("host"),
 									args.getStringExtra("port"),
 									args.getByteArrayExtra("uname"),
 									args.getByteArrayExtra("pass"));
+
+			Session.metaBackground.newServer(args.getIntExtra("type", 0),
+									args.getStringExtra("host"),
+									args.getStringExtra("port"));
+
 		}
 	}
 

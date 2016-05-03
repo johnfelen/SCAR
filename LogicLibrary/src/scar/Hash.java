@@ -124,12 +124,12 @@ public class Hash {
    */
 	public byte[][] hashchain(int n, byte[] key)
 	{
-    byte[][] hashes = new byte[n][];
-    hashes[0] = getHash(key);
-    
-    for(int i = 1;i<n;++i)
-      hashes[i] = getHash(hashes[i-1]);
-    
+      byte[][] hashes = new byte[n][];
+      hashes[0] = getHash(key);
+
+      for(int i = 1;i<n;++i)
+        hashes[i] = getHash(hashes[i-1]);
+
 		return hashes;
 	}
 }

@@ -12,7 +12,8 @@ public class StorageTask implements Callable<Chunk>{
    */
   public static final int
     TYPE_STORE = 0,
-    TYPE_GET = 1;
+    TYPE_GET = 1,
+    TYPE_DELETE = 2;
 
   private final IServer srv;
   private final Chunk chk;
@@ -58,12 +59,21 @@ public class StorageTask implements Callable<Chunk>{
       else
         meta.uploaded = false;
       break;
+    case TYPE_DELETE:
+      if(srv.deleteFile(nm))
+      {
+        meta.uploaded = false;
+      }
+      break;
+
     case TYPE_GET:
       byte[] data = srv.getData(nm);
       if(data != null)
         return new Chunk(data,
                          chk.hash,
                          chk.ind,
+                         chk.virtual,
+                         chk.physical,
                          chk.server);
       else
         return null; //failed to get data
