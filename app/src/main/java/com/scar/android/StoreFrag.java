@@ -1,6 +1,11 @@
 package com.scar.android;
 
 //Used for Editing/Viewing Fragments for Server adding/editing
+
+/**
+ * Interface to capture all information about a server for displaying
+ * and modification/addition processes
+ */
 public interface StoreFrag {
     int getType();
     String getLabel();

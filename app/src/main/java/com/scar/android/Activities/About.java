@@ -11,6 +11,10 @@ import android.widget.TextView;
 import com.android.scar.R;
 
 //This Activity will talk about the project
+
+/**
+ * Simple about activity to show off what the app is about
+ */
 public class About extends Activity {
 
 	@Override

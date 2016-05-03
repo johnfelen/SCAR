@@ -40,6 +40,10 @@ import scar.ChunkMeta;
 import scar.ChunkMetaPub;
 import scar.IServer;
 
+
+/**
+ * The main activity of the app
+ */
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;
     /*These two are for the tabs and screen slider*/
@@ -142,6 +146,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+  /**
+   * Everytime we do onResume we check to make sure app is still valid and a 
+   * timeout hasn't occured
+   */
     protected void onResume() {
         super.onResume();
         //access database for this stuff below

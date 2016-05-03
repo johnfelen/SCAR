@@ -25,6 +25,8 @@ import scar.ChunkMetaPub;
 
 /**
  * Created by Spencer on 3/30/2016.
+ *  This is a background monitor for the application that runs hourly to monitor data
+ * inside the MetaDataB database.
  */
 public class Background extends Service
 {

@@ -10,6 +10,10 @@ import com.dropbox.client2.session.AppKeyPair;
 import java.io.*;
 import java.lang.*;
 
+/**
+ * Implementation of the Dropbox Server API for Android with use of the token you get via OAUTH2. <br>
+ * This is a useful reference for similar APIs when it comes to authenticating, storing, retrival.
+ */
 public class DropBox implements scar.IServer {
     public static final String APP_KEY = "waqkrdbshgbrwt0";            //Given by DropBox when app is registered
     public static final String APP_SECRET = "fux54cxmkmi9695";      //Given by DropBox when app is registered

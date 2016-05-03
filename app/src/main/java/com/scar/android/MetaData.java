@@ -19,57 +19,60 @@ import scar.DerivedKeyGen;
 import scar.Encryption;
 import scar.IServer;
 
-//TODO: Fill in server loading for each type
+
 
 //SQLite naming format: #.db starting from 0
 
-// Tables:
-// Files
-//   - id            : int    , File ID [PK]
-//   - Filename      : text   , name of file
-//   - Key           : byte[] , encrypted key for this file { SALT, IV, GCM encrypted data }
-//
-// Servers
-//   - id            : int   , Server ID [PK]
-//   - type          : int   , Server Type
-//   - status        : int   , Server Status
-//   - label         : text  , Server Name
-//   - hostname      : text  , Server hostname
-//   - port          : text  , Server port
-//   - username      : byte[], Server username { SALT, IV, GCM encrypted data }
-//   - password      : byte[], Server password { SALT, IV, GCM encrypted data }
-//
-// Servers_Used
-//   - file_id       : int, File ID
-//   - server_id     : int, Server ID associated with the file
-//
-// Local_Files
-//   - file_id       : int , File ID
-//   - localpath     : text, Path to the a local file for the given file
-
-/* Overview:
- *   Opening/Creating:
- *     load(key) - Tries to open a database that has the password key
- *     create(key) - Makes a new database with the password key
- *   Using:
- *     getFileKey() - Returns the key for this file if it has any
- *     setFileKey(id, key) - Sets the key for this file
- *     getFile(fn) - Returns the file with the given fn if any
- *     listFiles() - Returns a list of all file names and local file paths
- *                    that has been stored/recieved by this app
- *     getAllActiveServers() - Get all servers known to the app in a functional state
- *     getAllServersInfo() - Get all servers known to the app in a descriptive state
- *     getServers(filename) - Returns the servers used for the filename for receiving RENAMING TO GET CHUNKS!
- *     setServers(filename, srvs) - Sets the current filename to use the given servers
+/**
+ * MetaData has the purpose of storing all vital information to the application in an encrypted 
+ * sqlite database via sqlcipher using our login password as the key<br>
+ * Tables:<br>
+ * Files<br>
+ *   - id            : int    , File ID [PK]<br>
+ *   - Filename      : text   , name of file<br>
+ *   - Key           : byte[] , encrypted key for this file { SALT, IV, GCM encrypted data }<br> 
+ * <br>
+ * Servers<br>
+ *   - id            : int   , Server ID [PK]<br>
+ *   - type          : int   , Server Type<br>
+ *   - status        : int   , Server Status<br>
+ *   - label         : text  , Server Name <br>
+ *   - hostname      : text  , Server hostname<br>
+ *   - port          : text  , Server port<br>
+ *   - username      : byte[], Server username { SALT, IV, GCM encrypted data }<br>
+ *   - password      : byte[], Server password { SALT, IV, GCM encrypted data }<br>
+ *<br>
+ * Servers_Used<br>
+ *   - file_id       : int, File ID<br>
+ *   - server_id     : int, Server ID associated with the file<br>
+ *<br>
+ * Local_Files<br>
+ *   - file_id       : int , File ID<br>
+ *   - localpath     : text, Path to the a local file for the given file<br>
+ *<br>
+ * Overview:<br>
+ *   Opening/Creating:<br>
+ *     load(key) - Tries to open a database that has the password key<br>
+ *     create(key) - Makes a new database with the password key<br>
+ *   Using:<br>
+ *     getFileKey() - Returns the key for this file if it has any<br>
+ *     setFileKey(id, key) - Sets the key for this file<br>
+ *     getFile(fn) - Returns the file with the given fn if any<br>
+ *     listFiles() - Returns a list of all file names and local file paths<br>
+ *                    that has been stored/recieved by this app<br>
+ *     getAllActiveServers() - Get all servers known to the app in a functional state<br>
+ *     getAllServersInfo() - Get all servers known to the app in a descriptive state<br>
+ *     getServers(filename) - Returns the servers used for the filename for receiving RENAMING TO GET CHUNKS!<br>
+ *     setServers(filename, srvs) - Sets the current filename to use the given servers<br>
  *
- *     addLocalFile(fn, local) - Adds a local path for the given file
- *     removeLocalFile(fid, local) - Removes this local path
+ *     addLocalFile(fn, local) - Adds a local path for the given file<br>
+ *     removeLocalFile(fid, local) - Removes this local path<br>
  *
- *     newFile(filename) - Creates a new file in the db and sets up the servers for it
- *     newServer(type, hostname, port, uname, pass) - Creates a new server for the app
+ *     newFile(filename) - Creates a new file in the db and sets up the servers for it<br>
+ *     newServer(type, hostname, port, uname, pass) - Creates a new server for the app<br>
  *
- *     updateFile(id, filename) - Updates a file in SCAR
- *     updateServer(id, type, hostname, port, uname, pass) - Updates a server in SCAR
+ *     updateFile(id, filename) - Updates a file in SCAR<br>
+ *     updateServer(id, type, hostname, port, uname, pass) - Updates a server in SCAR<br>
  */
 
 public class MetaData {
@@ -87,6 +90,12 @@ public class MetaData {
     private final SQLiteDatabase db;
     private final String dbname;
 
+  /**
+   * Creates/Opens a new Meta database with the given name and key
+   * @param act App's activity
+   * @param dbnm database name
+   * @param key key for this database
+   */
     public MetaData(Activity act, String dbnm, String key) {
         dbname = dbnm;
         File dbf = act.getDatabasePath(dbname);
@@ -222,12 +231,12 @@ public class MetaData {
         return null; //Failed to find a db for this key
     }
 
-    /* Load a new database with the key being
-     * the password you created at login
-     *
-     * Note call load(key) before this to ensure a db doesn't already
-     *  exist with the given key
-     */
+  /** Load a new database with the key being
+   * the password you created at login.
+   *<br>
+   * Note call load(key) before this to ensure a db doesn't already
+   *  exist with the given key
+   */
     public static void create(Activity act, String key) {
         int dbid = 0;
         //get next dbid
@@ -244,8 +253,10 @@ public class MetaData {
         SQLiteDatabase.openOrCreateDatabase(dbf.getPath(), key, null).close();
     }
 
-    // Puts the database back into a state of initial creation
-    public void clean() {
+  /**
+   * Puts the database back into a state of initial creation
+   */
+  public void clean() {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("delete from local_files");
         stmt.execute();
@@ -263,16 +274,24 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * Closes the database
+   */
     public void close() {
         db.close();
     }
 
-    //Ensures the MetaData is still valid
+  /** 
+   * Ensures the MetaData is still valid
+   */
     public boolean valid()
     {
         return db != null && dbname != null;
     }
 
+  /**
+   * @return a list of all known files stored on this app
+   */
     public ScarFile[] listFiles() {
         //Get number of files known atm
         Cursor cursor = db.rawQuery("select * from files", null);
@@ -351,6 +370,10 @@ public class MetaData {
         return sf;
     }
 
+  /**
+   * @param cur database cursor
+   * @return a list of all servers known to this app
+   */
     private Server[] collectServers(Cursor cur) {
         Server servers[] = new Server[cur.getCount()];
         int i = 0;
@@ -379,16 +402,26 @@ public class MetaData {
         return servers;
     }
 
+  /**
+   * @return a list of all servers known to this application
+   */
     public Server[] getAllServerInfo() {
         Cursor cur = db.rawQuery("select * from servers", null);
         return collectServers(cur);
     }
 
+  /**
+   * @return a list of all servers that are alive 
+   */
     public Server[] getAllActiveServers() {
         Cursor cursor = db.rawQuery("select * from servers where status = " + STATUS_ACTIVE, null);
         return collectServers(cursor);
     }
 
+  /**
+   * @param fn filename
+   * @return Array of all chunkmetas associated with this filename
+   */
     public ChunkMeta[] getChunks(String fn) {
 
         Cursor cur = db.rawQuery("select id from files where name = ?", new String[]{ fn });
@@ -421,6 +454,11 @@ public class MetaData {
     }
 
     //not sure what to do with this method here. not even sure what its purpose is or what calls it
+  /**
+   * Sets the chunk metas for a given file
+   * @param fid file id (row id in files table)
+   * @param srvs all chunk metas for this file id
+   */
     public void setChunks(int fid, ChunkMeta[] srvs) {
         db.beginTransaction();
         //Remove old servers
@@ -446,6 +484,11 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * Updates an existing chunk meta with a new one
+   * @param chunk an updated chunk meta
+   * @return The updated chunk meta
+   */
     public ChunkMeta relocate(ChunkMetaPub chunk)
     {
         db.beginTransaction();
@@ -478,6 +521,11 @@ public class MetaData {
         return relocated;
     }
 
+  /**
+   * Adds a new file to our database
+   * @param fn filename
+   * @param key file's key
+   */
     public void newFile(String fn, byte[] key) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into files values ((select max(id)+1 from files), ?, ?)");
@@ -489,6 +537,16 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * Adds a new servers into the database with the given information.
+   * Note: not all of it needs to be defined depending on the type implementation
+   * @param type server type
+   * @param label server label
+   * @param host hostname
+   * @param port port number
+   * @param uname username
+   * @param pass password
+   */
     public void newServer(int type, String label, String host, String port, byte[] uname, byte[] pass) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("insert into servers (id, type, status, label, hostname, port, username, password) values ((select max(id)+1 from servers), ?, ?, ?, ? , ?, ? , ?)");
@@ -513,6 +571,11 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * adds a local pathname to a given file
+   * @param fid fileid
+   * @param local local filename
+   */
     public void addLocalFile(int fid, String local) {
         db.beginTransaction();
         Cursor cur = db.rawQuery("select * from local_files where file_id = " + fid + " and localpath = ?",
@@ -530,6 +593,11 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * Deletes a file and a file's chunk metas from our database
+   * @param filename filename
+   * @return Array of chunk ids deleted
+   */
     public ArrayList<Integer> deleteFile(String filename)
     {
         db.beginTransaction();
@@ -563,6 +631,11 @@ public class MetaData {
        return chunkHolder;
     }
 
+  /**
+   * Removes a local pathname for a file
+   * @param fid file id
+   * @param local local pathname
+   */ 
     public void removeLocalFile(int fid, String local) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("delete from local_files where file_id = ? and localpath = ?");
@@ -574,10 +647,25 @@ public class MetaData {
         db.endTransaction();
     }
 
+  /**
+   * Updates a server with new information.
+   * @param srv Server information
+   */
     public void updateServer(Server srv) {
         updateServer(srv.id, srv.type, srv.status, srv.label, srv.hostname, srv.port, srv.uname, srv.pass);
     }
 
+  /**
+   * Updates a server with new information.
+   * @param id server's id
+   * @param type server type
+   * @param status server's status
+   * @param label server label
+   * @param host hostname
+   * @param port port number
+   * @param uname username
+   * @param pass password
+   */
     public void updateServer(int id, int type, int status, String label, String host, String port, byte[] uname, byte[] pass) {
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement("update servers set type = ?, status = ?, label = ?, hostname = ?, port = ?, username = ?, password = ? where id = ?");
@@ -604,16 +692,21 @@ public class MetaData {
     }
 
 
-    //Output Format:
-    //   _________________
-    //  | n-byte SALT     |
-    //  |-----------------|
-    //  | m-byte IV       |
-    //  |-----------------|
-    //  | cipher text     |
-    //  |-----------------|
-    //  | 16-byte MAC     |
-    //  |_________________|
+  /** Encrypts text if needed for storage in the database
+   * using the login password to derive the key.
+   * Output Format:<br>
+   *   _________________<br>
+   *  | n-byte SALT     | <br>
+   *  |-----------------|<br>
+   *  | m-byte IV       |<br>
+   *  |-----------------|<br>
+   *  | cipher text     |<br>
+   *  |-----------------|<br>
+   *  | 16-byte MAC     |<br>
+   *  |_________________|<br>
+   * @param data binary data of the text
+   * @return encrypted data of the plain text   
+   */
     public byte[] encryptText(byte[] data) {
         Encryption encrypt = new Encryption();
         DerivedKeyGen keyGen = new DerivedKeyGen();
@@ -630,6 +723,13 @@ public class MetaData {
         return ret;
     }
 
+  /**
+   * Decrypts encrypted text in this database
+   * using the login password to derive the key.
+   * See encryptText(byte[]) for format of input data
+   * @param data input encrypted text
+   * @return binary form of the plain text
+   */
     public byte[] decryptText(byte[] data) {
         Encryption decrypt = new Encryption();
         DerivedKeyGen keyGen = new DerivedKeyGen();

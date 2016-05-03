@@ -8,8 +8,8 @@ import java.io.File;
 
 /**
  * Created by Luke on 4/13/2016.
+ * Opens a new local database
  */
-
 public class setDB {
     private File dbName;
     private Activity activity;

@@ -10,6 +10,16 @@ import android.widget.EditText;
 import com.android.scar.R;
 import com.scar.android.StoreFrag;
 
+/**
+ * A generic store for adding in any details about a server
+ * This includes: <br>
+ * 1. A label<br>
+ * 2. A hostname<br>
+ * 3. A port<br>
+ * 4. username infomation <br>
+ * 5. password informatiom <br>
+ * Note: all details from these stores are stored in the encrypted meta database
+ */
 public class GenericStore extends Fragment implements StoreFrag {
     private int type;
 

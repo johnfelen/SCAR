@@ -21,6 +21,18 @@ public class Server {
     public String hostname, port, label;
     public byte[] uname, pass;
 
+
+  /**
+   * Initializes a server from raw arguments
+   * @param id id of server
+   * @param type type of server
+   * @param status status of server
+   * @param l label 
+   * @param h hostname
+   * @param p port
+   * @param u username
+   * @param p password
+   */
     public Server(int id, int type, int status,String l, String h, String p, byte[] u, byte[] pa) {
         this.id = id;
         this.type = type;
@@ -32,6 +44,10 @@ public class Server {
         pass = pa;
     }
 
+  /**
+   * Initializes a server from a bundle object
+   * @param args bundle args
+   */
     public Server(Bundle args){
         id = args.getInt("id");
         type = args.getInt("type");

@@ -16,15 +16,26 @@ public class ScarFile {
         localpaths = new ArrayList<String>();
     }
 
+  /**
+   * Add a local filepath for this scar file
+   * @param lp filename for local path
+   */
     public void addLocal(String lp) {
         localpaths.add(lp);
     }
 
+  /**
+   * @return the filename associated with this scar file
+   */
     public String getFilename()
     {
         return filename;
     }
 
+
+  /**
+   * @return all local pathes known to the app
+   */
     public ArrayList<String> getLocalpaths()
     {
         return localpaths;

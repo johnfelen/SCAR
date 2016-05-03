@@ -28,36 +28,59 @@ public class Session
         metaBackground = new MetaDataB(act, "PublicDatabase");
     }
 
+  /**
+   * Makes a new lockout timer
+   * @param con Context of App
+   */
   public static void makeLock(Context con)
     {
         lock = new Lock(con, "locker");
     }
 
+
+  /**
+   * Locks the lockout timer
+   */ 
     public static void setLocked()
     {
         lock.setLock();
     }
 
+  /**
+   * @return gives remaining lockout time left
+   */
     public static long remaining()
     {
         return 300000 - lock.elapsed();
     }
 
+  /**
+   * @return checks if app is locked or not
+   */
     public static boolean isLocked()
     {
         return lock.isLocked();
     }
 
+  /**
+   * @return gives number of login attempts
+   */ 
     public static int getTries()
     {
         return lock.getTries();
     }
 
+  /**
+   * @param tries sets lockout tries to tries
+   */
     public static void setTries(int tries)
     {
         lock.setTries(tries);
     }
 
+  /**
+   * Unlocks the app
+   */
     public static void unlock()
     {
         lock.unlock();

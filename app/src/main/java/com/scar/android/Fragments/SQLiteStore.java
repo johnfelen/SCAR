@@ -13,6 +13,10 @@ import com.scar.android.StoreFrag;
 
 import java.util.StringTokenizer;
 
+/**
+ * A storage fragment specific to SQLite 
+ * This is mainly to get/see the SQLite database name
+ */
 public class SQLiteStore extends Fragment implements StoreFrag{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

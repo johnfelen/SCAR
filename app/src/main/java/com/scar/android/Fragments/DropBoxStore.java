@@ -18,6 +18,12 @@ import com.scar.android.ServerImpl.DropBox;
 import com.scar.android.StoreFrag;
 
 
+/**
+ * Fragment for modifying details about DropBox server information
+ * This is mainly to get the token via OATH2. This can also be used to
+ * model other cloud services like Box, Google Drive, etc as they usually all
+ * use some form of OATH similar ot this
+ */
 public class DropBoxStore extends Fragment implements StoreFrag{
     private DropboxAPI<AndroidAuthSession> DBapi;
 

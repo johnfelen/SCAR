@@ -42,8 +42,14 @@ import scar.StoreFile;
 
 //this activity is displayed when the user chooses the Store button on the MainActivity.java page
 //this activity lets the user select a file and stores it on the server
-//this activity uses the store_layout.xml file 
 
+/**
+ * This fragment corresponds to the 'Store' tab on the app's main activity.
+ * It handles taking in input for storage of a file and having the LogicLibrary/StoreFile to do the actual
+ * storage of the file given our servers.
+ * Finally it stores all the chunk metas we uploaded for monitoring later on.<br>
+ * this activity uses the store_layout.xml file
+ */
 public class Store extends Fragment {
 	private static final int
 		DOC_SELECTED = 0;

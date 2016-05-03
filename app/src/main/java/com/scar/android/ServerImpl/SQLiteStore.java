@@ -8,10 +8,10 @@ import android.util.Log;
 
 import java.io.File;
 
-/*
- * Server Implementation for a local sqlite db
- *  Hostname -> db file name
- *  ignore: port, uname, pass
+/**
+ * Server Implementation for a local sqlite db<br>
+ *  Hostname -> db file name<br>
+ *  ignore: port, uname, pass<br>
  */
 public class SQLiteStore implements scar.IServer{
     private final SQLiteDatabase db;

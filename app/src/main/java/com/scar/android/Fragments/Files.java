@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 /**
  * Created by John on 7/26/2015.
+ * This fragment simply shows a list of known files stored by our app
  */
 public class Files extends Fragment {
 

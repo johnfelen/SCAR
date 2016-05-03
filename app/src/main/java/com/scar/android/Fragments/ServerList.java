@@ -25,12 +25,12 @@ import com.scar.android.Session;
 import java.util.ArrayList;
 
 
-//TODO: This needs to be redone completely, see Github wiki as to new idea for server layout[s]
 
-//this activity is used when the new server button is clicked in the MainActivity.java file
-//this page allows a user to add a new server
-//this file goes with the new_server_layout.xml file
-
+/**
+ * this activity is used when the new server button is clicked in the MainActivity.java file<br>
+ * this page allows a user to add a new server<br>
+ * this file goes with the new_server_layout.xml file<br>
+ */
 public class ServerList extends Fragment
 {
 

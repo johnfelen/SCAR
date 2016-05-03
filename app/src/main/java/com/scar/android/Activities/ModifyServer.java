@@ -21,6 +21,10 @@ import com.scar.android.Server;
 import com.scar.android.Session;
 import com.scar.android.StoreFrag;
 
+/**
+ * Activity for handling of Modifying servers, this is very similar to that of AddServers
+ * Except now you have known servers and you can click on servers to edit via their Store fragment
+ */
 public class ModifyServer extends FragmentActivity {
     private StoreFrag frag;
     private Server srv;

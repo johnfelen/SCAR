@@ -19,12 +19,20 @@ import com.scar.android.Fragments.SQLiteStore;
 import com.scar.android.MetaData;
 import com.scar.android.StoreFrag;
 
+
+
+/**
+ * Activity for creating new servers for the app to use
+ */
 public class AddServer extends FragmentActivity {
     public static int SUCCESS = 0, FAIL = 1;
 
     private StoreFrag frag;
 
     @Override
+    /**
+     * Sets up the AddServer activity with the current given server bundle
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_server_layout);
@@ -75,6 +83,11 @@ public class AddServer extends FragmentActivity {
     }
 
 
+  /**
+   * Given the server's type open the appropriate fragment to allow for modification
+   * of this server's data via bundles
+   * @param type server type
+   */
     private void setAddContent(int type) {
         switch(type) {
             case MetaData.TYPE_CASS_STORE:

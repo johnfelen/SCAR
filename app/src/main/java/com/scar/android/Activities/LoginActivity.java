@@ -21,6 +21,10 @@ import com.scar.android.Session;
 // Activity for handling login
 // Activity Flow:
 //  Main -> Login
+
+/**
+ * Activity for logging into scar
+ */
 public class LoginActivity extends Activity
 {
     int tries = 0;

@@ -22,6 +22,10 @@ import java.util.regex.Pattern;
 // Activity Flow:
 //  Main -> Login -> CreatePassword
 //
+
+/**
+ * Activity for creating new logins for SCAR
+ */ 
 public class CreatePassword extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -11,12 +11,16 @@ import java.util.Date;
 
 /**
  * Created by Spencer on 4/6/2016.
+ * This serves as a locking mechanism for the app and how to remember previous lockouts
  */
 public class Lock extends SQLiteOpenHelper {
 
     private final String dbname;
     public final int timer=300000;
 
+  /**
+   * Creates the lockout database
+   */
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS locks ("
@@ -35,6 +39,10 @@ public class Lock extends SQLiteOpenHelper {
         dbname = dbnm;
     }
 
+
+  /**
+   * Sets a new lock
+   */
     public void setLock()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -52,6 +60,10 @@ public class Lock extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
+
+  /**
+   * Sets the number of tries against this lock
+   */
     public void setTries(int tries)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -69,6 +81,10 @@ public class Lock extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
+
+  /**
+   * @return the number of tries
+   */
     public int getTries()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -87,6 +103,9 @@ public class Lock extends SQLiteOpenHelper {
         return tries;
     }
 
+  /**
+   * @return whether we're locked or not
+   */
     public boolean isLocked()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -122,6 +141,9 @@ public class Lock extends SQLiteOpenHelper {
         return false;
     }
 
+  /**
+   * @return how long lock has been on for
+   */
     public long elapsed()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -136,6 +158,9 @@ public class Lock extends SQLiteOpenHelper {
         return current - cur.getLong(cur.getColumnIndex("timeLocked"));
     }
 
+  /**
+   * removes current lock
+   */
     public void unlock()
     {
         SQLiteDatabase db = this.getWritableDatabase();

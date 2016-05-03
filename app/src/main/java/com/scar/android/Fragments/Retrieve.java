@@ -32,12 +32,11 @@ import scar.*;
 import scar.GetFile;
 import scar.IServer;
 
-//TODO: This needs to be redone
-
-//this activity is displayed when the retrieve button is clicked on the MainActivity page.
-//this activity retrieves the document from the server
-//this activity uses retrieve_layout.xml
-
+/**
+ * this activity is displayed when the retrieve button is clicked on the MainActivity page.<br>
+ * this activity retrieves the document from the server via LogicLibray/GetFile.java<br>
+ * this activity uses retrieve_layout.xml<br>
+ */
 public class Retrieve extends Fragment {
 	private Button getDoc;
 	private ProgressDialog progressDialog;
