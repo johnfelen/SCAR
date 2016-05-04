@@ -118,7 +118,15 @@ public class Retrieve extends Fragment {
         }
     }
 
-
+	/**
+	 * This function handles an actual retrival process upon request.
+	 * Basis flow is as followed:<br>
+	 *     1. get all known servers <br>
+	 *     2. get all chunk metas for the given filename <br>
+	 *     3. Retrive our file's key <br>
+	 *     4. Perform LogicLibrary.GetFile(...)<br>
+	 *     5. Save the file upon success<br>
+	 */
 	public void retrieveFile()
 	{
 			progressDialog = new ProgressDialog(this.getActivity());

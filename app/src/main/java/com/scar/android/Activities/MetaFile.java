@@ -42,9 +42,9 @@ import scar.DeleteFile;
 import scar.IServer;
 
 /**
- * Created by John on 7/27/2015.
- * Activity for displaying a files contents 
+ * Activity for displaying a files contents
  * can also delete the file via this activity when in the app
+ * Created by John on 7/27/2015.
  */
 public class MetaFile extends Activity {
     ScarFile selected = null;

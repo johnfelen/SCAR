@@ -42,7 +42,8 @@ import scar.IServer;
 
 
 /**
- * The main activity of the app
+ * The main activity of the app, see chart below to see flow of app<br>
+ * <img src="../../../../../app-flow.png" alt="app-flow">
  */
 public class MainActivity extends FragmentActivity {
     //private FragmentTabHost tabHost;

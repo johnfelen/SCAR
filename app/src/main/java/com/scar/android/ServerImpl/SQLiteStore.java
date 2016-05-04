@@ -10,7 +10,7 @@ import java.io.File;
 
 /**
  * Server Implementation for a local sqlite db<br>
- *  Hostname -> db file name<br>
+ *  Hostname - db file name<br>
  *  ignore: port, uname, pass<br>
  */
 public class SQLiteStore implements scar.IServer{

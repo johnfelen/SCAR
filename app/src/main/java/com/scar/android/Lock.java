@@ -10,8 +10,8 @@ import android.util.Log;
 import java.util.Date;
 
 /**
- * Created by Spencer on 4/6/2016.
  * This serves as a locking mechanism for the app and how to remember previous lockouts
+ * Created by Spencer on 4/6/2016.
  */
 public class Lock extends SQLiteOpenHelper {
 

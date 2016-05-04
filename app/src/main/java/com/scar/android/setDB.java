@@ -7,8 +7,8 @@ import net.sqlcipher.database.SQLiteDatabase;
 import java.io.File;
 
 /**
- * Created by Luke on 4/13/2016.
  * Opens a new local database
+ * Created by Luke on 4/13/2016.
  */
 public class setDB {
     private File dbName;

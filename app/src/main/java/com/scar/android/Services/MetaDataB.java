@@ -18,10 +18,10 @@ import scar.ChunkMetaPub;
 
 
 /**
- * Created by Spencer on 3/29/2016.
  * This database is a non-encrypted database containing non-vital information
  * that's purely for monitoring chunk metas to find out if and when we should
  * schedule an update as to where they are storedx
+ * Created by Spencer on 3/29/2016.
  */
 public class MetaDataB extends SQLiteOpenHelper{
     //need to change type of SQL used

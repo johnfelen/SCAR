@@ -175,6 +175,15 @@ public class Store extends Fragment {
 		}
 	}
 
+	/**
+	 * This function performs the actual storage of a file upon request.
+	 * The basic flow is as followed <br>
+	 *     1. Read in file to binary array<br>
+	 *     2. Get all alive servers<br>
+	 *     3. Generate a key for this file <br>
+	 *     4. Call LogicLibrary.StoreFile(...)<br>
+	 *     5. Update our encrypted meta database with returned chunk metas and file information<br>
+	 */
 	public void storeFile() {
 		progressDialog = new ProgressDialog(this.getActivity());
 		progressDialog.setTitle("Store File");
